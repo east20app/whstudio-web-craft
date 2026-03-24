@@ -1,12 +1,12 @@
 import { motion } from "framer-motion";
-import { Globe, Store, Building2, UtensilsCrossed, ShoppingBag, Smartphone } from "lucide-react";
+import { Globe, Store, UtensilsCrossed, ShoppingBag, Smartphone, Briefcase } from "lucide-react";
 
 const services = [
-  { icon: Building2, title: "Prefeituras", desc: "Portais governamentais com transparência, acessibilidade e gestão de conteúdo." },
+  { icon: Briefcase, title: "Empresas", desc: "Sites institucionais que transmitem credibilidade e profissionalismo." },
   { icon: Store, title: "Lojas", desc: "Sites de e-commerce e vitrines digitais que vendem 24 horas por dia." },
   { icon: UtensilsCrossed, title: "Restaurantes", desc: "Cardápios digitais, reservas online e presença marcante na internet." },
   { icon: ShoppingBag, title: "Lanchonetes", desc: "Páginas otimizadas para delivery e pedidos online." },
-  { icon: Globe, title: "Empresas", desc: "Sites institucionais que transmitem credibilidade e profissionalismo." },
+  { icon: Globe, title: "Sites Institucionais", desc: "Presença online completa para qualquer tipo de negócio." },
   { icon: Smartphone, title: "Landing Pages", desc: "Páginas de alta conversão para campanhas e lançamentos." },
 ];
 

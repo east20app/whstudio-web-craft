@@ -21,7 +21,7 @@ const Hero = () => (
           Sites que <span className="text-gradient">transformam</span> seu negócio
         </h1>
         <p className="text-lg text-primary-foreground/80 mb-8 max-w-lg">
-          Criamos sites modernos e responsivos para empresas, prefeituras, lojas, restaurantes, lanchonetes e muito mais.
+          Criamos sites modernos e responsivos para empresas, lojas, restaurantes, lanchonetes e muito mais.
         </p>
         <div className="flex flex-wrap gap-4">
           <Button size="lg" asChild>
