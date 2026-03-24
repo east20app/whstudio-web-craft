@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 const projects = [
   { title: "Portal Municipal", category: "Prefeitura", color: "from-blue-600 to-blue-800" },
   { title: "Sabor & Arte", category: "Restaurante", color: "from-orange-500 to-red-600" },
-  { title: "ModaFit Store", category: "E-commerce", color: "from-emerald-500 to-teal-700" },
+  { title: "Peixe Store", category: "E-commerce", color: "from-emerald-500 to-teal-700", url: "https://peixestore.shop/" },
   { title: "Tech Solutions", category: "Empresa", color: "from-violet-500 to-indigo-700" },
 ];
 
