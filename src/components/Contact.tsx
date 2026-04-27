@@ -1,74 +1,221 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Mail, MessageCircle } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Mail, MessageCircle, Send } from "lucide-react";
+import { z } from "zod";
+import { toast } from "sonner";
+import { siteConfig, whatsappLink } from "@/config/site";
 
-const Contact = () => (
-  <section id="contato" className="py-24 bg-secondary">
-    <div className="container">
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        className="text-center mb-16"
-      >
-        <span className="text-sm font-medium text-primary uppercase tracking-widest">Fale conosco</span>
-        <h2 className="text-3xl md:text-4xl font-bold mt-2">Entre em Contato</h2>
-      </motion.div>
-      <div className="grid lg:grid-cols-2 gap-12 max-w-5xl mx-auto">
-        <motion.form
-          initial={{ opacity: 0, x: -30 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          className="space-y-5"
-          onSubmit={(e) => e.preventDefault()}
-        >
-          <Input placeholder="Seu nome" className="h-12 bg-card border-border" />
-          <Input placeholder="Seu e-mail" type="email" className="h-12 bg-card border-border" />
-          <Textarea placeholder="Descreva seu projeto..." className="min-h-[120px] bg-card border-border" />
-          <Button size="lg" className="w-full glow">Enviar Mensagem</Button>
-        </motion.form>
+const contactSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(2, "Informe seu nome (mínimo 2 caracteres)")
+    .max(100, "Nome muito longo"),
+  email: z
+    .string()
+    .trim()
+    .email("Informe um e-mail válido")
+    .max(255, "E-mail muito longo"),
+  project: z.string().trim().max(100, "Tipo de projeto muito longo").optional(),
+  message: z
+    .string()
+    .trim()
+    .min(10, "A mensagem deve ter pelo menos 10 caracteres")
+    .max(1000, "Mensagem muito longa"),
+});
+
+type FormData = z.infer<typeof contactSchema>;
+type FormErrors = Partial<Record<keyof FormData, string>>;
+
+const initialState: FormData = { name: "", email: "", project: "", message: "" };
+
+const Contact = () => {
+  const [data, setData] = useState<FormData>(initialState);
+  const [errors, setErrors] = useState<FormErrors>({});
+
+  const update = (field: keyof FormData, value: string) => {
+    setData((d) => ({ ...d, [field]: value }));
+    if (errors[field]) setErrors((e) => ({ ...e, [field]: undefined }));
+  };
+
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const result = contactSchema.safeParse(data);
+
+    if (!result.success) {
+      const fieldErrors: FormErrors = {};
+      result.error.issues.forEach((issue) => {
+        const key = issue.path[0] as keyof FormData;
+        fieldErrors[key] = issue.message;
+      });
+      setErrors(fieldErrors);
+      toast.error("Verifique os campos do formulário.");
+      return;
+    }
+
+    const message = siteConfig.defaultMessages.contactForm(result.data);
+    window.open(whatsappLink(message), "_blank", "noopener,noreferrer");
+    toast.success("Abrimos o WhatsApp com sua mensagem!");
+    setData(initialState);
+  };
+
+  return (
+    <section id="contato" className="py-24 bg-secondary">
+      <div className="container">
         <motion.div
-          initial={{ opacity: 0, x: 30 }}
-          whileInView={{ opacity: 1, x: 0 }}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="space-y-6"
+          className="text-center mb-16"
         >
-          <div>
-            <h3 className="text-xl font-semibold mb-4">Prefere falar diretamente?</h3>
-            <p className="text-muted-foreground text-sm mb-8">
-              Entre em contato pelo WhatsApp ou Discord e receba um orçamento personalizado em até 24 horas.
-            </p>
-          </div>
-          <div className="space-y-4">
-            <Button variant="outline" className="w-full justify-start gap-3 h-14" asChild>
-              <a
-                href="https://wa.me/5584988766134?text=Ol%C3%A1%2C%20gostaria%20de%20solicitar%20um%20or%C3%A7amento!"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <MessageCircle className="w-5 h-5 text-green-500" />
-                <div className="text-left">
-                  <p className="text-sm font-medium">WhatsApp</p>
-                  <p className="text-xs text-muted-foreground">(84) 98876-6134</p>
-                </div>
-              </a>
-            </Button>
-            <Button variant="outline" className="w-full justify-start gap-3 h-14" asChild>
-              <a href="mailto:contato@whstudio.com.br">
-                <Mail className="w-5 h-5 text-primary" />
-                <div className="text-left">
-                  <p className="text-sm font-medium">E-mail</p>
-                  <p className="text-xs text-muted-foreground">contato@whstudio.com.br</p>
-                </div>
-              </a>
-            </Button>
-          </div>
+          <span className="text-sm font-medium text-primary uppercase tracking-widest">Fale conosco</span>
+          <h2 className="text-3xl md:text-4xl font-bold mt-2">Vamos conversar sobre seu projeto</h2>
+          <p className="text-muted-foreground mt-4 max-w-xl mx-auto">
+            Preencha o formulário ou fale direto pelo WhatsApp. Respondemos em até 24 horas úteis.
+          </p>
         </motion.div>
+
+        <div className="grid lg:grid-cols-2 gap-10 max-w-5xl mx-auto">
+          <motion.form
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="space-y-5 card-dark p-7"
+            onSubmit={onSubmit}
+            noValidate
+          >
+            <div className="space-y-2">
+              <Label htmlFor="name">Nome</Label>
+              <Input
+                id="name"
+                placeholder="Seu nome completo"
+                value={data.name}
+                onChange={(e) => update("name", e.target.value)}
+                aria-invalid={!!errors.name}
+                aria-describedby={errors.name ? "name-error" : undefined}
+                maxLength={100}
+              />
+              {errors.name && (
+                <p id="name-error" className="text-xs text-destructive">{errors.name}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="email">E-mail</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="seu@email.com"
+                value={data.email}
+                onChange={(e) => update("email", e.target.value)}
+                aria-invalid={!!errors.email}
+                aria-describedby={errors.email ? "email-error" : undefined}
+                maxLength={255}
+              />
+              {errors.email && (
+                <p id="email-error" className="text-xs text-destructive">{errors.email}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="project">Tipo de projeto (opcional)</Label>
+              <Input
+                id="project"
+                placeholder="Ex.: site, bot Discord, sistema..."
+                value={data.project}
+                onChange={(e) => update("project", e.target.value)}
+                maxLength={100}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="message">Mensagem</Label>
+              <Textarea
+                id="message"
+                placeholder="Conte um pouco sobre o que você precisa..."
+                className="min-h-[120px]"
+                value={data.message}
+                onChange={(e) => update("message", e.target.value)}
+                aria-invalid={!!errors.message}
+                aria-describedby={errors.message ? "message-error" : undefined}
+                maxLength={1000}
+              />
+              {errors.message && (
+                <p id="message-error" className="text-xs text-destructive">{errors.message}</p>
+              )}
+            </div>
+
+            <Button type="submit" size="lg" className="w-full glow">
+              <Send className="w-4 h-4 mr-2" /> Enviar via WhatsApp
+            </Button>
+            <p className="text-xs text-muted-foreground text-center">
+              Ao enviar, abriremos o WhatsApp com sua mensagem pronta.
+            </p>
+          </motion.form>
+
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="space-y-6"
+          >
+            <div>
+              <h3 className="text-xl font-semibold mb-3">Prefere falar direto?</h3>
+              <p className="text-muted-foreground text-sm">
+                Estamos disponíveis pelo WhatsApp e por e-mail para tirar dúvidas e enviar
+                orçamentos personalizados.
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              <Button variant="outline" className="w-full justify-start gap-3 h-16" asChild>
+                <a
+                  href={whatsappLink()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Abrir conversa no WhatsApp"
+                >
+                  <span className="w-10 h-10 rounded-lg bg-[#25D366]/15 border border-[#25D366]/30 flex items-center justify-center">
+                    <MessageCircle className="w-5 h-5 text-[#25D366]" />
+                  </span>
+                  <div className="text-left">
+                    <p className="text-sm font-semibold">WhatsApp</p>
+                    <p className="text-xs text-muted-foreground">{siteConfig.whatsapp.display}</p>
+                  </div>
+                </a>
+              </Button>
+
+              <Button variant="outline" className="w-full justify-start gap-3 h-16" asChild>
+                <a href={`mailto:${siteConfig.email}`} aria-label="Enviar e-mail">
+                  <span className="w-10 h-10 rounded-lg bg-primary/15 border border-primary/30 flex items-center justify-center">
+                    <Mail className="w-5 h-5 text-primary" />
+                  </span>
+                  <div className="text-left">
+                    <p className="text-sm font-semibold">E-mail</p>
+                    <p className="text-xs text-muted-foreground">{siteConfig.email}</p>
+                  </div>
+                </a>
+              </Button>
+            </div>
+
+            <div className="card-dark p-5">
+              <p className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">
+                Tempo de resposta
+              </p>
+              <p className="text-sm text-muted-foreground">
+                Respondemos em até <span className="text-foreground font-semibold">24 horas úteis</span>.
+                Para projetos urgentes, fale pelo WhatsApp.
+              </p>
+            </div>
+          </motion.div>
+        </div>
       </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
 export default Contact;

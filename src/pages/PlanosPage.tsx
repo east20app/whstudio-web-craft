@@ -5,70 +5,41 @@ import Plans from "@/components/Plans";
 import PriceSimulator from "@/components/PriceSimulator";
 import CTAFinal from "@/components/CTAFinal";
 import { motion } from "framer-motion";
-import { Check, X } from "lucide-react";
-
-const features = [
-  { name: "Design responsivo", basic: true, pro: true, premium: true },
-  { name: "Páginas ilimitadas", basic: false, pro: true, premium: true },
-  { name: "Painel admin", basic: false, pro: true, premium: true },
-  { name: "Sistema personalizado", basic: false, pro: false, premium: true },
-  { name: "Bot Discord", basic: false, pro: false, premium: true },
-  { name: "Integração pagamentos", basic: false, pro: true, premium: true },
-  { name: "Hospedagem inclusa", basic: false, pro: false, premium: true },
-  { name: "Suporte pós-entrega", basic: "7 dias", pro: "30 dias", premium: "90 dias" },
-  { name: "Revisões", basic: "1", pro: "3", premium: "Ilimitadas" },
-];
-
-const Cell = ({ value }: { value: boolean | string }) => {
-  if (typeof value === "string") return <span className="text-sm text-foreground">{value}</span>;
-  return value ? <Check className="w-5 h-5 text-primary mx-auto" /> : <X className="w-5 h-5 text-muted-foreground/40 mx-auto" />;
-};
 
 const PlanosPage = () => (
   <>
     <Header />
     <main className="pt-16">
-      <Plans />
-      {/* Comparison table */}
-      <section className="py-24 bg-secondary">
-        <div className="container max-w-4xl">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
+      <section className="py-20 border-b border-border bg-secondary/30">
+        <div className="container text-center max-w-3xl">
+          <motion.span
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-sm font-medium text-primary uppercase tracking-widest"
           >
-            <h2 className="text-3xl font-bold">Comparação de Planos</h2>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="overflow-x-auto"
+            Planos e investimento
+          </motion.span>
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.05 }}
+            className="text-4xl md:text-5xl font-extrabold mt-3 mb-5"
           >
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border">
-                  <th className="text-left py-4 px-4 text-sm font-medium text-muted-foreground">Recurso</th>
-                  <th className="text-center py-4 px-4 text-sm font-medium">Básico</th>
-                  <th className="text-center py-4 px-4 text-sm font-medium text-primary">Pro</th>
-                  <th className="text-center py-4 px-4 text-sm font-medium">Premium</th>
-                </tr>
-              </thead>
-              <tbody>
-                {features.map((f) => (
-                  <tr key={f.name} className="border-b border-border">
-                    <td className="py-4 px-4 text-sm">{f.name}</td>
-                    <td className="py-4 px-4 text-center"><Cell value={f.basic} /></td>
-                    <td className="py-4 px-4 text-center bg-primary/5"><Cell value={f.pro} /></td>
-                    <td className="py-4 px-4 text-center"><Cell value={f.premium} /></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </motion.div>
+            Preços transparentes, <span className="text-gradient">sem surpresas</span>
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-muted-foreground text-base md:text-lg"
+          >
+            Comece pelo plano que faz sentido hoje e evolua conforme seu projeto cresce. Cada plano
+            inclui suporte direto pelo WhatsApp.
+          </motion.p>
         </div>
       </section>
+
+      <Plans />
       <PriceSimulator />
       <CTAFinal />
     </main>
