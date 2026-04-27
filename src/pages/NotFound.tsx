@@ -1,21 +1,33 @@
-import { useLocation } from "react-router-dom";
-import { useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Home, MessageCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { whatsappLink } from "@/config/site";
 
 const NotFound = () => {
   const location = useLocation();
 
-  useEffect(() => {
-    console.error("404 Error: User attempted to access non-existent route:", location.pathname);
-  }, [location.pathname]);
-
   return (
-    <div className="flex min-h-screen items-center justify-center bg-muted">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">404</h1>
-        <p className="mb-4 text-xl text-muted-foreground">Oops! Page not found</p>
-        <a href="/" className="text-primary underline hover:text-primary/90">
-          Return to Home
-        </a>
+    <div className="flex min-h-screen items-center justify-center bg-background p-6">
+      <div className="text-center max-w-md">
+        <p className="text-7xl md:text-8xl font-extrabold text-gradient mb-4">404</p>
+        <h1 className="text-2xl md:text-3xl font-bold mb-3">Página não encontrada</h1>
+        <p className="text-muted-foreground mb-8">
+          A página{" "}
+          <code className="px-1.5 py-0.5 rounded bg-secondary text-xs">{location.pathname}</code>{" "}
+          não existe ou foi movida.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <Button asChild>
+            <Link to="/">
+              <Home className="w-4 h-4 mr-2" /> Voltar ao início
+            </Link>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href={whatsappLink()} target="_blank" rel="noopener noreferrer">
+              <MessageCircle className="w-4 h-4 mr-2" /> Falar no WhatsApp
+            </a>
+          </Button>
+        </div>
       </div>
     </div>
   );
