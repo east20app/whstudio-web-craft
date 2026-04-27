@@ -1,23 +1,6 @@
 import { motion } from "framer-motion";
 import { Star, Users } from "lucide-react";
-
-const testimonials = [
-  {
-    name: "Lucas Mendes",
-    role: "CEO, TechFlow",
-    text: "A WH Studio entregou nosso sistema completo em apenas 12 dias. Qualidade absurda e suporte incrível.",
-  },
-  {
-    name: "Ana Beatriz",
-    role: "Dona, Sabor & Arte",
-    text: "Meu site de delivery ficou perfeito! As vendas online aumentaram 300% no primeiro mês.",
-  },
-  {
-    name: "Rafael Costa",
-    role: "Admin, Comunidade Discord",
-    text: "O bot que criaram para nosso servidor é completo. Moderação, economia, tickets... tudo funcionando perfeitamente.",
-  },
-];
+import { stats, testimonials } from "@/config/site";
 
 const SocialProof = () => (
   <section className="py-24">
@@ -26,14 +9,33 @@ const SocialProof = () => (
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="text-center mb-16"
+        className="text-center mb-12"
       >
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6">
           <Users className="w-4 h-4 text-primary" />
-          <span className="text-sm font-medium text-primary">Mais de 50 clientes atendidos</span>
+          <span className="text-sm font-medium text-primary">Confiança comprovada</span>
         </div>
         <h2 className="text-3xl md:text-4xl font-bold">O que nossos clientes dizem</h2>
       </motion.div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16 max-w-4xl mx-auto">
+        {stats.map((s, i) => (
+          <motion.div
+            key={s.label}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: i * 0.06 }}
+            className="card-dark p-5 text-center"
+          >
+            <p className="text-2xl md:text-3xl font-extrabold text-gradient">{s.value}</p>
+            <p className="text-xs md:text-sm text-muted-foreground mt-1">{s.label}</p>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Testimonials */}
       <div className="grid md:grid-cols-3 gap-6">
         {testimonials.map((t, i) => (
           <motion.div
@@ -42,9 +44,9 @@ const SocialProof = () => (
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.1 }}
-            className="card-dark-hover p-8"
+            className="card-dark-hover p-7"
           >
-            <div className="flex gap-1 mb-4">
+            <div className="flex gap-1 mb-4" aria-label="5 estrelas">
               {[...Array(5)].map((_, j) => (
                 <Star key={j} className="w-4 h-4 fill-primary text-primary" />
               ))}
