@@ -28,7 +28,7 @@ export const siteConfig = {
       `Olá, vim pelo site da WH Studio.\n\nGostaria de um orçamento para os seguintes serviços:\n${services
         .map((s) => `• ${s}`)
         .join("\n")}\n\nEstimativa inicial: R$ ${total}\n\nAguardo retorno.`,
-    contactForm: (data: { name: string; email: string; project?: string; message: string }) =>
+    contactForm: (data: { name?: string; email?: string; project?: string; message?: string }) =>
       `Olá, vim pelo site da WH Studio.\n\nNome: ${data.name}\nE-mail: ${data.email}${
         data.project ? `\nProjeto: ${data.project}` : ""
       }\nMensagem: ${data.message}`,
