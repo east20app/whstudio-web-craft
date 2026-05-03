@@ -1,181 +1,308 @@
 import { useEffect, useState, useCallback } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import type {
   Budget,
+  BudgetStatus,
   Client,
+  ClientStatus,
   Project,
+  ProjectStage,
   AdminService,
   ContactMessage,
   AdminSettings,
 } from "./types";
 
-const KEYS = {
-  budgets: "wh:budgets",
-  clients: "wh:clients",
-  projects: "wh:projects",
-  services: "wh:services",
-  messages: "wh:messages",
-  settings: "wh:settings",
-  auth: "wh:auth",
-} as const;
+// =====================================================================
+// Helpers de mapeamento (DB row -> tipo do app)
+// =====================================================================
+const mapSettings = (r: any): AdminSettings => ({
+  id: r.id,
+  siteName: r.site_name,
+  whatsapp: r.whatsapp,
+  discordLink: r.discord_link,
+  footerText: r.footer_text,
+  authorName: r.author_name,
+});
 
-// Seed inicial
-const seedBudgets: Budget[] = [
-  {
-    id: "b1",
-    client: "Lucas Mendes",
-    service: "Sistema personalizado",
-    contact: "(84) 99999-1111",
-    date: new Date(Date.now() - 86400000 * 2).toISOString(),
-    status: "novo",
-  },
-  {
-    id: "b2",
-    client: "Ana Beatriz",
-    service: "Site institucional",
-    contact: "ana@saborarte.com.br",
-    date: new Date(Date.now() - 86400000 * 5).toISOString(),
-    status: "em-analise",
-  },
-  {
-    id: "b3",
-    client: "Rafael Costa",
-    service: "Bot Discord",
-    contact: "rafael#1234",
-    date: new Date(Date.now() - 86400000 * 12).toISOString(),
-    status: "aprovado",
-  },
-  {
-    id: "b4",
-    client: "Carla Souza",
-    service: "Landing page",
-    contact: "(84) 98888-2222",
-    date: new Date(Date.now() - 86400000 * 20).toISOString(),
-    status: "recusado",
-  },
-];
+const mapProject = (r: any): Project => ({
+  id: r.id,
+  name: r.name,
+  client: r.client ?? "",
+  type: r.type ?? "",
+  deadline: r.deadline ?? "",
+  stage: r.stage as ProjectStage,
+});
 
-const seedClients: Client[] = [
-  { id: "c1", name: "Lucas Mendes", whatsapp: "5584999991111", discord: "lucasm#0001", service: "Sistema personalizado", status: "ativo" },
-  { id: "c2", name: "Ana Beatriz", whatsapp: "5584988882222", discord: "", service: "Site institucional", status: "ativo" },
-  { id: "c3", name: "Rafael Costa", whatsapp: "5584977773333", discord: "rafael#1234", service: "Bot Discord", status: "ativo" },
-  { id: "c4", name: "Pedro Lima", whatsapp: "5584966664444", discord: "", service: "Landing page", status: "lead" },
-];
+// =====================================================================
+// Genérico: lista com fetch + ações
+// =====================================================================
+function useTable<TRow, TItem>(
+  table: string,
+  mapper: (r: TRow) => TItem,
+  orderColumn: string = "created_at",
+  ascending = false
+) {
+  const [data, setData] = useState<TItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
-const seedProjects: Project[] = [
-  { id: "p1", name: "Serra Delivery", client: "Serra Delivery", type: "Sistema de delivery", deadline: "2026-06-10", stage: "desenvolvimento" },
-  { id: "p2", name: "DroxBot", client: "Comunidade DroxBot", type: "Bot Discord + Painel", deadline: "2026-05-20", stage: "desenvolvimento" },
-  { id: "p3", name: "Peixe Store", client: "Peixe Store", type: "E-commerce", deadline: "2026-04-30", stage: "entregue" },
-  { id: "p4", name: "Copa Ativa", client: "Copa Ativa", type: "Plataforma de eventos esportivos", deadline: "2026-03-15", stage: "entregue" },
-];
-
-const seedServices: AdminService[] = [
-  { id: "s1", name: "Criação de Sites", description: "Sites institucionais, landing pages e lojas virtuais.", price: "Sob consulta", active: true },
-  { id: "s2", name: "Bots para Discord", description: "Bots completos sob medida.", price: "Sob consulta", active: true },
-  { id: "s3", name: "APIs e Sistemas", description: "Sistemas web e APIs sob medida.", price: "Sob consulta", active: true },
-  { id: "s4", name: "Automação", description: "Automatize processos e integrações.", price: "Sob consulta", active: true },
-];
-
-const seedMessages: ContactMessage[] = [
-  {
-    id: "m1",
-    name: "Maria Silva",
-    email: "maria@email.com",
-    message: "Gostaria de um orçamento para um site de delivery.",
-    date: new Date(Date.now() - 86400000).toISOString(),
-  },
-  {
-    id: "m2",
-    name: "João Santos",
-    email: "joao@email.com",
-    message: "Tenho interesse em um bot para meu servidor.",
-    date: new Date(Date.now() - 86400000 * 3).toISOString(),
-    read: true,
-  },
-];
-
-const seedSettings: AdminSettings = {
-  siteName: "WH Studio",
-  whatsapp: "5584988766134",
-  discordLink: "https://discord.gg/whstudio",
-  footerText: "WH STUDIO © 2026",
-  authorName: "Walmry Netto",
-};
-
-function read<T>(key: string, fallback: T): T {
-  if (typeof window === "undefined") return fallback;
-  try {
-    const raw = localStorage.getItem(key);
-    if (!raw) {
-      localStorage.setItem(key, JSON.stringify(fallback));
-      return fallback;
-    }
-    return JSON.parse(raw) as T;
-  } catch {
-    return fallback;
-  }
-}
-
-function write<T>(key: string, value: T) {
-  localStorage.setItem(key, JSON.stringify(value));
-}
-
-function useStore<T>(key: string, seed: T) {
-  const [value, setValue] = useState<T>(() => read(key, seed));
+  const refresh = useCallback(async () => {
+    const { data, error } = await supabase
+      .from(table as any)
+      .select("*")
+      .order(orderColumn, { ascending });
+    if (!error && data) setData((data as TRow[]).map(mapper));
+    setLoading(false);
+  }, [table, orderColumn, ascending, mapper]);
 
   useEffect(() => {
-    const handler = (e: StorageEvent) => {
-      if (e.key === key && e.newValue) {
-        try {
-          setValue(JSON.parse(e.newValue));
-        } catch {
-          /* noop */
-        }
-      }
-    };
-    window.addEventListener("storage", handler);
-    return () => window.removeEventListener("storage", handler);
-  }, [key]);
+    refresh();
+  }, [refresh]);
 
-  const update = useCallback(
-    (updater: T | ((prev: T) => T)) => {
-      setValue((prev) => {
-        const next = typeof updater === "function" ? (updater as (p: T) => T)(prev) : updater;
-        write(key, next);
-        return next;
-      });
-    },
-    [key]
+  return { data, loading, refresh, setData };
+}
+
+// =====================================================================
+// BUDGETS
+// =====================================================================
+export const useBudgets = () => {
+  const t = useTable<any, Budget>(
+    "budgets",
+    (r) => ({
+      id: r.id,
+      client: r.client,
+      service: r.service,
+      contact: r.contact,
+      date: r.date,
+      status: r.status as BudgetStatus,
+      notes: r.notes ?? undefined,
+    }),
+    "date"
   );
 
-  return [value, update] as const;
-}
+  const addBudget = async (b: Omit<Budget, "id">) => {
+    const { error } = await supabase.from("budgets").insert({
+      client: b.client,
+      service: b.service,
+      contact: b.contact,
+      date: b.date,
+      status: b.status,
+      notes: b.notes ?? null,
+    });
+    if (!error) await t.refresh();
+    return !error;
+  };
+  const updateBudgetStatus = async (id: string, status: BudgetStatus) => {
+    const { error } = await supabase.from("budgets").update({ status }).eq("id", id);
+    if (!error) await t.refresh();
+    return !error;
+  };
+  const removeBudget = async (id: string) => {
+    const { error } = await supabase.from("budgets").delete().eq("id", id);
+    if (!error) await t.refresh();
+    return !error;
+  };
 
-export const useBudgets = () => useStore<Budget[]>(KEYS.budgets, seedBudgets);
-export const useClients = () => useStore<Client[]>(KEYS.clients, seedClients);
-export const useProjects = () => useStore<Project[]>(KEYS.projects, seedProjects);
-export const useAdminServices = () => useStore<AdminService[]>(KEYS.services, seedServices);
-export const useMessages = () => useStore<ContactMessage[]>(KEYS.messages, seedMessages);
-export const useSettings = () => useStore<AdminSettings>(KEYS.settings, seedSettings);
+  return { ...t, addBudget, updateBudgetStatus, removeBudget };
+};
 
-// ============== AUTH ==============
-export const ADMIN_CREDENTIALS = { email: "whgamersc@gmail.com", pass: "whstudio2026" };
+// =====================================================================
+// CLIENTS
+// =====================================================================
+export const useClients = () => {
+  const t = useTable<any, Client>("clients", (r) => ({
+    id: r.id,
+    name: r.name,
+    whatsapp: r.whatsapp ?? "",
+    discord: r.discord ?? "",
+    service: r.service ?? "",
+    status: r.status as ClientStatus,
+  }));
 
-export function isAuthenticated() {
-  if (typeof window === "undefined") return false;
-  return localStorage.getItem(KEYS.auth) === "1";
-}
+  const addClient = async (c: Omit<Client, "id">) => {
+    const { error } = await supabase.from("clients").insert(c);
+    if (!error) await t.refresh();
+    return !error;
+  };
+  const removeClient = async (id: string) => {
+    const { error } = await supabase.from("clients").delete().eq("id", id);
+    if (!error) await t.refresh();
+    return !error;
+  };
 
-export function login(email: string, pass: string) {
-  if (email.trim().toLowerCase() === ADMIN_CREDENTIALS.email && pass === ADMIN_CREDENTIALS.pass) {
-    localStorage.setItem(KEYS.auth, "1");
-    return true;
-  }
-  return false;
-}
+  return { ...t, addClient, removeClient };
+};
 
-export function logout() {
-  localStorage.removeItem(KEYS.auth);
-}
+// =====================================================================
+// PROJECTS
+// =====================================================================
+export const useProjects = () => {
+  const t = useTable<any, Project>("projects", mapProject);
 
-// helper de IDs
-export const newId = () => Math.random().toString(36).slice(2, 10);
+  const addProject = async (p: Omit<Project, "id">) => {
+    const { error } = await supabase.from("projects").insert({
+      name: p.name,
+      client: p.client,
+      type: p.type,
+      deadline: p.deadline || null,
+      stage: p.stage,
+    });
+    if (!error) await t.refresh();
+    return !error;
+  };
+  const updateProjectStage = async (id: string, stage: ProjectStage) => {
+    const { error } = await supabase.from("projects").update({ stage }).eq("id", id);
+    if (!error) await t.refresh();
+    return !error;
+  };
+  const removeProject = async (id: string) => {
+    const { error } = await supabase.from("projects").delete().eq("id", id);
+    if (!error) await t.refresh();
+    return !error;
+  };
+
+  return { ...t, addProject, updateProjectStage, removeProject };
+};
+
+// =====================================================================
+// SERVICES
+// =====================================================================
+export const useAdminServices = () => {
+  const t = useTable<any, AdminService>("services", (r) => ({
+    id: r.id,
+    name: r.name,
+    description: r.description ?? "",
+    price: "Sob consulta",
+    active: r.active,
+  }));
+
+  const addService = async (s: Omit<AdminService, "id">) => {
+    const { error } = await supabase.from("services").insert({
+      name: s.name,
+      description: s.description,
+      price: "Sob consulta",
+      active: s.active,
+    });
+    if (!error) await t.refresh();
+    return !error;
+  };
+  const updateService = async (id: string, patch: Partial<AdminService>) => {
+    const upd: any = {};
+    if (patch.name !== undefined) upd.name = patch.name;
+    if (patch.description !== undefined) upd.description = patch.description;
+    if (patch.active !== undefined) upd.active = patch.active;
+    const { error } = await supabase.from("services").update(upd).eq("id", id);
+    if (!error) await t.refresh();
+    return !error;
+  };
+  const removeService = async (id: string) => {
+    const { error } = await supabase.from("services").delete().eq("id", id);
+    if (!error) await t.refresh();
+    return !error;
+  };
+
+  return { ...t, addService, updateService, removeService };
+};
+
+// =====================================================================
+// MESSAGES
+// =====================================================================
+export const useMessages = () => {
+  const t = useTable<any, ContactMessage>("messages", (r) => ({
+    id: r.id,
+    name: r.name,
+    email: r.email,
+    message: r.message,
+    date: r.created_at,
+    read: r.read,
+  }));
+
+  const markRead = async (id: string) => {
+    const { error } = await supabase.from("messages").update({ read: true }).eq("id", id);
+    if (!error) await t.refresh();
+  };
+  const removeMessage = async (id: string) => {
+    const { error } = await supabase.from("messages").delete().eq("id", id);
+    if (!error) await t.refresh();
+  };
+
+  return { ...t, markRead, removeMessage };
+};
+
+// =====================================================================
+// SETTINGS (singleton)
+// =====================================================================
+export const useSettings = () => {
+  const [settings, setSettings] = useState<AdminSettings>({
+    id: "",
+    siteName: "WH Studio",
+    whatsapp: "5584988766134",
+    discordLink: "https://discord.gg/whstudio",
+    footerText: "WH STUDIO © 2026",
+    authorName: "Walmry Netto",
+  });
+
+  const refresh = useCallback(async () => {
+    const { data } = await supabase.from("settings").select("*").limit(1).maybeSingle();
+    if (data) setSettings(mapSettings(data));
+  }, []);
+
+  useEffect(() => {
+    refresh();
+  }, [refresh]);
+
+  const saveSettings = async (s: AdminSettings) => {
+    const { error } = await supabase
+      .from("settings")
+      .update({
+        site_name: s.siteName,
+        whatsapp: s.whatsapp,
+        discord_link: s.discordLink,
+        footer_text: s.footerText,
+        author_name: s.authorName,
+      })
+      .eq("id", s.id);
+    if (!error) await refresh();
+    return !error;
+  };
+
+  return { settings, saveSettings, refresh };
+};
+
+// =====================================================================
+// AUTH (Supabase)
+// =====================================================================
+export const useAuth = () => {
+  const [user, setUser] = useState<{ id: string; email: string | null } | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ? { id: session.user.id, email: session.user.email ?? null } : null);
+    });
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ? { id: session.user.id, email: session.user.email ?? null } : null);
+      setLoading(false);
+    });
+    return () => sub.subscription.unsubscribe();
+  }, []);
+
+  return { user, loading };
+};
+
+export const signIn = async (email: string, password: string) => {
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  return error?.message ?? null;
+};
+
+export const signUp = async (email: string, password: string) => {
+  const { error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: { emailRedirectTo: `${window.location.origin}/dashboard` },
+  });
+  return error?.message ?? null;
+};
+
+export const signOut = async () => {
+  await supabase.auth.signOut();
+};
