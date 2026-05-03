@@ -6,6 +6,7 @@ import {
   Briefcase,
   Wrench,
   MessageSquare,
+  Star,
   Settings as SettingsIcon,
   LogOut,
   Menu,
@@ -23,6 +24,7 @@ const items = [
   { to: "/dashboard/projetos", label: "Projetos", icon: Briefcase },
   { to: "/dashboard/servicos", label: "Serviços", icon: Wrench },
   { to: "/dashboard/mensagens", label: "Mensagens", icon: MessageSquare },
+  { to: "/dashboard/feedbacks", label: "Feedbacks", icon: Star },
   { to: "/dashboard/configuracoes", label: "Configurações", icon: SettingsIcon },
 ];
 

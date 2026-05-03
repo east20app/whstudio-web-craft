@@ -9,6 +9,7 @@ import PlanosPage from "./pages/PlanosPage.tsx";
 import PortfolioPage from "./pages/PortfolioPage.tsx";
 import ContatoPage from "./pages/ContatoPage.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import FeedbackPublicPage from "./pages/FeedbackPublicPage.tsx";
 
 import DashboardLayout from "./dashboard/DashboardLayout";
 import { RequireAuth } from "./dashboard/RequireAuth";
@@ -20,6 +21,7 @@ import ProjectsPage from "./dashboard/ProjectsPage";
 import ServicesPage from "./dashboard/ServicesPage";
 import MessagesPage from "./dashboard/MessagesPage";
 import SettingsPage from "./dashboard/SettingsPage";
+import FeedbacksPage from "./dashboard/FeedbacksPage";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +37,7 @@ const App = () => (
           <Route path="/planos" element={<PlanosPage />} />
           <Route path="/portfolio" element={<PortfolioPage />} />
           <Route path="/contato" element={<ContatoPage />} />
+          <Route path="/feedback/:token" element={<FeedbackPublicPage />} />
 
           <Route path="/dashboard/login" element={<LoginPage />} />
           <Route
@@ -51,6 +54,7 @@ const App = () => (
             <Route path="projetos" element={<ProjectsPage />} />
             <Route path="servicos" element={<ServicesPage />} />
             <Route path="mensagens" element={<MessagesPage />} />
+            <Route path="feedbacks" element={<FeedbacksPage />} />
             <Route path="configuracoes" element={<SettingsPage />} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Route>
