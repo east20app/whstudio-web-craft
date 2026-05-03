@@ -14,7 +14,183 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      budgets: {
+        Row: {
+          client: string
+          contact: string
+          created_at: string
+          date: string
+          id: string
+          notes: string | null
+          service: string
+          status: string
+        }
+        Insert: {
+          client: string
+          contact: string
+          created_at?: string
+          date?: string
+          id?: string
+          notes?: string | null
+          service: string
+          status?: string
+        }
+        Update: {
+          client?: string
+          contact?: string
+          created_at?: string
+          date?: string
+          id?: string
+          notes?: string | null
+          service?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      clients: {
+        Row: {
+          created_at: string
+          discord: string | null
+          id: string
+          name: string
+          service: string
+          status: string
+          whatsapp: string
+        }
+        Insert: {
+          created_at?: string
+          discord?: string | null
+          id?: string
+          name: string
+          service?: string
+          status?: string
+          whatsapp?: string
+        }
+        Update: {
+          created_at?: string
+          discord?: string | null
+          id?: string
+          name?: string
+          service?: string
+          status?: string
+          whatsapp?: string
+        }
+        Relationships: []
+      }
+      messages: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          message: string
+          name: string
+          read: boolean
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          message: string
+          name: string
+          read?: boolean
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+          read?: boolean
+        }
+        Relationships: []
+      }
+      projects: {
+        Row: {
+          client: string
+          created_at: string
+          deadline: string | null
+          id: string
+          name: string
+          stage: string
+          type: string
+        }
+        Insert: {
+          client?: string
+          created_at?: string
+          deadline?: string | null
+          id?: string
+          name: string
+          stage?: string
+          type?: string
+        }
+        Update: {
+          client?: string
+          created_at?: string
+          deadline?: string | null
+          id?: string
+          name?: string
+          stage?: string
+          type?: string
+        }
+        Relationships: []
+      }
+      services: {
+        Row: {
+          active: boolean
+          created_at: string
+          description: string
+          id: string
+          name: string
+          price: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          description?: string
+          id?: string
+          name: string
+          price?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          description?: string
+          id?: string
+          name?: string
+          price?: string
+        }
+        Relationships: []
+      }
+      settings: {
+        Row: {
+          author_name: string
+          discord_link: string
+          footer_text: string
+          id: string
+          site_name: string
+          updated_at: string
+          whatsapp: string
+        }
+        Insert: {
+          author_name?: string
+          discord_link?: string
+          footer_text?: string
+          id?: string
+          site_name?: string
+          updated_at?: string
+          whatsapp?: string
+        }
+        Update: {
+          author_name?: string
+          discord_link?: string
+          footer_text?: string
+          id?: string
+          site_name?: string
+          updated_at?: string
+          whatsapp?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
