@@ -13,7 +13,7 @@ export default defineConfig(async ({ mode }) => ({
   plugins: [
     react(),
     mode === "development" &&
-      (await import("lovable-tagger").then((m) => m.componentTagger()).catch(() => null)),
+      (await import(/* @vite-ignore */ "lovable-tagger" as string).then((m: any) => m.componentTagger()).catch(() => null)),
   ].filter(Boolean),
   resolve: {
     alias: {
