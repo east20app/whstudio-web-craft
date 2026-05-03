@@ -16,25 +16,25 @@ import { useMessages } from "./store";
 import { toast } from "sonner";
 
 const MessagesPage = () => {
-  const [messages, setMessages] = useMessages();
+  const { data: messages, loading, markRead, removeMessage } = useMessages();
 
-  const remove = (id: string) => {
-    setMessages((prev) => prev.filter((m) => m.id !== id));
+  const remove = async (id: string) => {
+    await removeMessage(id);
     toast.success("Mensagem removida");
-  };
-
-  const markRead = (id: string) => {
-    setMessages((prev) => prev.map((m) => (m.id === id ? { ...m, read: true } : m)));
   };
 
   return (
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl md:text-3xl font-bold">Mensagens</h2>
-        <p className="text-muted-foreground text-sm mt-1">Mensagens recebidas pelo formulário do site.</p>
+        <p className="text-muted-foreground text-sm mt-1">
+          Mensagens recebidas pelo formulário do site.
+        </p>
       </div>
 
-      {messages.length === 0 ? (
+      {loading ? (
+        <div className="card-dark p-8 text-center text-sm text-muted-foreground">Carregando…</div>
+      ) : messages.length === 0 ? (
         <EmptyState
           icon={<Mail className="w-5 h-5" />}
           title="Nenhuma mensagem ainda"
@@ -43,10 +43,7 @@ const MessagesPage = () => {
       ) : (
         <div className="space-y-4">
           {messages.map((m) => (
-            <div
-              key={m.id}
-              className={`card-dark p-5 ${!m.read ? "border-primary/40" : ""}`}
-            >
+            <div key={m.id} className={`card-dark p-5 ${!m.read ? "border-primary/40" : ""}`}>
               <div className="flex items-start justify-between gap-3 mb-3">
                 <div className="min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
@@ -57,7 +54,10 @@ const MessagesPage = () => {
                       </span>
                     )}
                   </div>
-                  <a href={`mailto:${m.email}`} className="text-xs text-muted-foreground hover:text-foreground">
+                  <a
+                    href={`mailto:${m.email}`}
+                    className="text-xs text-muted-foreground hover:text-foreground"
+                  >
                     {m.email}
                   </a>
                 </div>
@@ -66,12 +66,16 @@ const MessagesPage = () => {
                 </span>
               </div>
 
-              <p className="text-sm text-muted-foreground leading-relaxed mb-4 whitespace-pre-wrap">{m.message}</p>
+              <p className="text-sm text-muted-foreground leading-relaxed mb-4 whitespace-pre-wrap">
+                {m.message}
+              </p>
 
               <div className="flex flex-wrap gap-2">
                 <Button size="sm" variant="outline" asChild>
                   <a
-                    href={`https://wa.me/?text=${encodeURIComponent(`Olá ${m.name}, recebemos sua mensagem...`)}`}
+                    href={`https://wa.me/?text=${encodeURIComponent(
+                      `Olá ${m.name}, recebemos sua mensagem...`
+                    )}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
