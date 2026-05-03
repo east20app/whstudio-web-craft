@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Search, Trash2, Plus } from "lucide-react";
+import { Search, Trash2, Plus, CheckCircle2, Send, Copy } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -39,7 +39,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import StatusPill from "./components/StatusPill";
 import EmptyState from "./components/EmptyState";
-import { useProjects } from "./store";
+import { useProjects, useFeedbacks } from "./store";
 import type { ProjectStage } from "./types";
 import { toast } from "sonner";
 
@@ -55,6 +55,7 @@ const tone = (s: ProjectStage) =>
 
 const ProjectsPage = () => {
   const { data: projects, loading, addProject, updateProjectStage, removeProject } = useProjects();
+  const { data: feedbacks, releaseFeedback } = useFeedbacks();
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<ProjectStage | "all">("all");
   const [open, setOpen] = useState(false);
