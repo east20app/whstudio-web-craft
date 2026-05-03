@@ -62,10 +62,10 @@ const seedClients: Client[] = [
 ];
 
 const seedProjects: Project[] = [
-  { id: "p1", name: "TechFlow Dashboard", client: "Lucas Mendes", type: "Sistema", deadline: "2026-05-25", stage: "desenvolvimento" },
-  { id: "p2", name: "Sabor & Arte", client: "Ana Beatriz", type: "Site", deadline: "2026-05-12", stage: "revisao" },
-  { id: "p3", name: "ModBot v2", client: "Rafael Costa", type: "Bot Discord", deadline: "2026-06-01", stage: "planejamento" },
-  { id: "p4", name: "Peixe Store", client: "Pedro Lima", type: "E-commerce", deadline: "2026-04-20", stage: "entregue" },
+  { id: "p1", name: "Serra Delivery", client: "Serra Delivery", type: "Sistema de delivery", deadline: "2026-06-10", stage: "desenvolvimento" },
+  { id: "p2", name: "DroxBot", client: "Comunidade DroxBot", type: "Bot Discord + Painel", deadline: "2026-05-20", stage: "desenvolvimento" },
+  { id: "p3", name: "Peixe Store", client: "Peixe Store", type: "E-commerce", deadline: "2026-04-30", stage: "entregue" },
+  { id: "p4", name: "Copa Ativa", client: "Copa Ativa", type: "Plataforma de eventos esportivos", deadline: "2026-03-15", stage: "entregue" },
 ];
 
 const seedServices: AdminService[] = [
@@ -158,15 +158,15 @@ export const useMessages = () => useStore<ContactMessage[]>(KEYS.messages, seedM
 export const useSettings = () => useStore<AdminSettings>(KEYS.settings, seedSettings);
 
 // ============== AUTH ==============
-export const ADMIN_CREDENTIALS = { user: "admin", pass: "whstudio" };
+export const ADMIN_CREDENTIALS = { email: "whgamersc@gmail.com", pass: "whstudio2026" };
 
 export function isAuthenticated() {
   if (typeof window === "undefined") return false;
   return localStorage.getItem(KEYS.auth) === "1";
 }
 
-export function login(user: string, pass: string) {
-  if (user === ADMIN_CREDENTIALS.user && pass === ADMIN_CREDENTIALS.pass) {
+export function login(email: string, pass: string) {
+  if (email.trim().toLowerCase() === ADMIN_CREDENTIALS.email && pass === ADMIN_CREDENTIALS.pass) {
     localStorage.setItem(KEYS.auth, "1");
     return true;
   }
