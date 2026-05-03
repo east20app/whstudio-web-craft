@@ -98,8 +98,33 @@ const ProjectsPage = () => {
     if (ok) toast.success("Projeto removido");
     else toast.error("Erro ao remover");
   };
+  const feedbackForProject = (projectId: string) =>
+    feedbacks.find((f) => f.projectId === projectId);
 
-  return (
+  const onMarkDelivered = async (id: string) => {
+    const ok = await updateProjectStage(id, "entregue");
+    if (ok) toast.success("Projeto marcado como entregue");
+  };
+
+  const onReleaseFeedback = async (p: { id: string; name: string; client: string }) => {
+    const existing = feedbackForProject(p.id);
+    if (existing) {
+      const link = `${window.location.origin}/feedback/${existing.token}`;
+      await navigator.clipboard.writeText(link).catch(() => {});
+      toast.success("Link copiado: " + link);
+      return;
+    }
+    const ok = await releaseFeedback(p);
+    if (ok) toast.success("Feedback liberado — link disponível");
+    else toast.error("Erro ao liberar feedback");
+  };
+
+  const copyLink = async (token: string) => {
+    const link = `${window.location.origin}/feedback/${token}`;
+    await navigator.clipboard.writeText(link).catch(() => {});
+    toast.success("Link copiado");
+  };
+
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
