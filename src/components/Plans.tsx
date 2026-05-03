@@ -15,8 +15,8 @@ const Plans = () => (
         <span className="text-sm font-medium text-primary uppercase tracking-widest">Planos</span>
         <h2 className="text-3xl md:text-4xl font-bold mt-2">Escolha o plano ideal para o seu projeto</h2>
         <p className="text-muted-foreground mt-4 max-w-xl mx-auto">
-          Valores transparentes para cada perfil de negócio. Todos os planos incluem design moderno,
-          código limpo e suporte direto pelo WhatsApp.
+          Cada projeto é único. Por isso, todos os valores são definidos sob consulta após entendermos
+          o seu escopo. Solicite um orçamento personalizado pelo WhatsApp.
         </p>
       </motion.div>
 
@@ -28,10 +28,8 @@ const Plans = () => (
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.1 }}
-            className={`relative rounded-xl border p-8 flex flex-col ${
-              p.popular
-                ? "bg-card border-primary ring-2 ring-primary/60 glow"
-                : "bg-card border-border"
+            className={`relative rounded-2xl border p-8 flex flex-col ${
+              p.popular ? "bg-card border-primary ring-2 ring-primary/60 glow" : "bg-card border-border"
             }`}
           >
             {p.popular && (
@@ -44,15 +42,11 @@ const Plans = () => (
             <p className="text-sm text-muted-foreground mt-1 min-h-[40px]">{p.tagline}</p>
 
             <div className="mt-6 mb-6">
-              <p className="text-xs text-muted-foreground uppercase tracking-wider">A partir de</p>
-              <div className="flex items-baseline gap-1 mt-1">
-                <span className="text-sm text-muted-foreground">R$</span>
-                <span className="text-4xl font-extrabold">{p.priceFrom.toLocaleString("pt-BR")}</span>
-                {p.priceSuffix && <span className="text-2xl font-bold text-primary">{p.priceSuffix}</span>}
-              </div>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider">Investimento</p>
+              <p className="text-3xl font-extrabold text-gradient mt-1">Sob consulta</p>
             </div>
 
-            <div className="grid grid-cols-2 gap-2 mb-6">
+            <div className="grid grid-cols-1 gap-2 mb-6">
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <Clock className="w-3.5 h-3.5 text-primary" /> {p.deliveryTime}
               </div>
@@ -70,11 +64,7 @@ const Plans = () => (
               ))}
             </ul>
 
-            <Button
-              className={`w-full ${p.popular ? "glow" : ""}`}
-              variant={p.popular ? "default" : "outline"}
-              asChild
-            >
+            <Button className={`w-full ${p.popular ? "glow" : ""}`} variant={p.popular ? "default" : "outline"} asChild>
               <a
                 href={whatsappLink(siteConfig.defaultMessages.plan(p.name))}
                 target="_blank"
@@ -88,8 +78,7 @@ const Plans = () => (
       </div>
 
       <p className="text-center text-xs text-muted-foreground mt-10 max-w-2xl mx-auto">
-        * Valores iniciais. O preço final pode variar de acordo com o escopo, integrações e prazos do projeto.
-        Solicite um orçamento personalizado pelo WhatsApp.
+        Cada projeto é orçado de forma personalizada de acordo com escopo, integrações e prazos.
       </p>
     </div>
   </section>

@@ -2,7 +2,6 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import Plans from "@/components/Plans";
-import PriceSimulator from "@/components/PriceSimulator";
 import CTAFinal from "@/components/CTAFinal";
 import { motion } from "framer-motion";
 
@@ -25,7 +24,7 @@ const PlanosPage = () => (
             transition={{ delay: 0.05 }}
             className="text-4xl md:text-5xl font-extrabold mt-3 mb-5"
           >
-            Preços transparentes, <span className="text-gradient">sem surpresas</span>
+            Cada projeto tem um <span className="text-gradient">valor sob consulta</span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -33,14 +32,13 @@ const PlanosPage = () => (
             transition={{ delay: 0.1 }}
             className="text-muted-foreground text-base md:text-lg"
           >
-            Comece pelo plano que faz sentido hoje e evolua conforme seu projeto cresce. Cada plano
-            inclui suporte direto pelo WhatsApp.
+            Cada plano é estruturado de forma personalizada conforme escopo, integrações e prazos.
+            Fale conosco pelo WhatsApp para receber seu orçamento.
           </motion.p>
         </div>
       </section>
 
       <Plans />
-      <PriceSimulator />
       <CTAFinal />
     </main>
     <Footer />

@@ -75,11 +75,8 @@ const Footer = () => (
         </div>
       </div>
 
-      <div className="border-t border-border pt-6 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
-        <p>
-          © {new Date().getFullYear()}{" "}
-          <span className="font-semibold text-foreground">{siteConfig.name}</span>. Todos os direitos reservados.
-        </p>
+      <div className="border-t border-border pt-6 flex flex-col md:flex-row items-center justify-between gap-2 text-xs text-muted-foreground">
+        <p>WH STUDIO © 2026 — Todos os direitos reservados.</p>
         <p className="text-[11px] tracking-wide">
           Feito por <span className="font-medium text-foreground/80">Walmry Netto</span>
         </p>

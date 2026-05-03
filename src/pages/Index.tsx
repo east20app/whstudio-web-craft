@@ -4,7 +4,6 @@ import Services from "@/components/Services";
 import SocialProof from "@/components/SocialProof";
 import HowItWorks from "@/components/HowItWorks";
 import Plans from "@/components/Plans";
-import PriceSimulator from "@/components/PriceSimulator";
 import Differentials from "@/components/Differentials";
 import CTAFinal from "@/components/CTAFinal";
 import Footer from "@/components/Footer";
@@ -18,7 +17,6 @@ const Index = () => (
     <SocialProof />
     <HowItWorks />
     <Plans />
-    <PriceSimulator />
     <Differentials />
     <CTAFinal />
     <Footer />
