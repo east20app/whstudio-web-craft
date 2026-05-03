@@ -8,7 +8,7 @@ export type Budget = {
   client: string;
   service: string;
   contact: string;
-  date: string; // ISO
+  date: string;
   status: BudgetStatus;
   notes?: string;
 };
@@ -44,11 +44,12 @@ export type ContactMessage = {
   name: string;
   email: string;
   message: string;
-  date: string; // ISO
+  date: string;
   read?: boolean;
 };
 
 export type AdminSettings = {
+  id: string;
   siteName: string;
   whatsapp: string;
   discordLink: string;

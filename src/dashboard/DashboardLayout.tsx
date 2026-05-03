@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { logout, useSettings } from "./store";
+import { signOut, useAuth, useSettings } from "./store";
 import { toast } from "sonner";
 
 const items = [
@@ -29,17 +29,19 @@ const items = [
 const DashboardLayout = () => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  const [settings] = useSettings();
+  const { settings } = useSettings();
+  const { user } = useAuth();
 
-  const onLogout = () => {
-    logout();
+  const onLogout = async () => {
+    await signOut();
     toast.success("Sessão encerrada");
     navigate("/dashboard/login");
   };
 
+  const initial = (user?.email ?? "U").charAt(0).toUpperCase();
+
   return (
     <div className="min-h-screen flex w-full bg-background">
-      {/* Sidebar */}
       <aside
         className={`fixed lg:sticky top-0 inset-y-0 left-0 z-40 w-64 bg-card/70 backdrop-blur-xl border-r border-border flex flex-col transition-transform lg:translate-x-0 ${
           open ? "translate-x-0" : "-translate-x-full"
@@ -110,12 +112,12 @@ const DashboardLayout = () => {
             </h1>
           </div>
           <div className="flex items-center gap-3">
-            <div className="hidden sm:flex flex-col items-end leading-tight">
+            <div className="hidden sm:flex flex-col items-end leading-tight max-w-[200px]">
               <span className="text-xs text-muted-foreground">Logado como</span>
-              <span className="text-sm font-medium">admin</span>
+              <span className="text-sm font-medium truncate">{user?.email ?? "—"}</span>
             </div>
             <div className="w-9 h-9 rounded-full bg-primary/15 border border-primary/30 flex items-center justify-center text-primary font-bold text-sm">
-              A
+              {initial}
             </div>
           </div>
         </header>

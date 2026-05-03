@@ -47,7 +47,7 @@ const toneByStatus = (s: BudgetStatus) =>
 const labelByStatus = (s: BudgetStatus) => statusOptions.find((o) => o.value === s)!.label;
 
 const BudgetsPage = () => {
-  const [budgets, setBudgets] = useBudgets();
+  const { data: budgets, loading, updateBudgetStatus, removeBudget } = useBudgets();
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<BudgetStatus | "all">("all");
 
@@ -61,14 +61,16 @@ const BudgetsPage = () => {
     [budgets, search, filter]
   );
 
-  const updateStatus = (id: string, status: BudgetStatus) => {
-    setBudgets((prev) => prev.map((b) => (b.id === id ? { ...b, status } : b)));
-    toast.success("Status atualizado");
+  const onUpdate = async (id: string, status: BudgetStatus) => {
+    const ok = await updateBudgetStatus(id, status);
+    if (ok) toast.success("Status atualizado");
+    else toast.error("Erro ao atualizar");
   };
 
-  const remove = (id: string) => {
-    setBudgets((prev) => prev.filter((b) => b.id !== id));
-    toast.success("Orçamento removido");
+  const onRemove = async (id: string) => {
+    const ok = await removeBudget(id);
+    if (ok) toast.success("Orçamento removido");
+    else toast.error("Erro ao remover");
   };
 
   return (
@@ -105,7 +107,9 @@ const BudgetsPage = () => {
         </Select>
       </div>
 
-      {filtered.length === 0 ? (
+      {loading ? (
+        <div className="card-dark p-8 text-center text-sm text-muted-foreground">Carregando…</div>
+      ) : filtered.length === 0 ? (
         <EmptyState
           title="Nenhum orçamento encontrado"
           description="Ajuste o filtro ou aguarde novas solicitações chegando pelo formulário de contato."
@@ -133,7 +137,7 @@ const BudgetsPage = () => {
                     {new Date(b.date).toLocaleDateString("pt-BR")}
                   </TableCell>
                   <TableCell>
-                    <Select value={b.status} onValueChange={(v) => updateStatus(b.id, v as BudgetStatus)}>
+                    <Select value={b.status} onValueChange={(v) => onUpdate(b.id, v as BudgetStatus)}>
                       <SelectTrigger className="h-8 w-[140px] border-0 bg-transparent p-0 hover:bg-secondary/40 px-2">
                         <SelectValue>
                           <StatusPill tone={toneByStatus(b.status)}>{labelByStatus(b.status)}</StatusPill>
@@ -150,12 +154,7 @@ const BudgetsPage = () => {
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-1">
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        asChild
-                        title="Responder no WhatsApp"
-                      >
+                      <Button size="icon" variant="ghost" asChild title="Responder no WhatsApp">
                         <a
                           href={`https://wa.me/?text=${encodeURIComponent(
                             `Olá ${b.client}, sobre seu orçamento de ${b.service}...`
@@ -182,7 +181,7 @@ const BudgetsPage = () => {
                           </AlertDialogHeader>
                           <AlertDialogFooter>
                             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => remove(b.id)}>Excluir</AlertDialogAction>
+                            <AlertDialogAction onClick={() => onRemove(b.id)}>Excluir</AlertDialogAction>
                           </AlertDialogFooter>
                         </AlertDialogContent>
                       </AlertDialog>

@@ -39,7 +39,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import StatusPill from "./components/StatusPill";
 import EmptyState from "./components/EmptyState";
-import { useProjects, newId } from "./store";
+import { useProjects } from "./store";
 import type { ProjectStage } from "./types";
 import { toast } from "sonner";
 
@@ -54,11 +54,17 @@ const tone = (s: ProjectStage) =>
   s === "planejamento" ? "gray" : s === "desenvolvimento" ? "blue" : s === "revisao" ? "yellow" : "green";
 
 const ProjectsPage = () => {
-  const [projects, setProjects] = useProjects();
+  const { data: projects, loading, addProject, updateProjectStage, removeProject } = useProjects();
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<ProjectStage | "all">("all");
   const [open, setOpen] = useState(false);
-  const [form, setForm] = useState({ name: "", client: "", type: "", deadline: "", stage: "planejamento" as ProjectStage });
+  const [form, setForm] = useState({
+    name: "",
+    client: "",
+    type: "",
+    deadline: "",
+    stage: "planejamento" as ProjectStage,
+  });
 
   const filtered = useMemo(
     () =>
@@ -70,22 +76,26 @@ const ProjectsPage = () => {
     [projects, search, filter]
   );
 
-  const add = () => {
+  const add = async () => {
     if (!form.name || !form.client) return toast.error("Preencha nome e cliente");
-    setProjects((prev) => [{ id: newId(), ...form }, ...prev]);
-    setForm({ name: "", client: "", type: "", deadline: "", stage: "planejamento" });
-    setOpen(false);
-    toast.success("Projeto criado");
+    const ok = await addProject(form);
+    if (ok) {
+      setForm({ name: "", client: "", type: "", deadline: "", stage: "planejamento" });
+      setOpen(false);
+      toast.success("Projeto criado");
+    } else toast.error("Erro ao criar projeto");
   };
 
-  const updateStage = (id: string, stage: ProjectStage) => {
-    setProjects((prev) => prev.map((p) => (p.id === id ? { ...p, stage } : p)));
-    toast.success("Status atualizado");
+  const updateStage = async (id: string, stage: ProjectStage) => {
+    const ok = await updateProjectStage(id, stage);
+    if (ok) toast.success("Status atualizado");
+    else toast.error("Erro ao atualizar");
   };
 
-  const remove = (id: string) => {
-    setProjects((prev) => prev.filter((p) => p.id !== id));
-    toast.success("Projeto removido");
+  const remove = async (id: string) => {
+    const ok = await removeProject(id);
+    if (ok) toast.success("Projeto removido");
+    else toast.error("Erro ao remover");
   };
 
   return (
@@ -117,13 +127,21 @@ const ProjectsPage = () => {
                 </div>
                 <div className="space-y-1.5">
                   <Label>Tipo</Label>
-                  <Input value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value })} placeholder="Ex: Site, Bot..." />
+                  <Input
+                    value={form.type}
+                    onChange={(e) => setForm({ ...form, type: e.target.value })}
+                    placeholder="Ex: Site, Bot..."
+                  />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
                   <Label>Prazo</Label>
-                  <Input type="date" value={form.deadline} onChange={(e) => setForm({ ...form, deadline: e.target.value })} />
+                  <Input
+                    type="date"
+                    value={form.deadline}
+                    onChange={(e) => setForm({ ...form, deadline: e.target.value })}
+                  />
                 </div>
                 <div className="space-y-1.5">
                   <Label>Status</Label>
@@ -155,7 +173,12 @@ const ProjectsPage = () => {
       <div className="flex flex-col md:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-          <Input placeholder="Buscar projeto ou cliente..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
+          <Input
+            placeholder="Buscar projeto ou cliente..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="pl-9"
+          />
         </div>
         <Select value={filter} onValueChange={(v) => setFilter(v as ProjectStage | "all")}>
           <SelectTrigger className="md:w-56">
@@ -172,8 +195,13 @@ const ProjectsPage = () => {
         </Select>
       </div>
 
-      {filtered.length === 0 ? (
-        <EmptyState title="Nenhum projeto encontrado" description="Crie seu primeiro projeto para começar a acompanhar." />
+      {loading ? (
+        <div className="card-dark p-8 text-center text-sm text-muted-foreground">Carregando…</div>
+      ) : filtered.length === 0 ? (
+        <EmptyState
+          title="Nenhum projeto encontrado"
+          description="Crie seu primeiro projeto para começar a acompanhar."
+        />
       ) : (
         <div className="card-dark overflow-hidden">
           <Table>

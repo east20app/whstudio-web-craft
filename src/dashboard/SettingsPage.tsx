@@ -7,14 +7,15 @@ import { toast } from "sonner";
 import { Save } from "lucide-react";
 
 const SettingsPage = () => {
-  const [settings, setSettings] = useSettings();
+  const { settings, saveSettings } = useSettings();
   const [form, setForm] = useState(settings);
 
   useEffect(() => setForm(settings), [settings]);
 
-  const save = () => {
-    setSettings(form);
-    toast.success("Configurações salvas");
+  const save = async () => {
+    const ok = await saveSettings(form);
+    if (ok) toast.success("Configurações salvas");
+    else toast.error("Erro ao salvar");
   };
 
   return (

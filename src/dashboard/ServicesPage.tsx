@@ -10,7 +10,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog";
 import {
@@ -26,14 +25,14 @@ import {
 } from "@/components/ui/alert-dialog";
 import EmptyState from "./components/EmptyState";
 import StatusPill from "./components/StatusPill";
-import { useAdminServices, newId } from "./store";
+import { useAdminServices } from "./store";
 import { toast } from "sonner";
 import type { AdminService } from "./types";
 
 const empty = { name: "", description: "", active: true };
 
 const ServicesPage = () => {
-  const [services, setServices] = useAdminServices();
+  const { data: services, loading, addService, updateService, removeService } = useAdminServices();
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<AdminService | null>(null);
   const [form, setForm] = useState(empty);
@@ -49,25 +48,27 @@ const ServicesPage = () => {
     setOpen(true);
   };
 
-  const save = () => {
+  const save = async () => {
     if (!form.name) return toast.error("Informe o nome");
-    if (editing) {
-      setServices((prev) => prev.map((s) => (s.id === editing.id ? { ...s, ...form, price: "Sob consulta" } : s)));
-      toast.success("Serviço atualizado");
+    const ok = editing
+      ? await updateService(editing.id, form)
+      : await addService({ ...form, price: "Sob consulta" });
+    if (ok) {
+      toast.success(editing ? "Serviço atualizado" : "Serviço adicionado");
+      setOpen(false);
     } else {
-      setServices((prev) => [{ id: newId(), ...form, price: "Sob consulta" }, ...prev]);
-      toast.success("Serviço adicionado");
+      toast.error("Erro ao salvar");
     }
-    setOpen(false);
   };
 
-  const remove = (id: string) => {
-    setServices((prev) => prev.filter((s) => s.id !== id));
-    toast.success("Serviço removido");
+  const remove = async (id: string) => {
+    const ok = await removeService(id);
+    if (ok) toast.success("Serviço removido");
+    else toast.error("Erro ao remover");
   };
 
-  const toggle = (id: string) => {
-    setServices((prev) => prev.map((s) => (s.id === id ? { ...s, active: !s.active } : s)));
+  const toggle = async (s: AdminService) => {
+    await updateService(s.id, { active: !s.active });
   };
 
   return (
@@ -82,8 +83,13 @@ const ServicesPage = () => {
         </Button>
       </div>
 
-      {services.length === 0 ? (
-        <EmptyState title="Nenhum serviço cadastrado" description="Adicione seu primeiro serviço para exibir no site." />
+      {loading ? (
+        <div className="card-dark p-8 text-center text-sm text-muted-foreground">Carregando…</div>
+      ) : services.length === 0 ? (
+        <EmptyState
+          title="Nenhum serviço cadastrado"
+          description="Adicione seu primeiro serviço para exibir no site."
+        />
       ) : (
         <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">
           {services.map((s) => (
@@ -101,7 +107,7 @@ const ServicesPage = () => {
               </div>
               <div className="flex items-center justify-between mt-auto pt-2 border-t border-border">
                 <label className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <Switch checked={s.active} onCheckedChange={() => toggle(s.id)} />
+                  <Switch checked={s.active} onCheckedChange={() => toggle(s)} />
                   Visível no site
                 </label>
                 <div className="flex gap-1">
