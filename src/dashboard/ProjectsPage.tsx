@@ -270,25 +270,74 @@ const ProjectsPage = () => {
                     </Select>
                   </TableCell>
                   <TableCell className="text-right">
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button size="icon" variant="ghost" className="text-red-400">
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Excluir projeto?</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            <strong>{p.name}</strong> será removido permanentemente.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                          <AlertDialogAction onClick={() => remove(p.id)}>Excluir</AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
+                    <div className="flex items-center justify-end gap-1 flex-wrap">
+                      {(() => {
+                        const fb = feedbackForProject(p.id);
+                        if (p.stage !== "entregue") {
+                          return (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => onMarkDelivered(p.id)}
+                              title="Marcar como entregue"
+                            >
+                              <CheckCircle2 className="w-3.5 h-3.5 mr-1" />
+                              Entregue
+                            </Button>
+                          );
+                        }
+                        if (!fb) {
+                          return (
+                            <Button
+                              size="sm"
+                              className="glow"
+                              onClick={() => onReleaseFeedback({ id: p.id, name: p.name, client: p.client })}
+                            >
+                              <Send className="w-3.5 h-3.5 mr-1" /> Liberar feedback
+                            </Button>
+                          );
+                        }
+                        const label =
+                          fb.status === "released"
+                            ? "Pendente"
+                            : fb.status === "received"
+                            ? "Recebido"
+                            : fb.status === "published"
+                            ? "Publicado"
+                            : "Oculto";
+                        const toneFb =
+                          fb.status === "released" ? "yellow" : fb.status === "received" ? "blue" : fb.status === "published" ? "green" : "gray";
+                        return (
+                          <>
+                            <StatusPill tone={toneFb as any}>{label}</StatusPill>
+                            {fb.status === "released" && (
+                              <Button size="icon" variant="ghost" onClick={() => copyLink(fb.token)} title="Copiar link">
+                                <Copy className="w-4 h-4" />
+                              </Button>
+                            )}
+                          </>
+                        );
+                      })()}
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button size="icon" variant="ghost" className="text-red-400">
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Excluir projeto?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              <strong>{p.name}</strong> será removido permanentemente.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => remove(p.id)}>Excluir</AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
