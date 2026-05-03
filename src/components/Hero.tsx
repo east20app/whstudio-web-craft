@@ -1,8 +1,7 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Zap, MessageCircle, Sparkles, TrendingUp, Activity } from "lucide-react";
-import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { whatsappLink, siteConfig } from "@/config/site";
+import { whatsappLink, discordLink } from "@/config/site";
 
 const trustBadges = [
   { icon: Zap, label: "Entrega rápida", desc: "A partir de 7 dias" },
@@ -10,47 +9,47 @@ const trustBadges = [
   { icon: Sparkles, label: "Sob medida", desc: "Projetos personalizados" },
 ];
 
+const DiscordIcon = ({ className = "" }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M20.317 4.369A19.79 19.79 0 0 0 16.558 3a14.66 14.66 0 0 0-.642 1.318 18.27 18.27 0 0 0-5.487 0A12.6 12.6 0 0 0 9.785 3a19.74 19.74 0 0 0-3.76 1.37C2.318 9.788 1.408 15.07 1.86 20.275a19.94 19.94 0 0 0 6.073 3.062 14.66 14.66 0 0 0 1.298-2.103 12.83 12.83 0 0 1-2.044-.974c.171-.124.339-.255.5-.39a14.27 14.27 0 0 0 12.629 0c.163.135.33.266.501.39-.65.385-1.336.713-2.046.975a14.6 14.6 0 0 0 1.297 2.102 19.85 19.85 0 0 0 6.073-3.062c.532-6.027-.91-11.262-3.824-15.906ZM9.49 17.155c-1.207 0-2.198-1.108-2.198-2.466 0-1.358.974-2.466 2.198-2.466 1.225 0 2.215 1.108 2.198 2.466 0 1.358-.973 2.466-2.198 2.466Zm5.02 0c-1.207 0-2.198-1.108-2.198-2.466 0-1.358.974-2.466 2.198-2.466 1.225 0 2.215 1.108 2.198 2.466 0 1.358-.973 2.466-2.198 2.466Z" />
+  </svg>
+);
+
 const Hero = () => (
   <section className="relative min-h-screen flex items-center overflow-hidden pt-24 pb-16">
-    <div className="absolute top-1/4 -left-20 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[140px] pointer-events-none" />
-    <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
+    <div className="absolute top-1/4 -left-20 w-[500px] h-[500px] bg-primary/15 rounded-full blur-[140px] pointer-events-none" />
+    <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
 
     <div className="container relative z-10">
       <div className="grid lg:grid-cols-2 gap-12 items-center">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
+        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
           <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs md:text-sm font-medium mb-6">
-            <Sparkles className="w-3.5 h-3.5" /> {siteConfig.slogan}
+            <Sparkles className="w-3.5 h-3.5" /> WH Studio • Tecnologia que vende
           </span>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-[1.1] mb-6">
-            Sites, sistemas e bots que{" "}
-            <span className="text-gradient">vendem por você</span>
+            Soluções digitais profissionais para seu{" "}
+            <span className="text-gradient">negócio crescer</span>
           </h1>
           <p className="text-base md:text-lg text-muted-foreground mb-8 max-w-xl">
-            A WH Studio cria soluções digitais sob medida — sites profissionais, lojas virtuais,
-            bots para Discord, dashboards e automações — com entrega rápida e suporte direto pelo WhatsApp.
+            Sites, bots, sistemas e automações criados sob medida para você. Tudo com design moderno,
+            código limpo e suporte direto pelo WhatsApp.
           </p>
           <div className="flex flex-wrap gap-3">
             <Button size="lg" className="glow" asChild>
               <a href={whatsappLink()} target="_blank" rel="noopener noreferrer">
-                Solicitar orçamento <ArrowRight className="ml-2 w-4 h-4" />
+                <MessageCircle className="w-4 h-4 mr-1" /> Falar no WhatsApp
               </a>
             </Button>
             <Button size="lg" variant="outline" asChild>
-              <Link to="/planos">Ver planos</Link>
+              <a href={discordLink()} target="_blank" rel="noopener noreferrer">
+                <DiscordIcon className="w-4 h-4" /> Entrar no Discord
+              </a>
             </Button>
           </div>
 
-          {/* Mini trust cards */}
           <div className="grid grid-cols-3 gap-3 mt-10 max-w-lg">
             {trustBadges.map((b) => (
-              <div
-                key={b.label}
-                className="card-dark p-3 md:p-4 text-center"
-              >
+              <div key={b.label} className="card-dark p-3 md:p-4 text-center">
                 <b.icon className="w-5 h-5 text-primary mx-auto mb-2" aria-hidden="true" />
                 <p className="text-xs md:text-sm font-semibold leading-tight">{b.label}</p>
                 <p className="text-[10px] md:text-xs text-muted-foreground mt-0.5">{b.desc}</p>
@@ -59,7 +58,6 @@ const Hero = () => (
           </div>
         </motion.div>
 
-        {/* Dashboard mockup */}
         <motion.div
           initial={{ opacity: 0, x: 30 }}
           animate={{ opacity: 1, x: 0 }}
@@ -68,17 +66,15 @@ const Hero = () => (
         >
           <div className="relative">
             <div className="rounded-2xl border border-border bg-card p-5 glow shadow-2xl">
-              {/* Browser bar */}
               <div className="flex items-center gap-2 mb-5 pb-3 border-b border-border">
                 <div className="w-3 h-3 rounded-full bg-destructive" />
                 <div className="w-3 h-3 rounded-full bg-yellow-500" />
                 <div className="w-3 h-3 rounded-full bg-green-500" />
                 <div className="ml-3 flex-1 px-3 py-1 rounded bg-secondary text-[11px] text-muted-foreground">
-                  dashboard.whstudio.com.br
+                  dashboard.whstudio.site
                 </div>
               </div>
 
-              {/* Header bar */}
               <div className="flex items-center justify-between mb-5">
                 <div>
                   <p className="text-xs text-muted-foreground">Visão geral</p>
@@ -90,7 +86,6 @@ const Hero = () => (
                 </div>
               </div>
 
-              {/* Stats */}
               <div className="grid grid-cols-3 gap-3 mb-5">
                 {[
                   { label: "Visitantes", value: "12.4k", trend: "+24%", icon: Activity },
@@ -106,7 +101,6 @@ const Hero = () => (
                 ))}
               </div>
 
-              {/* Chart */}
               <div className="rounded-lg bg-secondary p-4 border border-border">
                 <div className="flex items-end gap-1.5 h-28">
                   {[40, 60, 45, 75, 55, 80, 65, 90, 70, 95, 80, 88].map((h, i) => (
