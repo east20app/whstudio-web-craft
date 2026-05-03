@@ -8,6 +8,7 @@ import { Mail, MessageCircle, Send } from "lucide-react";
 import { z } from "zod";
 import { toast } from "sonner";
 import { siteConfig, whatsappLink } from "@/config/site";
+import { supabase } from "@/integrations/supabase/client";
 
 const contactSchema = z.object({
   name: z
@@ -42,7 +43,7 @@ const Contact = () => {
     if (errors[field]) setErrors((e) => ({ ...e, [field]: undefined }));
   };
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const result = contactSchema.safeParse(data);
 
@@ -57,23 +58,19 @@ const Contact = () => {
       return;
     }
 
-    // Persiste mensagem no painel admin (localStorage)
-    try {
-      const raw = localStorage.getItem("wh:messages");
-      const list = raw ? JSON.parse(raw) : [];
-      list.unshift({
-        id: Math.random().toString(36).slice(2, 10),
-        name: result.data.name,
-        email: result.data.email,
-        message: result.data.project
-          ? `[${result.data.project}] ${result.data.message}`
-          : result.data.message,
-        date: new Date().toISOString(),
-        read: false,
-      });
-      localStorage.setItem("wh:messages", JSON.stringify(list));
-    } catch {
-      /* ignore */
+    const fullMessage = result.data.project
+      ? `[${result.data.project}] ${result.data.message}`
+      : result.data.message;
+
+    const { error } = await supabase.from("messages").insert({
+      name: result.data.name,
+      email: result.data.email,
+      message: fullMessage,
+    });
+
+    if (error) {
+      toast.error("Não foi possível enviar agora. Tente novamente.");
+      return;
     }
 
     const message = siteConfig.defaultMessages.contactForm(result.data);
