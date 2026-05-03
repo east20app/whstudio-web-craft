@@ -77,6 +77,51 @@ export type Database = {
         }
         Relationships: []
       }
+      feedbacks: {
+        Row: {
+          allow_publish: boolean
+          client_name: string
+          created_at: string
+          id: string
+          project_id: string | null
+          project_name: string
+          rating: number | null
+          status: string
+          submitted_at: string | null
+          testimonial: string | null
+          token: string
+          updated_at: string
+        }
+        Insert: {
+          allow_publish?: boolean
+          client_name?: string
+          created_at?: string
+          id?: string
+          project_id?: string | null
+          project_name?: string
+          rating?: number | null
+          status?: string
+          submitted_at?: string | null
+          testimonial?: string | null
+          token?: string
+          updated_at?: string
+        }
+        Update: {
+          allow_publish?: boolean
+          client_name?: string
+          created_at?: string
+          id?: string
+          project_id?: string | null
+          project_name?: string
+          rating?: number | null
+          status?: string
+          submitted_at?: string | null
+          testimonial?: string | null
+          token?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           created_at: string

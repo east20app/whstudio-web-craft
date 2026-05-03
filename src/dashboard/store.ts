@@ -10,6 +10,8 @@ import type {
   AdminService,
   ContactMessage,
   AdminSettings,
+  Feedback,
+  FeedbackStatus,
 } from "./types";
 
 // =====================================================================
@@ -269,7 +271,48 @@ export const useSettings = () => {
 };
 
 // =====================================================================
-// AUTH (Supabase)
+// FEEDBACKS
+// =====================================================================
+const mapFeedback = (r: any): Feedback => ({
+  id: r.id,
+  token: r.token,
+  projectId: r.project_id,
+  projectName: r.project_name ?? "",
+  clientName: r.client_name ?? "",
+  rating: r.rating,
+  testimonial: r.testimonial,
+  allowPublish: !!r.allow_publish,
+  status: r.status as FeedbackStatus,
+  submittedAt: r.submitted_at,
+  createdAt: r.created_at,
+});
+
+export const useFeedbacks = () => {
+  const t = useTable<any, Feedback>("feedbacks", mapFeedback);
+
+  const releaseFeedback = async (project: { id: string; name: string; client: string }) => {
+    const { error } = await supabase.from("feedbacks").insert({
+      project_id: project.id,
+      project_name: project.name,
+      client_name: project.client,
+      status: "released",
+    });
+    if (!error) await t.refresh();
+    return !error;
+  };
+  const updateStatus = async (id: string, status: FeedbackStatus) => {
+    const { error } = await supabase.from("feedbacks").update({ status }).eq("id", id);
+    if (!error) await t.refresh();
+    return !error;
+  };
+  const removeFeedback = async (id: string) => {
+    const { error } = await supabase.from("feedbacks").delete().eq("id", id);
+    if (!error) await t.refresh();
+    return !error;
+  };
+
+  return { ...t, releaseFeedback, updateStatus, removeFeedback };
+};
 // =====================================================================
 export const useAuth = () => {
   const [user, setUser] = useState<{ id: string; email: string | null } | null>(null);

@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Search, Trash2, Plus } from "lucide-react";
+import { Search, Trash2, Plus, CheckCircle2, Send, Copy } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -39,7 +39,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import StatusPill from "./components/StatusPill";
 import EmptyState from "./components/EmptyState";
-import { useProjects } from "./store";
+import { useProjects, useFeedbacks } from "./store";
 import type { ProjectStage } from "./types";
 import { toast } from "sonner";
 
@@ -55,6 +55,7 @@ const tone = (s: ProjectStage) =>
 
 const ProjectsPage = () => {
   const { data: projects, loading, addProject, updateProjectStage, removeProject } = useProjects();
+  const { data: feedbacks, releaseFeedback } = useFeedbacks();
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<ProjectStage | "all">("all");
   const [open, setOpen] = useState(false);
@@ -96,6 +97,32 @@ const ProjectsPage = () => {
     const ok = await removeProject(id);
     if (ok) toast.success("Projeto removido");
     else toast.error("Erro ao remover");
+  };
+  const feedbackForProject = (projectId: string) =>
+    feedbacks.find((f) => f.projectId === projectId);
+
+  const onMarkDelivered = async (id: string) => {
+    const ok = await updateProjectStage(id, "entregue");
+    if (ok) toast.success("Projeto marcado como entregue");
+  };
+
+  const onReleaseFeedback = async (p: { id: string; name: string; client: string }) => {
+    const existing = feedbackForProject(p.id);
+    if (existing) {
+      const link = `${window.location.origin}/feedback/${existing.token}`;
+      await navigator.clipboard.writeText(link).catch(() => {});
+      toast.success("Link copiado: " + link);
+      return;
+    }
+    const ok = await releaseFeedback(p);
+    if (ok) toast.success("Feedback liberado — link disponível");
+    else toast.error("Erro ao liberar feedback");
+  };
+
+  const copyLink = async (token: string) => {
+    const link = `${window.location.origin}/feedback/${token}`;
+    await navigator.clipboard.writeText(link).catch(() => {});
+    toast.success("Link copiado");
   };
 
   return (
@@ -243,25 +270,74 @@ const ProjectsPage = () => {
                     </Select>
                   </TableCell>
                   <TableCell className="text-right">
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button size="icon" variant="ghost" className="text-red-400">
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Excluir projeto?</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            <strong>{p.name}</strong> será removido permanentemente.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                          <AlertDialogAction onClick={() => remove(p.id)}>Excluir</AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
+                    <div className="flex items-center justify-end gap-1 flex-wrap">
+                      {(() => {
+                        const fb = feedbackForProject(p.id);
+                        if (p.stage !== "entregue") {
+                          return (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => onMarkDelivered(p.id)}
+                              title="Marcar como entregue"
+                            >
+                              <CheckCircle2 className="w-3.5 h-3.5 mr-1" />
+                              Entregue
+                            </Button>
+                          );
+                        }
+                        if (!fb) {
+                          return (
+                            <Button
+                              size="sm"
+                              className="glow"
+                              onClick={() => onReleaseFeedback({ id: p.id, name: p.name, client: p.client })}
+                            >
+                              <Send className="w-3.5 h-3.5 mr-1" /> Liberar feedback
+                            </Button>
+                          );
+                        }
+                        const label =
+                          fb.status === "released"
+                            ? "Pendente"
+                            : fb.status === "received"
+                            ? "Recebido"
+                            : fb.status === "published"
+                            ? "Publicado"
+                            : "Oculto";
+                        const toneFb =
+                          fb.status === "released" ? "yellow" : fb.status === "received" ? "blue" : fb.status === "published" ? "green" : "gray";
+                        return (
+                          <>
+                            <StatusPill tone={toneFb as any}>{label}</StatusPill>
+                            {fb.status === "released" && (
+                              <Button size="icon" variant="ghost" onClick={() => copyLink(fb.token)} title="Copiar link">
+                                <Copy className="w-4 h-4" />
+                              </Button>
+                            )}
+                          </>
+                        );
+                      })()}
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button size="icon" variant="ghost" className="text-red-400">
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Excluir projeto?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              <strong>{p.name}</strong> será removido permanentemente.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => remove(p.id)}>Excluir</AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}

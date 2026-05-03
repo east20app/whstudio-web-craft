@@ -3,13 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { signIn, signUp, useAuth } from "./store";
+import { signIn, useAuth } from "./store";
 import { toast } from "sonner";
-import { Lock, UserPlus } from "lucide-react";
+import { Lock } from "lucide-react";
+
+const OWNER_EMAIL = "whgamersc@gmail.com";
 
 const LoginPage = () => {
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -17,7 +17,9 @@ const LoginPage = () => {
   const { user, loading } = useAuth();
 
   useEffect(() => {
-    if (!loading && user) navigate("/dashboard", { replace: true });
+    if (!loading && user && (user.email ?? "").toLowerCase() === OWNER_EMAIL) {
+      navigate("/dashboard", { replace: true });
+    }
   }, [user, loading, navigate]);
 
   const onSubmit = async (e: FormEvent) => {
@@ -26,30 +28,20 @@ const LoginPage = () => {
       toast.error("Preencha e-mail e senha");
       return;
     }
-    if (mode === "signup" && password.length < 6) {
-      toast.error("A senha deve ter pelo menos 6 caracteres");
+    if (email.trim().toLowerCase() !== OWNER_EMAIL) {
+      toast.error("Acesso restrito ao administrador");
       return;
     }
 
     setSubmitting(true);
-    const error = mode === "signin" ? await signIn(email, password) : await signUp(email, password);
+    const error = await signIn(email.trim(), password);
     setSubmitting(false);
 
     if (error) {
-      const msg = /invalid login/i.test(error)
-        ? "E-mail ou senha incorretos"
-        : /already registered/i.test(error)
-        ? "Este e-mail já está cadastrado"
-        : error;
-      toast.error(msg);
+      toast.error(/invalid login/i.test(error) ? "E-mail ou senha incorretos" : error);
       return;
     }
-
-    if (mode === "signup") {
-      toast.success("Conta criada! Você já está logado.");
-    } else {
-      toast.success("Login realizado com sucesso");
-    }
+    toast.success("Login realizado com sucesso");
     navigate("/dashboard", { replace: true });
   };
 
@@ -61,28 +53,13 @@ const LoginPage = () => {
       <form onSubmit={onSubmit} className="relative w-full max-w-md card-dark p-8 glow">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-xl bg-primary/15 border border-primary/30 flex items-center justify-center">
-            {mode === "signin" ? (
-              <Lock className="w-5 h-5 text-primary" />
-            ) : (
-              <UserPlus className="w-5 h-5 text-primary" />
-            )}
+            <Lock className="w-5 h-5 text-primary" />
           </div>
           <div>
-            <h1 className="text-xl font-bold">
-              {mode === "signin" ? "Acesse sua conta" : "Crie sua conta"}
-            </h1>
-            <p className="text-xs text-muted-foreground">Painel WH Studio</p>
+            <h1 className="text-xl font-bold">Acesse o painel</h1>
+            <p className="text-xs text-muted-foreground">WH Studio · acesso restrito</p>
           </div>
         </div>
-
-        <Tabs value={mode} onValueChange={(v) => setMode(v as "signin" | "signup")} className="mb-6">
-          <TabsList className="grid grid-cols-2 w-full">
-            <TabsTrigger value="signin">Entrar</TabsTrigger>
-            <TabsTrigger value="signup">Cadastrar</TabsTrigger>
-          </TabsList>
-          <TabsContent value="signin" />
-          <TabsContent value="signup" />
-        </Tabs>
 
         <div className="space-y-4">
           <div className="space-y-2">
@@ -105,49 +82,16 @@ const LoginPage = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              autoComplete={mode === "signin" ? "current-password" : "new-password"}
+              autoComplete="current-password"
               minLength={6}
               required
             />
-            {mode === "signup" && (
-              <p className="text-xs text-muted-foreground">Mínimo de 6 caracteres.</p>
-            )}
           </div>
         </div>
 
         <Button type="submit" className="w-full mt-6 glow" disabled={submitting}>
-          {submitting
-            ? "Aguarde…"
-            : mode === "signin"
-            ? "Entrar no painel"
-            : "Criar conta e entrar"}
+          {submitting ? "Aguarde…" : "Entrar no painel"}
         </Button>
-
-        <p className="text-xs text-muted-foreground text-center mt-6">
-          {mode === "signin" ? (
-            <>
-              Ainda não tem conta?{" "}
-              <button
-                type="button"
-                onClick={() => setMode("signup")}
-                className="text-primary hover:underline"
-              >
-                Cadastre-se
-              </button>
-            </>
-          ) : (
-            <>
-              Já tem conta?{" "}
-              <button
-                type="button"
-                onClick={() => setMode("signin")}
-                className="text-primary hover:underline"
-              >
-                Faça login
-              </button>
-            </>
-          )}
-        </p>
       </form>
     </div>
   );
