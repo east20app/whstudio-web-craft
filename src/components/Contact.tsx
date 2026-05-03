@@ -57,9 +57,28 @@ const Contact = () => {
       return;
     }
 
+    // Persiste mensagem no painel admin (localStorage)
+    try {
+      const raw = localStorage.getItem("wh:messages");
+      const list = raw ? JSON.parse(raw) : [];
+      list.unshift({
+        id: Math.random().toString(36).slice(2, 10),
+        name: result.data.name,
+        email: result.data.email,
+        message: result.data.project
+          ? `[${result.data.project}] ${result.data.message}`
+          : result.data.message,
+        date: new Date().toISOString(),
+        read: false,
+      });
+      localStorage.setItem("wh:messages", JSON.stringify(list));
+    } catch {
+      /* ignore */
+    }
+
     const message = siteConfig.defaultMessages.contactForm(result.data);
     window.open(whatsappLink(message), "_blank", "noopener,noreferrer");
-    toast.success("Abrimos o WhatsApp com sua mensagem!");
+    toast.success("Mensagem enviada! Abrimos o WhatsApp para você.");
     setData(initialState);
   };
 
