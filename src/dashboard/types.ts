@@ -48,6 +48,22 @@ export type ContactMessage = {
   read?: boolean;
 };
 
+export type FeedbackStatus = "released" | "received" | "published" | "hidden";
+
+export type Feedback = {
+  id: string;
+  token: string;
+  projectId: string | null;
+  projectName: string;
+  clientName: string;
+  rating: number | null;
+  testimonial: string | null;
+  allowPublish: boolean;
+  status: FeedbackStatus;
+  submittedAt: string | null;
+  createdAt: string;
+};
+
 export type AdminSettings = {
   id: string;
   siteName: string;
