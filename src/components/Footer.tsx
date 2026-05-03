@@ -80,7 +80,9 @@ const Footer = () => (
           © {new Date().getFullYear()}{" "}
           <span className="font-semibold text-foreground">{siteConfig.name}</span>. Todos os direitos reservados.
         </p>
-        <p>Feito com dedicação no Brasil 🇧🇷</p>
+        <p className="text-[11px] tracking-wide">
+          Feito por <span className="font-medium text-foreground/80">Walmry Netto</span>
+        </p>
       </div>
     </div>
   </footer>
