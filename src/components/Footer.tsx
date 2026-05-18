@@ -8,8 +8,8 @@ const Footer = () => (
     <div className="container">
       <div className="grid md:grid-cols-4 gap-10 mb-10">
         <div className="md:col-span-2">
-          <Link to="/" className="text-2xl font-extrabold tracking-tight">
-            <span className="text-gradient">WH</span> STUDIO
+          <Link to="/" className="inline-flex items-center" aria-label="WH Studio">
+            <img src={logo} alt="WH Studio" className="h-12 w-auto object-contain" />
           </Link>
           <p className="text-sm text-muted-foreground mt-3 max-w-sm leading-relaxed">
             {siteConfig.slogan}. Sites, sistemas, bots e automações sob medida para o seu negócio.
