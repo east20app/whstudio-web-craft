@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { MessageCircle, Mail } from "lucide-react";
 import { siteConfig, whatsappLink, navLinks } from "@/config/site";
+import logo from "@/assets/wh-studio-logo.png";
 
 const Footer = () => (
   <footer className="py-14 border-t border-border bg-secondary/30">
