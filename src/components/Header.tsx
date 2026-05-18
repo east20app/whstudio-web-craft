@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
 import { navLinks, siteConfig, whatsappLink } from "@/config/site";
+import logo from "@/assets/wh-studio-logo.png";
 
 const Header = () => {
   const [open, setOpen] = useState(false);
