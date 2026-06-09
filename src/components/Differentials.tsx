@@ -2,11 +2,11 @@ import { motion } from "framer-motion";
 import { Zap, MessageCircle, Palette, Settings, CreditCard } from "lucide-react";
 
 const items = [
-  { icon: Zap, title: "Entrega rápida", desc: "Projetos entregues em até 15 dias úteis." },
-  { icon: MessageCircle, title: "Suporte via WhatsApp", desc: "Comunicação direta e ágil durante todo o projeto." },
-  { icon: Palette, title: "Design premium", desc: "Layouts modernos e profissionais que impressionam." },
-  { icon: Settings, title: "Sistemas personalizados", desc: "Soluções sob medida para cada tipo de negócio." },
-  { icon: CreditCard, title: "Integração com pagamentos", desc: "Stripe, PIX, boleto e muito mais integrados ao seu sistema." },
+  { icon: Zap, title: "Prazo que cabe na realidade", desc: "Projeto entra no ar em até 15 dias úteis. Antes de começar, te mando um cronograma com cada etapa pra você acompanhar e não ficar no escuro." },
+  { icon: MessageCircle, title: "WhatsApp direto comigo", desc: "Sem suporte terceirizado, sem chamado, sem fila. Quem responde é o Walmry — o mesmo que escreveu o código. Dúvida resolvida no mesmo dia, geralmente em minutos." },
+  { icon: Palette, title: "Design que não envelhece em 6 meses", desc: "Layout pensado pro seu cliente entender o que você faz em 3 segundos. Tipografia, cor e espaçamento alinhados com o que está sendo feito de bom em 2026." },
+  { icon: Settings, title: "Código escrito pro seu caso", desc: "Nada de tema do WordPress nem template comprado. Cada funcionalidade é feita do zero, então o sistema cresce junto com o seu negócio sem virar gambiarra." },
+  { icon: CreditCard, title: "Pagamento já vem ligado", desc: "PIX, cartão, boleto e Stripe configurados no projeto. Você recebe na sua conta direto, sem intermediário cobrando taxa de gateway escondida." },
 ];
 
 const Differentials = () => (

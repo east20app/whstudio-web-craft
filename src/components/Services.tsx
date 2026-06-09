@@ -12,10 +12,10 @@ const Services = () => (
         viewport={{ once: true }}
         className="text-center mb-16"
       >
-        <span className="text-sm font-medium text-primary uppercase tracking-widest">O que fazemos</span>
-        <h2 className="text-3xl md:text-4xl font-bold mt-2">Nossos Serviços</h2>
+        <span className="text-sm font-medium text-primary uppercase tracking-widest">O que a gente faz</span>
+        <h2 className="text-3xl md:text-4xl font-bold mt-2">Serviços</h2>
         <p className="text-muted-foreground mt-4 max-w-xl mx-auto">
-          Soluções completas para empresas, profissionais e comunidades que querem crescer no digital.
+          Site, bot, sistema, automação — o que você precisa pra rodar o negócio online.
         </p>
       </motion.div>
 

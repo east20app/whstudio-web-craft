@@ -5,20 +5,20 @@ const steps = [
   {
     icon: MessageSquare,
     step: "01",
-    title: "Conversamos sobre sua ideia",
-    desc: "Você nos conta seu projeto pelo WhatsApp. Em poucas horas devolvemos um escopo e um orçamento personalizado.",
+    title: "Você me manda mensagem",
+    desc: "Chama no WhatsApp e me conta o que precisa — pode ser por áudio, com print, com link de site que você gostou. No mesmo dia eu te respondo com escopo e preço fechado, sem enrolação.",
   },
   {
     icon: Code2,
     step: "02",
-    title: "Desenvolvemos sob medida",
-    desc: "Nossa equipe coloca a mão no código com tecnologias modernas, alinhando cada etapa com você.",
+    title: "Eu codo e te mostro andando",
+    desc: "Começo a programar e te mando preview a cada parte importante. Se tiver algo que você quer mudar, muda — ainda dá tempo, e não custa nada porque ninguém aprovou nada antes da hora.",
   },
   {
     icon: Rocket,
     step: "03",
-    title: "Entregamos e damos suporte",
-    desc: "Seu projeto vai ao ar pronto para uso, com suporte direto e ajustes inclusos no plano contratado.",
+    title: "Coloco no ar e fico de plantão",
+    desc: "Publico, configuro domínio, te ensino a mexer e fico disponível pra ajuste. Se aparecer algo no primeiro mês, não te cobro de novo — faz parte.",
   },
 ];
 

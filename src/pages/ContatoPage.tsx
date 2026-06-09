@@ -23,7 +23,7 @@ const ContatoPage = () => (
             transition={{ delay: 0.05 }}
             className="text-4xl md:text-5xl font-extrabold mt-3 mb-5"
           >
-            Vamos tirar sua ideia <span className="text-gradient">do papel</span>
+            Bora tirar sua ideia <span className="text-gradient">do chão</span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -31,7 +31,7 @@ const ContatoPage = () => (
             transition={{ delay: 0.1 }}
             className="text-muted-foreground text-base md:text-lg"
           >
-            Conte um pouco sobre seu projeto. Devolvemos um orçamento personalizado em até 24 horas úteis.
+            Me conta o que você precisa. Eu devolvo um orçamento fechado em até 24 horas úteis.
           </motion.p>
         </div>
       </section>
