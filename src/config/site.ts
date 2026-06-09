@@ -150,7 +150,7 @@ export const plans: Plan[] = [
   {
     id: "inicial",
     name: "Inicial",
-    tagline: "Para tirar sua ideia do papel rapidamente.",
+    tagline: "Pra quem precisa estar no ar essa semana.",
     deliveryTime: "Entrega em até 7 dias",
     support: "15 dias de suporte",
     features: [
