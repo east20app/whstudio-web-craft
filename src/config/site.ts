@@ -165,7 +165,7 @@ export const plans: Plan[] = [
   {
     id: "profissional",
     name: "Profissional",
-    tagline: "Solução completa para empresas que querem crescer.",
+    tagline: "Pra empresa que já tem cliente e precisa parecer empresa.",
     deliveryTime: "Entrega em até 15 dias",
     support: "30 dias de suporte",
     popular: true,
