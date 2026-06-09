@@ -24,7 +24,7 @@ const PlanosPage = () => (
             transition={{ delay: 0.05 }}
             className="text-4xl md:text-5xl font-extrabold mt-3 mb-5"
           >
-            Cada projeto tem um <span className="text-gradient">valor sob consulta</span>
+            Valor fechado <span className="text-gradient">depois de entender o que você precisa</span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -32,8 +32,8 @@ const PlanosPage = () => (
             transition={{ delay: 0.1 }}
             className="text-muted-foreground text-base md:text-lg"
           >
-            Cada plano é estruturado de forma personalizada conforme escopo, integrações e prazos.
-            Fale conosco pelo WhatsApp para receber seu orçamento.
+            Cada plano mostra o que entrega. O preço a gente define no WhatsApp, depois de entender
+            escopo, integrações e prazo. Sem surpresa no final.
           </motion.p>
         </div>
       </section>
