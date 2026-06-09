@@ -21,10 +21,10 @@ const CTAFinal = () => (
         <div className="absolute inset-0 bg-gradient-to-br from-primary/15 via-transparent to-transparent pointer-events-none" />
         <div className="relative">
           <h2 className="text-3xl md:text-5xl font-bold mb-6">
-            Pronto para tirar sua ideia <span className="text-gradient">do papel</span>?
+            Me manda uma mensagem. Eu mesmo respondo.
           </h2>
           <p className="text-muted-foreground text-base md:text-lg mb-10 max-w-xl mx-auto">
-            Fale agora pelo WhatsApp ou entre na nossa comunidade no Discord.
+            Sou o Walmry, desenvolvedor por trás da WH Studio. Cola no WhatsApp ou no Discord da comunidade que a gente conversa sobre o seu projeto sem compromisso.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Button size="lg" className="glow" asChild>
