@@ -100,12 +100,12 @@ export const services: Service[] = [
     id: "automacao",
     icon: Zap,
     title: "Automação",
-    short: "Automatize processos, integrações e fluxos repetitivos para ganhar produtividade real.",
+    short: "Aquela tarefa repetitiva que come 2h do seu dia? Conecto WhatsApp, planilhas, e-mail, sistema interno e CRM pra rodar sozinho enquanto você atende cliente.",
     benefits: [
-      "Notificações automáticas",
-      "Integrações com APIs externas",
-      "Sincronização de dados",
-      "Workflows sob medida",
+      "Notificações automáticas no WhatsApp",
+      "Integração com APIs que você já usa",
+      "Sincronização de dados em tempo real",
+      "Workflow montado pro seu processo",
     ],
   },
   {
