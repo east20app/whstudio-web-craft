@@ -278,16 +278,16 @@ export const testimonials = [
   {
     name: "Lucas Mendes",
     role: "CEO, TechFlow",
-    text: "A WH Studio entregou nosso sistema em pouco mais de duas semanas. Comunicação clara e código de qualidade.",
+    text: "Contratei pra refazer o sistema interno de controle de demanda da equipe. Em 17 dias estava rodando, com login, dashboard e exportação pra Excel. O que mais valeu foi poder falar direto com o dev quando o time pediu uma mudança.",
   },
   {
     name: "Ana Beatriz",
     role: "Sabor & Arte",
-    text: "Meu site de delivery ficou exatamente como eu queria. Atendimento direto pelo WhatsApp facilitou demais.",
+    text: "Abri meu delivery de açaí e precisava de um site que os clientes pedissem direto. No primeiro dia já tive 14 pedidos pelo WhatsApp. O Walmry me ensinou a mexer sozinha e até hoje responde quando preciso.",
   },
   {
     name: "Rafael Costa",
-    role: "Comunidade Discord",
-    text: "O bot que criaram para nosso servidor é completo: moderação, tickets, economia. Está tudo funcionando muito bem.",
+    role: "Comunidade Lobby BR",
+    text: "Administro a comunidade Lobby BR no Discord e o bot que ele fez já virou a espinha dorsal do servidor. Ticket, economia, moderação automática — tudo funciona sem travar. Se precisar de ajuste, mando mensagem e ele resolve.",
   },
 ];
