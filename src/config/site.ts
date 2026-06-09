@@ -182,7 +182,7 @@ export const plans: Plan[] = [
   {
     id: "premium",
     name: "Sistema Premium",
-    tagline: "Sistemas sob medida com dashboard, API e integrações.",
+    tagline: "Pra quem vai rodar o negócio dentro do sistema.",
     deliveryTime: "Prazo sob consulta",
     support: "90 dias de suporte avançado",
     features: [
