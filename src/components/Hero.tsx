@@ -4,9 +4,9 @@ import { Button } from "@/components/ui/button";
 import { whatsappLink, discordLink } from "@/config/site";
 
 const trustBadges = [
-  { icon: Zap, label: "Entrega rápida", desc: "A partir de 7 dias" },
-  { icon: MessageCircle, label: "Suporte direto", desc: "WhatsApp incluído" },
-  { icon: Sparkles, label: "Sob medida", desc: "Projetos personalizados" },
+  { icon: Zap, label: "Prazo combinado", desc: "Projeto no ar em até 15 dias" },
+  { icon: MessageCircle, label: "Quem responde é o dev", desc: "WhatsApp direto comigo" },
+  { icon: Sparkles, label: "Feito do zero", desc: "Nada de tema pronto" },
 ];
 
 const DiscordIcon = ({ className = "" }: { className?: string }) => (
