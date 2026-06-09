@@ -64,12 +64,12 @@ export const services: Service[] = [
     id: "criacao-sites",
     icon: Globe,
     title: "Criação de Sites",
-    short: "Sites institucionais, landing pages e lojas virtuais com design moderno e foco em conversão.",
+    short: "Site institucional, landing page ou loja virtual. Rápido pra carregar, fácil pra você editar e bonito no celular — que é onde o seu cliente vai abrir.",
     benefits: [
-      "Design responsivo e personalizado",
-      "Otimizado para Google (SEO)",
-      "Integração com WhatsApp",
-      "Performance e carregamento rápido",
+      "Design responsivo feito do zero",
+      "Otimizado pra aparecer no Google",
+      "WhatsApp integrado no site",
+      "Carregamento rápido em qualquer rede",
     ],
   },
   {
