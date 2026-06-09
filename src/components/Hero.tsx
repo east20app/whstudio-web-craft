@@ -24,15 +24,14 @@ const Hero = () => (
       <div className="grid lg:grid-cols-2 gap-12 items-center">
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
           <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs md:text-sm font-medium mb-6">
-            <Sparkles className="w-3.5 h-3.5" /> WH Studio • Tecnologia que vende
+            <Sparkles className="w-3.5 h-3.5" /> WH Studio • Desenvolvimento web no RN
           </span>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-[1.1] mb-6">
-            Soluções digitais profissionais para seu{" "}
-            <span className="text-gradient">negócio crescer</span>
+            A gente programa o que sua empresa precisa{" "}
+            <span className="text-gradient">rodando ontem.</span>
           </h1>
           <p className="text-base md:text-lg text-muted-foreground mb-8 max-w-xl">
-            Sites, bots, sistemas e automações criados sob medida para você. Tudo com design moderno,
-            código limpo e suporte direto pelo WhatsApp.
+            Site, bot de Discord, sistema interno, API, dashboard — o que estiver na sua cabeça, a gente coloca no ar. Código nosso, atendimento direto com quem desenvolve, sem repassar pra ninguém.
           </p>
           <div className="flex flex-wrap gap-3">
             <Button size="lg" className="glow" asChild>
