@@ -18,7 +18,7 @@ const ServicosPage = () => (
             animate={{ opacity: 1, y: 0 }}
             className="text-sm font-medium text-primary uppercase tracking-widest"
           >
-            Nossos serviços
+            O que a gente faz
           </motion.span>
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
@@ -26,7 +26,7 @@ const ServicosPage = () => (
             transition={{ delay: 0.05 }}
             className="text-4xl md:text-5xl font-extrabold mt-3 mb-5"
           >
-            Soluções completas para o seu <span className="text-gradient">negócio digital</span>
+            Site, bot, sistema — <span className="text-gradient">o que você precisar</span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -34,8 +34,8 @@ const ServicosPage = () => (
             transition={{ delay: 0.1 }}
             className="text-muted-foreground text-base md:text-lg"
           >
-            Da landing page à plataforma completa: cada serviço é desenvolvido sob medida, com foco em
-            performance, conversão e suporte direto pelo WhatsApp.
+            Da landing page à plataforma completa: cada serviço é desenvolvido do zero, com foco em
+            funcionar bem, carregar rápido e atendimento direto pelo WhatsApp.
           </motion.p>
         </div>
       </section>
