@@ -3,9 +3,9 @@
 export const siteConfig = {
   name: "WH Studio",
   shortName: "WH",
-  slogan: "Soluções digitais profissionais para seu negócio crescer",
+  slogan: "Desenvolvimento web feito por gente que atende WhatsApp",
   description:
-    "WH Studio — sites, bots para Discord, sistemas personalizados e automações sob medida. Solicite seu orçamento.",
+    "WH Studio — sites, bots para Discord, sistemas personalizados e automações. Código do zero, atendimento direto. Solicite seu orçamento.",
   url: "https://whstudio.site",
   email: "contato@whstudio.com.br",
   whatsapp: {
