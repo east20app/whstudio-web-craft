@@ -24,7 +24,7 @@ const PortfolioPage = () => (
             transition={{ delay: 0.05 }}
             className="text-4xl md:text-5xl font-extrabold mt-3 mb-5"
           >
-            Projetos que <span className="text-gradient">já entregamos</span>
+            Coisas que a gente <span className="text-gradient">já colocou no ar</span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -32,7 +32,7 @@ const PortfolioPage = () => (
             transition={{ delay: 0.1 }}
             className="text-muted-foreground text-base md:text-lg"
           >
-            Cases reais de sites, sistemas e bots desenvolvidos pela WH Studio para clientes em diferentes segmentos.
+            Sites, sistemas e bots que entregamos pra clientes de delivery, comunidade, evento e loja virtual.
           </motion.p>
         </div>
       </section>
