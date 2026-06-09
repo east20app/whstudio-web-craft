@@ -112,12 +112,12 @@ export const services: Service[] = [
     id: "dashboards",
     icon: LayoutDashboard,
     title: "Dashboards",
-    short: "Painéis administrativos com gráficos, relatórios e gestão centralizada do seu negócio.",
+    short: "Painel administrativo com login, permissões, gráficos e relatório de verdade. Tudo o que importa do seu negócio numa tela só — sem precisar abrir 4 sistemas.",
     benefits: [
-      "Métricas em tempo real",
-      "Controle de permissões",
+      "Métricas e gráficos em tempo real",
+      "Controle de quem vê o quê",
       "Exportação de relatórios",
-      "Interface intuitiva",
+      "Interface simples, sem curso",
     ],
   },
   {
