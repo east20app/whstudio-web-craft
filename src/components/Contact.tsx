@@ -88,10 +88,10 @@ const Contact = () => {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <span className="text-sm font-medium text-primary uppercase tracking-widest">Fale conosco</span>
-          <h2 className="text-3xl md:text-4xl font-bold mt-2">Vamos conversar sobre seu projeto</h2>
+          <span className="text-sm font-medium text-primary uppercase tracking-widest">Fale comigo</span>
+          <h2 className="text-3xl md:text-4xl font-bold mt-2">Bora trocar uma ideia sobre o seu projeto</h2>
           <p className="text-muted-foreground mt-4 max-w-xl mx-auto">
-            Preencha o formulário ou fale direto pelo WhatsApp. Respondemos em até 24 horas úteis.
+            Preencha o formulário ou chama no WhatsApp. Eu respondo em até 24 horas úteis — e geralmente é bem antes.
           </p>
         </motion.div>
 
