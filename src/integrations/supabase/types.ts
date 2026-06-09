@@ -241,7 +241,24 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_feedback_by_token: {
+        Args: { _token: string }
+        Returns: {
+          client_name: string
+          id: string
+          project_name: string
+        }[]
+      }
+      submit_feedback: {
+        Args: {
+          _allow_publish: boolean
+          _client_name: string
+          _rating: number
+          _testimonial: string
+          _token: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never
