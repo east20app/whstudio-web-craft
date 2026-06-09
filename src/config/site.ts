@@ -76,12 +76,12 @@ export const services: Service[] = [
     id: "bots-discord",
     icon: Bot,
     title: "Bots para Discord",
-    short: "Bots completos sob medida para sua comunidade — moderação, tickets, economia e muito mais.",
+    short: "Bot de Discord do jeito que o seu servidor precisa: moderação automática, sistema de tickets, economia, ranks, painel web pra administrar. Você manda o que quer, eu programo.",
     benefits: [
-      "Moderação automática",
-      "Sistema de tickets e suporte",
+      "Moderação automática configurada",
+      "Sistema de tickets com painel",
       "Economia, ranking e níveis",
-      "Comandos personalizados",
+      "Comandos feitos sob demanda",
     ],
   },
   {
