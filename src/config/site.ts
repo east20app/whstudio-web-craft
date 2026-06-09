@@ -124,12 +124,12 @@ export const services: Service[] = [
     id: "delivery",
     icon: ShoppingCart,
     title: "Sistemas de Delivery",
-    short: "Plataforma de pedidos online para restaurantes, lanchonetes e mercados.",
+    short: "Cardápio online com pedido pelo WhatsApp ou pagamento direto. Foi feito pensando em hamburgueria, açaí, pizzaria e mercadinho de bairro — sem mensalidade de iFood.",
     benefits: [
-      "Cardápio digital responsivo",
-      "Pedidos pelo WhatsApp ou painel",
-      "Cálculo de frete por bairro",
-      "Painel para o estabelecimento",
+      "Cardápio digital bonito no celular",
+      "Pedido direto no WhatsApp ou pagamento",
+      "Frete calculado por bairro",
+      "Painel pra você aceitar e acompanhar",
     ],
   },
 ];
