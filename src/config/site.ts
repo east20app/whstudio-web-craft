@@ -88,12 +88,12 @@ export const services: Service[] = [
     id: "apis-sistemas",
     icon: Settings,
     title: "APIs e Sistemas",
-    short: "Sistemas web e APIs sob medida para automatizar e organizar seu negócio com segurança.",
+    short: "Sistema web e API pra coisas que você ainda controla na planilha: cadastro, pedidos, financeiro, controle interno. Pensado pra um time pequeno usar sem treinamento.",
     benefits: [
-      "Banco de dados próprio",
-      "Login seguro e permissões",
-      "APIs REST documentadas",
-      "Escalável e fácil de manter",
+      "Banco de dados próprio e seguro",
+      "Login com permissões por cargo",
+      "API documentada pra expansão",
+      "Código organizado, fácil de manter",
     ],
   },
   {
