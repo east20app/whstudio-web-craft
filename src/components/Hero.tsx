@@ -1,13 +1,7 @@
 import { motion } from "framer-motion";
-import { ArrowRight, Zap, MessageCircle, Sparkles, TrendingUp, Activity } from "lucide-react";
+import { MessageCircle, Zap, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { whatsappLink, discordLink } from "@/config/site";
-
-const trustBadges = [
-  { icon: Zap, label: "Prazo combinado", desc: "Projeto no ar em até 15 dias" },
-  { icon: MessageCircle, label: "Quem responde é o dev", desc: "WhatsApp direto comigo" },
-  { icon: Sparkles, label: "Feito do zero", desc: "Nada de tema pronto" },
-];
 
 const DiscordIcon = ({ className = "" }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -17,22 +11,36 @@ const DiscordIcon = ({ className = "" }: { className?: string }) => (
 
 const Hero = () => (
   <section className="relative min-h-screen flex items-center overflow-hidden pt-24 pb-16">
-    <div className="absolute top-1/4 -left-20 w-[500px] h-[500px] bg-primary/15 rounded-full blur-[140px] pointer-events-none" />
-    <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
+    {/* Grid background sutil — substitui os "orbs" genéricos */}
+    <div
+      className="absolute inset-0 pointer-events-none opacity-[0.04]"
+      style={{
+        backgroundImage:
+          "linear-gradient(hsl(var(--foreground)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--foreground)) 1px, transparent 1px)",
+        backgroundSize: "56px 56px",
+        maskImage: "radial-gradient(ellipse 80% 60% at 50% 30%, black 40%, transparent 100%)",
+        WebkitMaskImage: "radial-gradient(ellipse 80% 60% at 50% 30%, black 40%, transparent 100%)",
+      }}
+    />
 
     <div className="container relative z-10">
-      <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <div className="grid lg:grid-cols-[1.05fr_1fr] gap-12 lg:gap-16 items-center">
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs md:text-sm font-medium mb-6">
-            <Sparkles className="w-3.5 h-3.5" /> WH Studio • Desenvolvimento web no RN
-          </span>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-[1.1] mb-6">
-            A gente programa o que sua empresa precisa{" "}
-            <span className="text-gradient">rodando ontem.</span>
+          {/* Linha fina com localidade — sem pill, sem ícone Sparkles */}
+          <div className="flex items-center gap-3 mb-8 eyebrow text-muted-foreground">
+            <span className="w-8 h-px bg-primary" />
+            <span>Walmry Netto · RN, Brasil</span>
+          </div>
+
+          <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-extrabold leading-[1.05] mb-6">
+            Seu negócio no ar em 15 dias.{" "}
+            <span className="text-gradient">Código escrito à mão.</span>
           </h1>
+
           <p className="text-base md:text-lg text-muted-foreground mb-8 max-w-xl">
-            Site, bot de Discord, sistema interno, API, dashboard — o que estiver na sua cabeça, a gente coloca no ar. Código nosso, atendimento direto com quem desenvolve, sem repassar pra ninguém.
+            Site, bot de Discord, sistema interno, API, dashboard — o que estiver na sua cabeça, a gente coloca no ar. Direto com quem desenvolve, sem repassar pra ninguém.
           </p>
+
           <div className="flex flex-wrap gap-3">
             <Button size="lg" className="glow" asChild>
               <a href={whatsappLink()} target="_blank" rel="noopener noreferrer">
@@ -46,17 +54,17 @@ const Hero = () => (
             </Button>
           </div>
 
-          <div className="grid grid-cols-3 gap-3 mt-10 max-w-lg">
-            {trustBadges.map((b) => (
-              <div key={b.label} className="card-dark p-3 md:p-4 text-center">
-                <b.icon className="w-5 h-5 text-primary mx-auto mb-2" aria-hidden="true" />
-                <p className="text-xs md:text-sm font-semibold leading-tight">{b.label}</p>
-                <p className="text-[10px] md:text-xs text-muted-foreground mt-0.5">{b.desc}</p>
+          <div className="flex flex-wrap gap-x-6 gap-y-2 mt-10 text-sm text-muted-foreground">
+            {["15 dias úteis", "WhatsApp direto", "Código do zero"].map((b) => (
+              <div key={b} className="flex items-center gap-2">
+                <Check className="w-4 h-4 text-primary" />
+                <span>{b}</span>
               </div>
             ))}
           </div>
         </motion.div>
 
+        {/* Terminal com código real — substitui o dashboard fictício */}
         <motion.div
           initial={{ opacity: 0, x: 30 }}
           animate={{ opacity: 1, x: 0 }}
@@ -64,63 +72,52 @@ const Hero = () => (
           className="hidden lg:block"
         >
           <div className="relative">
-            <div className="rounded-2xl border border-border bg-card p-5 glow shadow-2xl">
-              <div className="flex items-center gap-2 mb-5 pb-3 border-b border-border">
-                <div className="w-3 h-3 rounded-full bg-destructive" />
-                <div className="w-3 h-3 rounded-full bg-yellow-500" />
-                <div className="w-3 h-3 rounded-full bg-green-500" />
-                <div className="ml-3 flex-1 px-3 py-1 rounded bg-secondary text-[11px] text-muted-foreground">
-                  dashboard.whstudio.site
+            <div className="rounded-xl border border-border bg-[hsl(270_25%_7%)] shadow-2xl overflow-hidden">
+              <div className="flex items-center gap-2 px-4 py-3 border-b border-border bg-[hsl(270_25%_5%)]">
+                <div className="w-3 h-3 rounded-full bg-[#ff5f56]" />
+                <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
+                <div className="w-3 h-3 rounded-full bg-[#27c93f]" />
+                <div className="ml-3 font-mono text-[11px] text-muted-foreground">
+                  ~/projetos/copa-ativa — main
                 </div>
               </div>
 
-              <div className="flex items-center justify-between mb-5">
-                <div>
-                  <p className="text-xs text-muted-foreground">Visão geral</p>
-                  <p className="text-sm font-bold">Últimos 30 dias</p>
-                </div>
-                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30">
-                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  <span className="text-[10px] font-medium text-emerald-400">Ao vivo</span>
-                </div>
-              </div>
+              <pre className="font-mono text-[13px] leading-relaxed p-5 overflow-x-auto">
+{`// torneio.ts — chaveamento ao vivo
+import { supabase } from "@/db";
 
-              <div className="grid grid-cols-3 gap-3 mb-5">
-                {[
-                  { label: "Visitantes", value: "12.4k", trend: "+24%", icon: Activity },
-                  { label: "Conversão", value: "8.2%", trend: "+3.1%", icon: TrendingUp },
-                  { label: "Receita", value: "R$ 38k", trend: "+18%", icon: TrendingUp },
-                ].map((s) => (
-                  <div key={s.label} className="rounded-lg bg-secondary p-3 border border-border">
-                    <s.icon className="w-3.5 h-3.5 text-primary mb-1.5" />
-                    <p className="text-base font-bold">{s.value}</p>
-                    <p className="text-[10px] text-muted-foreground">{s.label}</p>
-                    <p className="text-[10px] font-semibold text-emerald-400 mt-1">{s.trend}</p>
-                  </div>
-                ))}
-              </div>
+`}<span className="text-primary">export async function</span>{` `}<span className="text-emerald-300">listarClassificacao</span>{`() {
+  `}<span className="text-primary">const</span>{` { data } = `}<span className="text-primary">await</span>{` supabase
+    .from(`}<span className="text-amber-300">"equipes"</span>{`)
+    .select(`}<span className="text-amber-300">"nome, pontos, jogos"</span>{`)
+    .order(`}<span className="text-amber-300">"pontos"</span>{`, { ascending: `}<span className="text-rose-300">false</span>{` });
 
-              <div className="rounded-lg bg-secondary p-4 border border-border">
-                <div className="flex items-end gap-1.5 h-28">
-                  {[40, 60, 45, 75, 55, 80, 65, 90, 70, 95, 80, 88].map((h, i) => (
-                    <div key={i} className="flex-1 flex flex-col justify-end">
-                      <div
-                        className="w-full bg-gradient-to-t from-primary to-primary/40 rounded-t-sm"
-                        style={{ height: `${h}%` }}
-                      />
-                    </div>
-                  ))}
+  `}<span className="text-primary">return</span>{` data;
+}`}
+              </pre>
+
+              <div className="border-t border-border px-5 py-3 flex items-center justify-between bg-[hsl(270_25%_6%)]">
+                <div className="flex items-center gap-2">
+                  <span className="relative flex h-2 w-2">
+                    <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                  </span>
+                  <span className="font-mono text-[11px] text-muted-foreground">deploy ok · 12s</span>
                 </div>
+                <span className="font-mono text-[11px] text-muted-foreground">vercel.app</span>
               </div>
             </div>
 
-            <motion.div
-              animate={{ y: [0, -8, 0] }}
-              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -bottom-4 -left-4 px-3 py-2 rounded-lg bg-primary text-primary-foreground text-xs font-bold shadow-xl flex items-center gap-2"
-            >
-              <TrendingUp className="w-3.5 h-3.5" /> +300% conversão
-            </motion.div>
+            {/* Badge de projeto real — não promessa fictícia */}
+            <div className="absolute -bottom-5 -left-4 right-8 rounded-lg border border-border bg-card px-4 py-3 shadow-xl flex items-center gap-3">
+              <div className="w-9 h-9 rounded-md bg-primary/15 border border-primary/30 flex items-center justify-center shrink-0">
+                <Zap className="w-4 h-4 text-primary" />
+              </div>
+              <div className="min-w-0">
+                <p className="eyebrow text-muted-foreground mb-0.5">Último projeto</p>
+                <p className="text-sm font-semibold truncate">Copa Ativa Telecom · entregue em 12 dias</p>
+              </div>
+            </div>
           </div>
         </motion.div>
       </div>
