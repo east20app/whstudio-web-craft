@@ -16,12 +16,18 @@ const Differentials = () => (
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="text-center mb-16"
+        className="grid md:grid-cols-[1fr_2fr] gap-8 mb-16 items-end"
       >
-        <span className="text-sm font-medium text-primary uppercase tracking-widest">Por que nos escolher</span>
-        <h2 className="text-3xl md:text-4xl font-bold mt-2">Nossos Diferenciais</h2>
+        <div>
+          <span className="eyebrow text-primary">Por que nos escolher</span>
+          <h2 className="font-display text-3xl md:text-5xl font-bold mt-3">Nossos diferenciais</h2>
+        </div>
+        <p className="text-muted-foreground md:text-lg">
+          A diferença que você sente desde o primeiro WhatsApp — e que continua depois do projeto no ar.
+        </p>
       </motion.div>
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+
+      <div className="grid md:grid-cols-2 gap-x-10 gap-y-8 max-w-5xl">
         {items.map((item, i) => (
           <motion.div
             key={item.title}
@@ -29,14 +35,14 @@ const Differentials = () => (
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.08 }}
-            className="flex items-start gap-4 p-6"
+            className="flex items-start gap-5 py-4 border-t border-border"
           >
-            <div className="w-10 h-10 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
-              <item.icon className="w-5 h-5 text-primary" />
-            </div>
+            <span className="font-display text-4xl font-extrabold text-gradient leading-none shrink-0 w-12">
+              {String(i + 1).padStart(2, "0")}
+            </span>
             <div>
-              <h3 className="font-semibold mb-1">{item.title}</h3>
-              <p className="text-sm text-muted-foreground">{item.desc}</p>
+              <h3 className="font-display font-semibold text-lg mb-1.5">{item.title}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
             </div>
           </motion.div>
         ))}
