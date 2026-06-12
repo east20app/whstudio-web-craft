@@ -11,11 +11,8 @@ const SocialProof = () => (
         viewport={{ once: true }}
         className="text-center mb-12"
       >
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6">
-          <Users className="w-4 h-4 text-primary" />
-          <span className="text-sm font-medium text-primary">Quem já contratou</span>
-        </div>
-        <h2 className="text-3xl md:text-4xl font-bold">O que o pessoal fala</h2>
+        <span className="eyebrow text-primary inline-flex items-center gap-2"><Users className="w-3.5 h-3.5" /> Quem já contratou</span>
+        <h2 className="font-display text-3xl md:text-5xl font-bold mt-3">O que o pessoal fala</h2>
       </motion.div>
 
       {/* Stats */}
