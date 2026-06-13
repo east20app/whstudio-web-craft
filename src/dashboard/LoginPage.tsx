@@ -47,16 +47,13 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 bg-background relative overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,hsl(271_91%_65%/0.18),transparent_50%)] pointer-events-none" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_80%,hsl(271_91%_65%/0.10),transparent_50%)] pointer-events-none" />
-
-      <form onSubmit={onSubmit} className="relative w-full max-w-md card-dark p-8 glow">
+      <form onSubmit={onSubmit} className="relative w-full max-w-md card-dark p-8">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-xl bg-primary/15 border border-primary/30 flex items-center justify-center">
             <Lock className="w-5 h-5 text-primary" />
           </div>
           <div>
-            <h1 className="text-xl font-bold">Acesse o painel</h1>
+            <h1 className="text-xl font-bold font-display">Acesse o painel</h1>
             <p className="text-xs text-muted-foreground">WH Studio · acesso restrito</p>
           </div>
         </div>
@@ -89,7 +86,7 @@ const LoginPage = () => {
           </div>
         </div>
 
-        <Button type="submit" className="w-full mt-6 glow" disabled={submitting}>
+        <Button type="submit" className="w-full mt-6" disabled={submitting}>
           {submitting ? "Aguarde…" : "Entrar no painel"}
         </Button>
       </form>

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { MessageCircle, Mail } from "lucide-react";
-import { siteConfig, whatsappLink, navLinks } from "@/config/site";
+import { Mail, MessageCircle } from "lucide-react";
+import { navLinks, siteConfig, whatsappLink } from "@/config/site";
 import logo from "@/assets/wh-studio-logo.png";
 
 const Footer = () => (
@@ -12,7 +12,7 @@ const Footer = () => (
             <img src={logo} alt="WH Studio" className="h-12 w-auto object-contain" />
           </Link>
           <p className="text-sm text-muted-foreground mt-3 max-w-sm leading-relaxed">
-            {siteConfig.slogan}. Sites, sistemas, bots e automações sob medida para o seu negócio.
+            {siteConfig.slogan}. Sites, sistemas, bots e automações para problemas reais do seu negócio.
           </p>
           <div className="flex gap-3 mt-5">
             <a
@@ -35,7 +35,7 @@ const Footer = () => (
         </div>
 
         <div>
-          <h4 className="font-semibold mb-4 text-sm">Navegação</h4>
+          <h4 className="font-semibold font-display mb-4 text-sm">Navegação</h4>
           <div className="flex flex-col gap-2">
             {navLinks.map((l) => (
               <Link
@@ -50,7 +50,7 @@ const Footer = () => (
         </div>
 
         <div>
-          <h4 className="font-semibold mb-4 text-sm">Contato</h4>
+          <h4 className="font-semibold font-display mb-4 text-sm">Contato</h4>
           <div className="flex flex-col gap-2">
             <a
               href={whatsappLink()}
@@ -77,8 +77,8 @@ const Footer = () => (
       </div>
 
       <div className="border-t border-border pt-6 flex flex-col md:flex-row items-center justify-between gap-2 text-xs text-muted-foreground">
-        <p>WH STUDIO © 2026 — Todos os direitos reservados.</p>
-        <p className="text-[11px] tracking-wide">
+        <p className="font-mono-label text-[11px]">WH STUDIO © 2026 — Todos os direitos reservados.</p>
+        <p className="font-mono-label text-[11px] tracking-wide">
           Feito por <span className="font-medium text-foreground/80">Walmry Netto</span>
         </p>
       </div>

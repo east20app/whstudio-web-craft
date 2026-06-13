@@ -129,12 +129,12 @@ const ProjectsPage = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h2 className="text-2xl md:text-3xl font-bold">Projetos</h2>
+          <h2 className="text-2xl md:text-3xl font-bold font-display">Projetos</h2>
           <p className="text-muted-foreground text-sm mt-1">Acompanhe o andamento de cada projeto.</p>
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button className="glow">
+            <Button>
               <Plus className="w-4 h-4 mr-1" /> Novo projeto
             </Button>
           </DialogTrigger>
@@ -290,7 +290,6 @@ const ProjectsPage = () => {
                           return (
                             <Button
                               size="sm"
-                              className="glow"
                               onClick={() => onReleaseFeedback({ id: p.id, name: p.name, client: p.client })}
                             >
                               <Send className="w-3.5 h-3.5 mr-1" /> Liberar feedback

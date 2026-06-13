@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { FileText, Users, Briefcase, MessageSquare, MessageCircle, Hash, TrendingUp } from "lucide-react";
+import { FileText, Users, Briefcase, MessageSquare, MessageCircle, Hash } from "lucide-react";
 import StatCard from "./components/StatCard";
 import StatusPill from "./components/StatusPill";
 import { useBudgets, useClients, useProjects, useMessages } from "./store";
@@ -30,10 +30,23 @@ const Overview = () => {
   const whatsappConversions = budgets.filter((b) => b.status === "aprovado").length * 3 + 12;
   const discordClicks = 84;
 
+  const recentActivity = [
+    ...budgets.slice(0, 3).map((b) => ({
+      label: `Orçamento: ${b.client}`,
+      sub: b.service,
+      badge: b.status,
+    })),
+    ...projects.slice(0, 2).map((p) => ({
+      label: `Projeto: ${p.name}`,
+      sub: p.client,
+      badge: stageLabel[p.stage],
+    })),
+  ].slice(0, 5);
+
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-2xl md:text-3xl font-bold">Visão Geral</h2>
+        <h2 className="text-2xl md:text-3xl font-bold font-display">Visão Geral</h2>
         <p className="text-muted-foreground text-sm mt-1">Resumo do seu negócio em tempo real.</p>
       </div>
 
@@ -57,7 +70,7 @@ const Overview = () => {
       <div className="grid lg:grid-cols-2 gap-6">
         <div className="card-dark p-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold">Últimos orçamentos</h3>
+            <h3 className="font-semibold font-display">Últimos orçamentos</h3>
             <Link to="/dashboard/orcamentos" className="text-xs text-primary hover:underline">
               Ver todos
             </Link>
@@ -93,7 +106,7 @@ const Overview = () => {
 
         <div className="card-dark p-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold">Status dos projetos</h3>
+            <h3 className="font-semibold font-display">Status dos projetos</h3>
             <Link to="/dashboard/projetos" className="text-xs text-primary hover:underline">
               Ver todos
             </Link>
@@ -117,19 +130,22 @@ const Overview = () => {
       </div>
 
       <div className="card-dark p-6">
-        <div className="flex items-center gap-2 mb-3">
-          <TrendingUp className="w-4 h-4 text-primary" />
-          <h3 className="font-semibold">Performance dos últimos 12 períodos</h3>
+        <div className="flex items-center gap-2 mb-4">
+          <h3 className="font-semibold font-display">Últimas atividades</h3>
         </div>
-        <div className="flex items-end gap-2 h-40">
-          {[40, 60, 50, 70, 55, 80, 65, 90, 75, 88, 82, 95].map((h, i) => (
-            <div key={i} className="flex-1 flex flex-col justify-end">
-              <div
-                className="w-full bg-gradient-to-t from-primary to-primary/40 rounded-t-md"
-                style={{ height: `${h}%` }}
-              />
+        <div className="space-y-3">
+          {recentActivity.map((item, i) => (
+            <div key={i} className="flex items-center justify-between gap-4 py-2 border-b border-border last:border-0">
+              <div className="min-w-0">
+                <p className="text-sm font-medium truncate">{item.label}</p>
+                <p className="text-xs text-muted-foreground truncate">{item.sub}</p>
+              </div>
+              <span className="text-xs text-muted-foreground shrink-0">{item.badge}</span>
             </div>
           ))}
+          {recentActivity.length === 0 && (
+            <p className="text-sm text-muted-foreground py-6 text-center">Nenhuma atividade recente.</p>
+          )}
         </div>
       </div>
     </div>

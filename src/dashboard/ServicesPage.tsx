@@ -75,10 +75,10 @@ const ServicesPage = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h2 className="text-2xl md:text-3xl font-bold">Serviços</h2>
+          <h2 className="text-2xl md:text-3xl font-bold font-display">Serviços</h2>
           <p className="text-muted-foreground text-sm mt-1">Cadastre e edite os serviços oferecidos.</p>
         </div>
-        <Button className="glow" onClick={openNew}>
+        <Button onClick={openNew}>
           <Plus className="w-4 h-4 mr-1" /> Novo serviço
         </Button>
       </div>

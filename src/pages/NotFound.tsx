@@ -9,8 +9,8 @@ const NotFound = () => {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-6">
       <div className="text-center max-w-md">
-        <p className="text-7xl md:text-8xl font-extrabold text-gradient mb-4">404</p>
-        <h1 className="text-2xl md:text-3xl font-bold mb-3">Página não encontrada</h1>
+        <p className="text-7xl md:text-8xl font-extrabold text-gradient font-display mb-4">404</p>
+        <h1 className="text-2xl md:text-3xl font-bold font-display mb-3">Página não encontrada</h1>
         <p className="text-muted-foreground mb-8">
           A página{" "}
           <code className="px-1.5 py-0.5 rounded bg-secondary text-xs">{location.pathname}</code>{" "}

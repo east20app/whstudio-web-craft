@@ -45,16 +45,16 @@ const DashboardLayout = () => {
   return (
     <div className="min-h-screen flex w-full bg-background">
       <aside
-        className={`fixed lg:sticky top-0 inset-y-0 left-0 z-40 w-64 bg-card/70 backdrop-blur-xl border-r border-border flex flex-col transition-transform lg:translate-x-0 ${
+        className={`fixed lg:sticky top-0 inset-y-0 left-0 z-40 w-64 bg-card border-r border-border flex flex-col transition-transform lg:translate-x-0 ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         <div className="h-16 flex items-center justify-between px-5 border-b border-border">
-          <div className="flex items-center gap-2 font-extrabold tracking-tight">
+          <div className="flex items-center gap-2">
             <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary/15 border border-primary/30 text-primary text-sm">
               WH
             </span>
-            <span>{settings.siteName}</span>
+            <span className="font-display font-extrabold tracking-tight">{settings.siteName}</span>
           </div>
           <button
             className="lg:hidden p-1 text-muted-foreground"
@@ -100,7 +100,7 @@ const DashboardLayout = () => {
       )}
 
       <div className="flex-1 flex flex-col min-w-0">
-        <header className="h-16 sticky top-0 z-20 bg-background/70 backdrop-blur-xl border-b border-border flex items-center justify-between px-4 md:px-8">
+        <header className="h-16 sticky top-0 z-20 bg-background border-b border-border flex items-center justify-between px-4 md:px-8">
           <div className="flex items-center gap-3">
             <button
               className="lg:hidden p-2 -ml-2 text-foreground"
@@ -109,7 +109,7 @@ const DashboardLayout = () => {
             >
               <Menu className="w-5 h-5" />
             </button>
-            <h1 className="text-sm md:text-base font-semibold text-muted-foreground">
+            <h1 className="text-sm md:text-base font-semibold text-muted-foreground font-display">
               Painel administrativo
             </h1>
           </div>

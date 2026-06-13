@@ -4,18 +4,18 @@ import { Button } from "@/components/ui/button";
 import { plans, siteConfig, whatsappLink } from "@/config/site";
 
 const Plans = () => (
-  <section id="planos" className="py-24">
+  <section id="planos" className="py-24 bg-background">
     <div className="container">
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
+        initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         className="text-center mb-16"
       >
-        <span className="eyebrow text-primary">Planos</span>
-        <h2 className="font-display text-3xl md:text-5xl font-bold mt-3">Qual faz sentido pra você?</h2>
+        <span className="eyebrow text-primary mb-3">Planos</span>
+        <h2 className="font-display text-3xl md:text-5xl font-bold mt-3">Qual faz sentido para você?</h2>
         <p className="text-muted-foreground mt-4 max-w-xl mx-auto">
-          Cada projeto tem preço próprio. Aqui você vê o que entrega em cada nível — o valor fechamos no WhatsApp depois de entender o escopo.
+          Primeiro eu entendo o problema. Depois passo escopo, prazo e valor sem surpresa no final.
         </p>
       </motion.div>
 
@@ -23,21 +23,21 @@ const Plans = () => (
         {plans.map((p, i) => (
           <motion.div
             key={p.id}
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: i * 0.1 }}
-            className={`relative rounded-2xl border p-8 flex flex-col ${
-              p.popular ? "bg-card border-primary ring-2 ring-primary/60 glow" : "bg-card border-border"
+            transition={{ delay: i * 0.08 }}
+            className={`relative rounded-lg border p-8 flex flex-col ${
+              p.popular ? "bg-card border-primary" : "bg-card border-border"
             }`}
           >
             {p.popular && (
               <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-primary text-primary-foreground text-xs font-bold rounded-full uppercase tracking-wider">
-                Mais escolhido
+                Mais pedido
               </span>
             )}
 
-            <h3 className="text-xl font-bold">{p.name}</h3>
+            <h3 className="text-xl font-bold font-display">{p.name}</h3>
             <p className="text-sm text-muted-foreground mt-1 min-h-[40px]">{p.tagline}</p>
 
             <div className="mt-6 mb-6">
@@ -63,7 +63,7 @@ const Plans = () => (
               ))}
             </ul>
 
-            <Button className={`w-full ${p.popular ? "glow" : ""}`} variant={p.popular ? "default" : "outline"} asChild>
+            <Button className="w-full" variant={p.popular ? "default" : "outline"} asChild>
               <a
                 href={whatsappLink(siteConfig.defaultMessages.plan(p.name))}
                 target="_blank"
@@ -77,7 +77,7 @@ const Plans = () => (
       </div>
 
       <p className="text-center text-xs text-muted-foreground mt-10 max-w-2xl mx-auto">
-        Cada projeto é orçado de forma personalizada de acordo com escopo, integrações e prazos.
+        O valor depende de escopo, integrações e prazo. Tudo fica combinado antes de começar.
       </p>
     </div>
   </section>

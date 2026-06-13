@@ -68,7 +68,7 @@ const FeedbacksPage = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl md:text-3xl font-bold">Feedbacks</h2>
+        <h2 className="text-2xl md:text-3xl font-bold font-display">Feedbacks</h2>
         <p className="text-muted-foreground text-sm mt-1">
           Avaliações enviadas pelos clientes. Publique no site as melhores.
         </p>
@@ -128,7 +128,7 @@ const FeedbacksPage = () => {
                         </Button>
                       )}
                       {(f.status === "received" || f.status === "hidden") && f.allowPublish && (
-                        <Button size="sm" className="glow" onClick={() => setStatus(f.id, "published")}>
+                        <Button size="sm" onClick={() => setStatus(f.id, "published")}>
                           <Send className="w-3.5 h-3.5 mr-1" /> Publicar
                         </Button>
                       )}

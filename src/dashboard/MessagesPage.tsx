@@ -26,7 +26,7 @@ const MessagesPage = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl md:text-3xl font-bold">Mensagens</h2>
+        <h2 className="text-2xl md:text-3xl font-bold font-display">Mensagens</h2>
         <p className="text-muted-foreground text-sm mt-1">
           Mensagens recebidas pelo formulário do site.
         </p>
