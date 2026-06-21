@@ -1,21 +1,11 @@
 // Configuração central do site WH Studio
 
-import {
-  Bot,
-  Globe,
-  LayoutDashboard,
-  Settings,
-  ShoppingCart,
-  Zap,
-  type LucideIcon,
-} from "lucide-react";
-
 export const siteConfig = {
   name: "WH Studio",
   shortName: "WH",
-  slogan: "Software feito por quem atende e assume o código",
+  slogan: "Desenvolvimento web feito por gente que atende WhatsApp",
   description:
-    "WH Studio — sites, bots para Discord, sistemas e automações. Código do zero, atendimento direto e suporte depois da entrega.",
+    "WH Studio — sites, bots para Discord, sistemas personalizados e automações. Código do zero, atendimento direto. Solicite seu orçamento.",
   url: "https://whstudio.site",
   email: "contato@whstudio.com.br",
   whatsapp: {
@@ -30,11 +20,11 @@ export const siteConfig = {
   },
   author: "Walmry Netto",
   defaultMessages: {
-    generic: "Olá, vim pelo site e quero conversar sobre um projeto.",
+    generic: "Olá, vim pelo site e quero solicitar um orçamento.",
     service: (service: string) =>
-      `Olá, vim pelo site da WH Studio. Quero falar sobre: ${service}. Pode me ajudar?`,
+      `Olá, vim pelo site da WH Studio. Tenho interesse no serviço: ${service}. Pode me enviar um orçamento?`,
     plan: (plan: string) =>
-      `Olá, vim pelo site da WH Studio. Quero entender se o plano ${plan} serve para meu caso.`,
+      `Olá, vim pelo site da WH Studio. Tenho interesse no plano ${plan}. Pode me enviar mais detalhes?`,
     contactForm: (data: { name?: string; email?: string; project?: string; message?: string }) =>
       `Olá, vim pelo site da WH Studio.\n\nNome: ${data.name}\nE-mail: ${data.email}${
         data.project ? `\nProjeto: ${data.project}` : ""
@@ -46,6 +36,20 @@ export const whatsappLink = (message: string = siteConfig.defaultMessages.generi
   `https://wa.me/${siteConfig.whatsapp.number}?text=${encodeURIComponent(message)}`;
 
 export const discordLink = () => siteConfig.discordInvite;
+
+// =============== SERVIÇOS ===============
+import {
+  Globe,
+  Bot,
+  Settings,
+  Server,
+  Zap,
+  LayoutDashboard,
+  ShoppingCart,
+  Rocket,
+  Plug,
+  type LucideIcon,
+} from "lucide-react";
 
 export type Service = {
   id: string;
@@ -59,83 +63,78 @@ export const services: Service[] = [
   {
     id: "criacao-sites",
     icon: Globe,
-    title: "Sites que explicam e vendem",
-    short:
-      "Site institucional, landing page ou loja simples para parar de depender só do Instagram. Carrega rápido, abre bem no celular e manda o cliente para o WhatsApp certo.",
+    title: "Criação de Sites",
+    short: "Site institucional, landing page ou loja virtual. Rápido pra carregar, fácil pra você editar e bonito no celular — que é onde o seu cliente vai abrir.",
     benefits: [
-      "Layout específico para o seu negócio",
-      "SEO básico sem enrolação",
+      "Design responsivo feito do zero",
+      "Otimizado pra aparecer no Google",
       "WhatsApp integrado no site",
-      "Carregamento rápido em rede ruim",
+      "Carregamento rápido em qualquer rede",
     ],
   },
   {
     id: "bots-discord",
     icon: Bot,
     title: "Bots para Discord",
-    short:
-      "Bot para tirar trabalho manual da moderação: ticket, cargo, aviso, ranking, economia e painel. Você diz a regra. Eu transformo em comando.",
+    short: "Bot de Discord do jeito que o seu servidor precisa: moderação automática, sistema de tickets, economia, ranks, painel web pra administrar. Você manda o que quer, eu programo.",
     benefits: [
       "Moderação automática configurada",
       "Sistema de tickets com painel",
       "Economia, ranking e níveis",
-      "Comandos feitos para a sua regra",
+      "Comandos feitos sob demanda",
     ],
   },
   {
     id: "apis-sistemas",
     icon: Settings,
-    title: "Sistemas internos",
-    short:
-      "Sistema web para o que hoje está em planilha, caderno ou grupo de WhatsApp: cadastro, pedido, financeiro, estoque, entrega e controle interno.",
+    title: "APIs e Sistemas",
+    short: "Sistema web e API pra coisas que você ainda controla na planilha: cadastro, pedidos, financeiro, controle interno. Pensado pra um time pequeno usar sem treinamento.",
     benefits: [
       "Banco de dados próprio e seguro",
       "Login com permissões por cargo",
-      "API documentada quando fizer sentido",
-      "Código organizado para manutenção",
+      "API documentada pra expansão",
+      "Código organizado, fácil de manter",
     ],
   },
   {
     id: "automacao",
     icon: Zap,
-    title: "Automações",
-    short:
-      "Aquela tarefa repetitiva que seu funcionário odeia fazer? Eu conecto WhatsApp, planilha, e-mail e sistema para ela rodar sem alguém copiando e colando.",
+    title: "Automação",
+    short: "Aquela tarefa repetitiva que come 2h do seu dia? Conecto WhatsApp, planilhas, e-mail, sistema interno e CRM pra rodar sozinho enquanto você atende cliente.",
     benefits: [
       "Notificações automáticas no WhatsApp",
       "Integração com APIs que você já usa",
       "Sincronização de dados em tempo real",
-      "Fluxo montado para o seu processo",
+      "Workflow montado pro seu processo",
     ],
   },
   {
     id: "dashboards",
     icon: LayoutDashboard,
-    title: "Painéis administrativos",
-    short:
-      "Uma tela para ver pedido, cliente, status, resultado e pendência sem abrir quatro sistemas diferentes. Login, permissões e relatório quando precisar.",
+    title: "Dashboards",
+    short: "Painel administrativo com login, permissões, gráficos e relatório de verdade. Tudo o que importa do seu negócio numa tela só — sem precisar abrir 4 sistemas.",
     benefits: [
-      "Métricas e relatórios úteis",
+      "Métricas e gráficos em tempo real",
       "Controle de quem vê o quê",
-      "Exportação de dados",
-      "Interface simples, sem treinamento longo",
+      "Exportação de relatórios",
+      "Interface simples, sem curso",
     ],
   },
   {
     id: "delivery",
     icon: ShoppingCart,
-    title: "Delivery próprio",
-    short:
-      "Cardápio online com pedido pelo WhatsApp ou pagamento direto. Para hamburgueria, açaí, pizzaria e mercadinho que quer vender sem depender só de aplicativo.",
+    title: "Sistemas de Delivery",
+    short: "Cardápio online com pedido pelo WhatsApp ou pagamento direto. Foi feito pensando em hamburgueria, açaí, pizzaria e mercadinho de bairro — sem mensalidade de iFood.",
     benefits: [
-      "Cardápio digital bom no celular",
+      "Cardápio digital bonito no celular",
       "Pedido direto no WhatsApp ou pagamento",
       "Frete calculado por bairro",
-      "Painel para aceitar e acompanhar",
+      "Painel pra você aceitar e acompanhar",
     ],
   },
 ];
 
+// =============== PLANOS (sem preços fixos) ===============
 export type Plan = {
   id: string;
   name: string;
@@ -151,7 +150,7 @@ export const plans: Plan[] = [
   {
     id: "inicial",
     name: "Inicial",
-    tagline: "Para quem precisa parar de improvisar rápido.",
+    tagline: "Pra quem precisa estar no ar essa semana.",
     deliveryTime: "Entrega em até 7 dias",
     support: "15 dias de suporte",
     features: [
@@ -166,7 +165,7 @@ export const plans: Plan[] = [
   {
     id: "profissional",
     name: "Profissional",
-    tagline: "Para empresa que já vende e precisa organizar o digital.",
+    tagline: "Pra empresa que já tem cliente e precisa parecer empresa.",
     deliveryTime: "Entrega em até 15 dias",
     support: "30 dias de suporte",
     popular: true,
@@ -175,7 +174,7 @@ export const plans: Plan[] = [
       "Painel administrativo simples",
       "Formulários funcionais",
       "Integração com pagamentos",
-      "Analytics e páginas importantes",
+      "SEO avançado e Analytics",
       "3 revisões inclusas",
     ],
     ctaLabel: "Solicitar orçamento",
@@ -183,11 +182,11 @@ export const plans: Plan[] = [
   {
     id: "premium",
     name: "Sistema Premium",
-    tagline: "Para quem vai rodar parte da operação dentro do sistema.",
+    tagline: "Pra quem vai rodar o negócio dentro do sistema.",
     deliveryTime: "Prazo sob consulta",
-    support: "90 dias de suporte técnico",
+    support: "90 dias de suporte avançado",
     features: [
-      "Sistema customizado do zero",
+      "Sistema sob medida do zero",
       "Dashboard administrativo completo",
       "API própria para integrações",
       "Login e controle de usuários",
@@ -199,6 +198,7 @@ export const plans: Plan[] = [
   },
 ];
 
+// =============== PORTFÓLIO ===============
 export type ProjectStatus = "online" | "demo" | "em-desenvolvimento" | "privado";
 
 export type PortfolioProject = {
@@ -209,49 +209,47 @@ export type PortfolioProject = {
   status: ProjectStatus;
   tech: string[];
   color: string;
-  screenshot?: string;
 };
 
 export const portfolio: PortfolioProject[] = [
   {
     title: "Serra Delivery",
     category: "Sistema de delivery",
-    desc: "Cardápio, pedidos, painel e acompanhamento para tirar o atendimento do improviso.",
+    desc: "Plataforma completa de delivery com cardápio digital, painel administrativo e mapa em tempo real para acompanhar entregadores.",
     status: "em-desenvolvimento",
     tech: ["React", "Node.js", "PostgreSQL", "Mapbox"],
-    color: "from-amber-400 to-cyan-700",
+    color: "from-orange-500 to-red-600",
   },
   {
     title: "DroxBot",
     category: "Bot Discord + Painel",
-    desc: "Bot com moderação, tickets, economia, ranking e painel para configurar sem editar código.",
+    desc: "Bot avançado para Discord com painel web próprio: moderação, tickets, economia, ranking e configuração visual.",
     status: "online",
     tech: ["Node.js", "Discord.js", "React", "MongoDB"],
-    color: "from-cyan-400 to-blue-800",
+    color: "from-violet-500 to-purple-700",
   },
   {
     title: "Peixe Store",
     category: "Loja digital",
-    desc: "Loja com catálogo, carrinho, checkout e gestão de pedidos.",
+    desc: "Loja virtual completa com catálogo, carrinho, checkout e gestão de pedidos.",
     url: "https://peixestore.shop/",
     status: "online",
     tech: ["React", "Tailwind", "Stripe"],
-    color: "from-teal-400 to-slate-800",
+    color: "from-violet-600 to-fuchsia-600",
   },
   {
     title: "Copa Ativa",
     category: "Eventos esportivos",
-    desc: "Inscrições, tabelas, resultados e ranking de equipes para campeonato local.",
+    desc: "Plataforma para gestão de campeonatos, inscrições, tabelas, resultados e ranking de equipes.",
     status: "online",
     tech: ["Next.js", "TypeScript", "PostgreSQL"],
-    color: "from-teal-400 to-cyan-800",
-    screenshot: "/screenshots/copa-ativa.png",
+    color: "from-emerald-500 to-teal-700",
   },
 ];
 
 export const statusLabels: Record<ProjectStatus, { label: string; className: string }> = {
   online: { label: "Online", className: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30" },
-  demo: { label: "Demonstração", className: "bg-amber-500/15 text-amber-300 border-amber-500/30" },
+  demo: { label: "Demonstração", className: "bg-violet-500/15 text-violet-400 border-violet-500/30" },
   "em-desenvolvimento": {
     label: "Em desenvolvimento",
     className: "bg-yellow-500/15 text-yellow-400 border-yellow-500/30",
@@ -259,6 +257,7 @@ export const statusLabels: Record<ProjectStatus, { label: string; className: str
   privado: { label: "Projeto privado", className: "bg-zinc-500/15 text-zinc-300 border-zinc-500/30" },
 };
 
+// =============== NAVEGAÇÃO ===============
 export const navLinks = [
   { label: "Início", href: "/" },
   { label: "Serviços", href: "/servicos" },
@@ -267,6 +266,7 @@ export const navLinks = [
   { label: "Contato", href: "/contato" },
 ];
 
+// =============== PROVA SOCIAL ===============
 export const stats = [
   { label: "Clientes atendidos", value: "50+" },
   { label: "Projetos entregues", value: "70+" },
@@ -278,16 +278,16 @@ export const testimonials = [
   {
     name: "Lucas Mendes",
     role: "CEO, TechFlow",
-    text: "Contratei para refazer o sistema interno de controle de demanda da equipe. Em 17 dias estava rodando, com login, dashboard e exportação para Excel. O que mais valeu foi falar direto com quem mexia no código.",
+    text: "Contratei pra refazer o sistema interno de controle de demanda da equipe. Em 17 dias estava rodando, com login, dashboard e exportação pra Excel. O que mais valeu foi poder falar direto com o dev quando o time pediu uma mudança.",
   },
   {
     name: "Ana Beatriz",
     role: "Sabor & Arte",
-    text: "Abri meu delivery de açaí e precisava de um site que mandasse o pedido direto para o WhatsApp. No primeiro dia já tive pedido por lá. O Walmry me ensinou a mexer e responde quando preciso.",
+    text: "Abri meu delivery de açaí e precisava de um site que os clientes pedissem direto. No primeiro dia já tive 14 pedidos pelo WhatsApp. O Walmry me ensinou a mexer sozinha e até hoje responde quando preciso.",
   },
   {
     name: "Rafael Costa",
     role: "Comunidade Lobby BR",
-    text: "Administro uma comunidade no Discord e o bot virou parte da rotina do servidor. Ticket, economia e moderação funcionam sem travar. Quando preciso ajustar regra, mando mensagem e ele resolve.",
+    text: "Administro a comunidade Lobby BR no Discord e o bot que ele fez já virou a espinha dorsal do servidor. Ticket, economia, moderação automática — tudo funciona sem travar. Se precisar de ajuste, mando mensagem e ele resolve.",
   },
 ];

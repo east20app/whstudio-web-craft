@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -43,7 +43,7 @@ const Contact = () => {
     if (errors[field]) setErrors((e) => ({ ...e, [field]: undefined }));
   };
 
-  const onSubmit = async (e: FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const result = contactSchema.safeParse(data);
 
@@ -75,7 +75,7 @@ const Contact = () => {
 
     const message = siteConfig.defaultMessages.contactForm(result.data);
     window.open(whatsappLink(message), "_blank", "noopener,noreferrer");
-    toast.success("Mensagem enviada. Abrimos o WhatsApp com o texto pronto.");
+    toast.success("Mensagem enviada! Abrimos o WhatsApp para você.");
     setData(initialState);
   };
 
@@ -83,21 +83,21 @@ const Contact = () => {
     <section id="contato" className="py-24 bg-secondary">
       <div className="container">
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <span className="eyebrow text-primary mb-3">Fale comigo</span>
-          <h2 className="font-display text-3xl md:text-5xl font-bold">Me conte onde está travando</h2>
+          <span className="text-sm font-medium text-primary uppercase tracking-widest">Fale comigo</span>
+          <h2 className="text-3xl md:text-4xl font-bold mt-2">Bora trocar uma ideia sobre o seu projeto</h2>
           <p className="text-muted-foreground mt-4 max-w-xl mx-auto">
-            Pode mandar sem formato perfeito. Se você já tem print, planilha ou áudio explicando o problema, melhor ainda.
+            Preencha o formulário ou chama no WhatsApp. Eu respondo em até 24 horas úteis — e geralmente é bem antes.
           </p>
         </motion.div>
 
         <div className="grid lg:grid-cols-2 gap-10 max-w-5xl mx-auto">
           <motion.form
-            initial={{ opacity: 0, x: -24 }}
+            initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             className="space-y-5 card-dark p-7"
@@ -115,7 +115,9 @@ const Contact = () => {
                 aria-describedby={errors.name ? "name-error" : undefined}
                 maxLength={100}
               />
-              {errors.name && <p id="name-error" className="text-xs text-destructive">{errors.name}</p>}
+              {errors.name && (
+                <p id="name-error" className="text-xs text-destructive">{errors.name}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -130,14 +132,16 @@ const Contact = () => {
                 aria-describedby={errors.email ? "email-error" : undefined}
                 maxLength={255}
               />
-              {errors.email && <p id="email-error" className="text-xs text-destructive">{errors.email}</p>}
+              {errors.email && (
+                <p id="email-error" className="text-xs text-destructive">{errors.email}</p>
+              )}
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="project">Tipo de projeto (opcional)</Label>
               <Input
                 id="project"
-                placeholder="Ex.: site, bot Discord, sistema interno..."
+                placeholder="Ex.: site, bot Discord, sistema..."
                 value={data.project}
                 onChange={(e) => update("project", e.target.value)}
                 maxLength={100}
@@ -148,7 +152,7 @@ const Contact = () => {
               <Label htmlFor="message">Mensagem</Label>
               <Textarea
                 id="message"
-                placeholder="Conte o problema. Ex.: hoje eu controlo pedidos em planilha e perco informação no WhatsApp..."
+                placeholder="Conte um pouco sobre o que você precisa..."
                 className="min-h-[120px]"
                 value={data.message}
                 onChange={(e) => update("message", e.target.value)}
@@ -156,27 +160,30 @@ const Contact = () => {
                 aria-describedby={errors.message ? "message-error" : undefined}
                 maxLength={1000}
               />
-              {errors.message && <p id="message-error" className="text-xs text-destructive">{errors.message}</p>}
+              {errors.message && (
+                <p id="message-error" className="text-xs text-destructive">{errors.message}</p>
+              )}
             </div>
 
-            <Button type="submit" size="lg" className="w-full">
-              <Send className="w-4 h-4 mr-2" /> Enviar e abrir WhatsApp
+            <Button type="submit" size="lg" className="w-full glow">
+              <Send className="w-4 h-4 mr-2" /> Enviar via WhatsApp
             </Button>
             <p className="text-xs text-muted-foreground text-center">
-              O formulário salva sua mensagem e abre o WhatsApp com o texto pronto.
+              Ao enviar, abriremos o WhatsApp com sua mensagem pronta.
             </p>
           </motion.form>
 
           <motion.div
-            initial={{ opacity: 0, x: 24 }}
+            initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             className="space-y-6"
           >
             <div>
-              <h3 className="text-xl font-semibold font-display mb-3">Prefere falar direto?</h3>
+              <h3 className="text-xl font-semibold mb-3">Prefere falar direto?</h3>
               <p className="text-muted-foreground text-sm">
-                Chama no WhatsApp. Normalmente dá para entender em poucos minutos se é site, sistema, automação ou só ajuste simples.
+                Estamos disponíveis pelo WhatsApp e por e-mail para tirar dúvidas e enviar
+                orçamentos personalizados.
               </p>
             </div>
 
@@ -212,10 +219,12 @@ const Contact = () => {
             </div>
 
             <div className="card-dark p-5">
-              <p className="eyebrow text-primary mb-2">Tempo de resposta</p>
+              <p className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">
+                Tempo de resposta
+              </p>
               <p className="text-sm text-muted-foreground">
-                Respondo em até <span className="text-foreground font-semibold">24 horas úteis</span>.
-                Projeto urgente? Vai direto no WhatsApp.
+                Respondemos em até <span className="text-foreground font-semibold">24 horas úteis</span>.
+                Para projetos urgentes, fale pelo WhatsApp.
               </p>
             </div>
           </motion.div>

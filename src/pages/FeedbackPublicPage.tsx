@@ -84,6 +84,7 @@ const FeedbackPublicPage = () => {
     <>
       <Header />
       <main className="min-h-screen pt-28 pb-20 px-4 bg-background relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,hsl(271_91%_65%/0.18),transparent_50%)] pointer-events-none" />
         <div className="relative max-w-xl mx-auto">
           {state.kind === "loading" && (
             <div className="card-dark p-8 text-center text-sm text-muted-foreground">
@@ -93,7 +94,7 @@ const FeedbackPublicPage = () => {
 
           {state.kind === "invalid" && (
             <div className="card-dark p-8 text-center">
-              <h1 className="text-2xl font-bold font-display mb-2">Link inválido</h1>
+              <h1 className="text-2xl font-bold mb-2">Link inválido</h1>
               <p className="text-sm text-muted-foreground">
                 Este link de feedback não está disponível ou já foi utilizado.
               </p>
@@ -105,7 +106,7 @@ const FeedbackPublicPage = () => {
               <div className="w-14 h-14 rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center mx-auto mb-4">
                 <CheckCircle2 className="w-7 h-7 text-emerald-300" />
               </div>
-              <h1 className="text-2xl font-bold font-display mb-2">Obrigado pelo feedback!</h1>
+              <h1 className="text-2xl font-bold mb-2">Obrigado pelo feedback!</h1>
               <p className="text-sm text-muted-foreground">
                 Sua avaliação foi recebida com sucesso pela WH Studio.
               </p>
@@ -113,12 +114,12 @@ const FeedbackPublicPage = () => {
           )}
 
           {state.kind === "ready" && (
-            <form onSubmit={onSubmit} className="card-dark p-8 space-y-5">
+            <form onSubmit={onSubmit} className="card-dark p-8 glow space-y-5">
               <div>
-                <p className="eyebrow text-primary mb-3">
+                <p className="text-xs uppercase tracking-widest text-primary mb-1">
                   Avaliação de projeto
                 </p>
-                <h1 className="text-2xl font-bold font-display">{state.projectName || "Seu projeto"}</h1>
+                <h1 className="text-2xl font-bold">{state.projectName || "Seu projeto"}</h1>
                 <p className="text-sm text-muted-foreground">
                   Conte como foi sua experiência com a WH Studio.
                 </p>
@@ -177,7 +178,7 @@ const FeedbackPublicPage = () => {
                 <span>Autorizo a WH Studio a exibir este depoimento no site.</span>
               </label>
 
-              <Button type="submit" className="w-full" disabled={submitting}>
+              <Button type="submit" className="w-full glow" disabled={submitting}>
                 {submitting ? "Enviando…" : "Enviar feedback"}
               </Button>
             </form>

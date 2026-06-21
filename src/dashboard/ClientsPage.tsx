@@ -88,12 +88,12 @@ const ClientsPage = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h2 className="text-2xl md:text-3xl font-bold font-display">Clientes</h2>
+          <h2 className="text-2xl md:text-3xl font-bold">Clientes</h2>
           <p className="text-muted-foreground text-sm mt-1">Gerencie clientes ativos, leads e contratos.</p>
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button>
+            <Button className="glow">
               <Plus className="w-4 h-4 mr-1" /> Novo cliente
             </Button>
           </DialogTrigger>

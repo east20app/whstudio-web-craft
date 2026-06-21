@@ -1,55 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    /* Paper & Ink — editorial light */
-    --background: 36 22% 95%;      /* off-white paper */
-    --foreground: 0 0% 7%;          /* deep ink */
+    --background: 270 25% 4%;
+    --foreground: 270 20% 98%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 7%;
+    --card: 270 25% 9%;
+    --card-foreground: 270 20% 98%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 7%;
+    --popover: 270 25% 9%;
+    --popover-foreground: 270 20% 98%;
 
-    /* Ink as primary — CTAs are confident black */
-    --primary: 0 0% 7%;
-    --primary-foreground: 36 22% 96%;
+    --primary: 271 91% 65%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 36 18% 91%;
-    --secondary-foreground: 0 0% 7%;
+    --secondary: 270 25% 12%;
+    --secondary-foreground: 270 20% 98%;
 
-    --muted: 36 14% 89%;
-    --muted-foreground: 0 0% 38%;
+    --muted: 270 20% 14%;
+    --muted-foreground: 270 10% 65%;
 
-    /* Single restrained accent — ember red for editorial highlight */
-    --accent: 14 78% 50%;
+    --accent: 271 91% 65%;
     --accent-foreground: 0 0% 100%;
 
-    --accent2: 14 78% 50%;
-    --accent2-foreground: 0 0% 100%;
+    --destructive: 0 63% 45%;
+    --destructive-foreground: 210 40% 98%;
 
-    --destructive: 0 70% 45%;
-    --destructive-foreground: 0 0% 100%;
+    --border: 270 25% 16%;
+    --input: 270 25% 14%;
+    --ring: 271 91% 65%;
 
-    --border: 30 10% 84%;
-    --input: 30 10% 84%;
-    --ring: 0 0% 7%;
+    --radius: 1rem;
 
-    --rule: 30 8% 78%;
+    --glow-primary: 0 0 30px hsl(271 91% 65% / 0.45);
+    --glow-primary-strong: 0 0 60px hsl(271 91% 65% / 0.55);
 
-    --radius: 0.25rem;
-
-    --sidebar-background: 36 18% 93%;
-    --sidebar-foreground: 0 0% 7%;
-    --sidebar-primary: 0 0% 7%;
-    --sidebar-primary-foreground: 36 22% 96%;
-    --sidebar-accent: 36 18% 88%;
-    --sidebar-accent-foreground: 0 0% 7%;
-    --sidebar-border: 30 10% 82%;
-    --sidebar-ring: 0 0% 7%;
+    --sidebar-background: 270 25% 6%;
+    --sidebar-foreground: 270 20% 98%;
+    --sidebar-primary: 271 91% 65%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 270 25% 14%;
+    --sidebar-accent-foreground: 270 20% 98%;
+    --sidebar-border: 270 25% 16%;
+    --sidebar-ring: 271 91% 65%;
   }
 }
 
@@ -62,97 +59,53 @@ html {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground antialiased;
-    font-family: 'Work Sans', system-ui, sans-serif;
+    @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, sans-serif;
     font-feature-settings: "ss01", "cv11";
-    font-synthesis: none;
-    -webkit-font-smoothing: antialiased;
   }
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Instrument Serif', 'Georgia', serif;
-    font-weight: 400;
-    letter-spacing: -0.015em;
-    line-height: 1.02;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    letter-spacing: -0.02em;
   }
-  h1 { letter-spacing: -0.025em; }
-  .font-mono, code, pre, .eyebrow, .label-mono {
+  h1 {
+    letter-spacing: -0.035em;
+  }
+  .font-mono, code, pre {
     font-family: 'JetBrains Mono', ui-monospace, monospace;
   }
   .eyebrow {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
     font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: 0.16em;
-    font-size: 0.6875rem;
-    color: hsl(var(--foreground));
-  }
-  ::selection {
-    background: hsl(var(--foreground));
-    color: hsl(var(--background));
+    letter-spacing: 0.12em;
+    font-size: 0.75rem;
   }
 }
 
 @layer utilities {
-  /* Editorial serif emphasis */
-  .serif-italic {
-    font-family: 'Instrument Serif', serif;
-    font-style: italic;
-    font-weight: 400;
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, hsl(271 91% 70%), hsl(290 90% 75%));
   }
-  /* Hairline rules — Swiss editorial */
-  .rule {
-    border-color: hsl(var(--rule));
+  .glow {
+    box-shadow: var(--glow-primary);
   }
-  .rule-t { border-top: 1px solid hsl(var(--rule)); }
-  .rule-b { border-bottom: 1px solid hsl(var(--rule)); }
-  /* Editorial container — wider, generous gutters */
-  .container-wide {
-    width: 100%;
-    max-width: 1320px;
-    margin-inline: auto;
-    padding-inline: 1.5rem;
+  .glow-strong {
+    box-shadow: var(--glow-primary-strong);
   }
-  @media (min-width: 768px) {
-    .container-wide { padding-inline: 2.5rem; }
+  .glow-text {
+    text-shadow: 0 0 20px hsl(271 91% 65% / 0.6);
   }
-  @media (min-width: 1280px) {
-    .container-wide { padding-inline: 4rem; }
+  .card-dark {
+    @apply bg-card/80 backdrop-blur-sm border border-border rounded-2xl;
   }
-  /* Editorial display heading helper */
-  .display-xl {
-    font-family: 'Instrument Serif', serif;
-    font-weight: 400;
-    line-height: 0.95;
-    letter-spacing: -0.03em;
+  .card-dark-hover {
+    @apply card-dark transition-all duration-300;
   }
-  /* Ink button micro-interaction */
-  .ink-link {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  .ink-link::after {
-    content: '';
-    position: absolute;
-    left: 0; right: 0; bottom: -2px;
-    height: 1px;
-    background: currentColor;
-    transform-origin: left;
-    transition: transform 0.4s cubic-bezier(.2,.7,.2,1);
-  }
-  .ink-link:hover::after { transform: scaleX(1.02); }
-
-  /* Subtle paper grain */
-  .paper-grain {
-    background-image:
-      radial-gradient(hsl(0 0% 0% / 0.025) 1px, transparent 1px);
-    background-size: 3px 3px;
-  }
-
-  /* Number column for editorial */
-  .num-mono {
-    font-family: 'JetBrains Mono', monospace;
-    font-variant-numeric: tabular-nums;
+  .card-dark-hover:hover {
+    border-color: hsl(271 91% 65% / 0.5);
+    box-shadow: var(--glow-primary);
+    transform: translateY(-2px);
   }
 }
 
@@ -161,4 +114,9 @@ iframe[src*="lovable.dev"],
 div[style*="Edit with Lovable"],
 .lovable-badge {
   display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  position: absolute !important;
+  z-index: -9999 !important;
 }

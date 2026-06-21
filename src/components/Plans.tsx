@@ -1,85 +1,84 @@
 import { motion } from "framer-motion";
+import { Check, Clock, LifeBuoy } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { plans, siteConfig, whatsappLink } from "@/config/site";
 
 const Plans = () => (
-  <section id="planos" className="py-28 md:py-36 bg-secondary/40">
-    <div className="container-wide">
-      <div className="grid md:grid-cols-12 gap-10 mb-16 items-end rule-b pb-10">
-        <div className="md:col-span-2">
-          <span className="num-mono text-[11px] text-muted-foreground">§ 05</span>
-        </div>
-        <div className="md:col-span-7">
-          <p className="eyebrow text-muted-foreground mb-4">Engajamentos</p>
-          <h2 className="display-xl text-[clamp(2.4rem,5vw,4.2rem)]">
-            Três formas de <span className="serif-italic">começar juntos.</span>
-          </h2>
-        </div>
-        <p className="md:col-span-3 text-sm text-muted-foreground leading-relaxed">
-          Valor depende do escopo. Antes de fechar, conversamos para entender se faz sentido.
+  <section id="planos" className="py-24">
+    <div className="container">
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        className="text-center mb-16"
+      >
+        <span className="eyebrow text-primary">Planos</span>
+        <h2 className="font-display text-3xl md:text-5xl font-bold mt-3">Qual faz sentido pra você?</h2>
+        <p className="text-muted-foreground mt-4 max-w-xl mx-auto">
+          Cada projeto tem preço próprio. Aqui você vê o que entrega em cada nível — o valor fechamos no WhatsApp depois de entender o escopo.
         </p>
-      </div>
+      </motion.div>
 
-      <div className="grid md:grid-cols-3 gap-px bg-[hsl(var(--rule))] border-y border-[hsl(var(--rule))]">
+      <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
         {plans.map((p, i) => (
           <motion.div
             key={p.id}
-            initial={{ opacity: 0, y: 24 }}
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: i * 0.08 }}
-            className={`relative bg-background p-8 md:p-10 flex flex-col min-h-[560px] ${
-              p.popular ? "md:-my-6 md:py-16 shadow-[0_30px_60px_-30px_rgba(0,0,0,0.18)] z-10" : ""
+            transition={{ delay: i * 0.1 }}
+            className={`relative rounded-2xl border p-8 flex flex-col ${
+              p.popular ? "bg-card border-primary ring-2 ring-primary/60 glow" : "bg-card border-border"
             }`}
           >
-            <div className="flex items-baseline justify-between mb-10">
-              <span className="num-mono text-[11px] text-muted-foreground">
-                Plano {String(i + 1).padStart(2, "0")}
+            {p.popular && (
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-primary text-primary-foreground text-xs font-bold rounded-full uppercase tracking-wider">
+                Mais escolhido
               </span>
-              {p.popular && (
-                <span className="num-mono text-[10px] uppercase tracking-wider text-[hsl(var(--accent))]">
-                  ● Recomendado
-                </span>
-              )}
+            )}
+
+            <h3 className="text-xl font-bold">{p.name}</h3>
+            <p className="text-sm text-muted-foreground mt-1 min-h-[40px]">{p.tagline}</p>
+
+            <div className="mt-6 mb-6">
+              <p className="text-xs text-muted-foreground uppercase tracking-wider">Investimento</p>
+              <p className="text-3xl font-extrabold text-gradient mt-1">Sob consulta</p>
             </div>
 
-            <h3 className="font-display text-4xl md:text-5xl leading-none mb-3">{p.name}</h3>
-            <p className="text-sm text-muted-foreground mb-10 leading-relaxed min-h-[3.5rem]">
-              {p.tagline}
-            </p>
-
-            <div className="rule-t rule-b py-5 mb-8 flex items-baseline justify-between">
-              <span className="num-mono text-[10px] text-muted-foreground uppercase tracking-wider">
-                A partir de
-              </span>
-              <span className="font-display text-2xl">Sob escopo</span>
+            <div className="grid grid-cols-1 gap-2 mb-6">
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <Clock className="w-3.5 h-3.5 text-primary" /> {p.deliveryTime}
+              </div>
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <LifeBuoy className="w-3.5 h-3.5 text-primary" /> {p.support}
+              </div>
             </div>
 
-            <ul className="space-y-3 flex-1 mb-10">
+            <ul className="space-y-3 flex-1 mb-6">
               {p.features.map((f) => (
-                <li key={f} className="flex items-baseline gap-3 text-[13px]">
-                  <span className="num-mono text-[10px] text-muted-foreground">+</span>
-                  <span className="text-foreground/85 leading-relaxed">{f}</span>
+                <li key={f} className="flex items-start gap-3 text-sm">
+                  <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                  <span className="text-muted-foreground">{f}</span>
                 </li>
               ))}
             </ul>
 
-            <div className="rule-t pt-5 flex items-baseline justify-between">
-              <div className="text-[11px] text-muted-foreground space-y-1">
-                <div>{p.deliveryTime}</div>
-                <div>{p.support}</div>
-              </div>
+            <Button className={`w-full ${p.popular ? "glow" : ""}`} variant={p.popular ? "default" : "outline"} asChild>
               <a
                 href={whatsappLink(siteConfig.defaultMessages.plan(p.name))}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="ink-link text-sm font-medium"
               >
-                {p.ctaLabel} <span className="num-mono">↗</span>
+                {p.ctaLabel}
               </a>
-            </div>
+            </Button>
           </motion.div>
         ))}
       </div>
+
+      <p className="text-center text-xs text-muted-foreground mt-10 max-w-2xl mx-auto">
+        Cada projeto é orçado de forma personalizada de acordo com escopo, integrações e prazos.
+      </p>
     </div>
   </section>
 );

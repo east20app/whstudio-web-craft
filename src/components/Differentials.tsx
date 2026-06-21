@@ -1,61 +1,47 @@
 import { motion } from "framer-motion";
+import { Zap, MessageCircle, Palette, Settings, CreditCard } from "lucide-react";
 
 const items = [
-  {
-    title: "Cronograma sem fantasia",
-    desc: "Prefiro cortar escopo no início do que entregar bagunça depois. Você sabe o que entra, o que fica para fase 2 e o que não entra.",
-  },
-  {
-    title: "Conversa direta",
-    desc: "Sem suporte terceirizado nem chamado perdido. Quem responde no WhatsApp é o mesmo engenheiro que mexe no código.",
-  },
-  {
-    title: "Interface para gente ocupada",
-    desc: "Tela feita para quem precisa entender em segundos. Menos enfeite, mais decisão tomada com o botão certo no lugar certo.",
-  },
-  {
-    title: "Código próprio do seu negócio",
-    desc: "Não compro tema, não revendo template. A regra do seu negócio entra no código — e fica registrada com quem trabalha nele depois.",
-  },
-  {
-    title: "Pagamento e integração resolvidos",
-    desc: "PIX, cartão, boleto, Discord, WhatsApp, planilha ou API legada. Se precisa conversar com outro sistema, a gente conecta.",
-  },
+  { icon: Zap, title: "Prazo que cabe na realidade", desc: "Projeto entra no ar em até 15 dias úteis. Antes de começar, te mando um cronograma com cada etapa pra você acompanhar e não ficar no escuro." },
+  { icon: MessageCircle, title: "WhatsApp direto comigo", desc: "Sem suporte terceirizado, sem chamado, sem fila. Quem responde é o Walmry — o mesmo que escreveu o código. Dúvida resolvida no mesmo dia, geralmente em minutos." },
+  { icon: Palette, title: "Design que não envelhece em 6 meses", desc: "Layout pensado pro seu cliente entender o que você faz em 3 segundos. Tipografia, cor e espaçamento alinhados com o que está sendo feito de bom em 2026." },
+  { icon: Settings, title: "Código escrito pro seu caso", desc: "Nada de tema do WordPress nem template comprado. Cada funcionalidade é feita do zero, então o sistema cresce junto com o seu negócio sem virar gambiarra." },
+  { icon: CreditCard, title: "Pagamento já vem ligado", desc: "PIX, cartão, boleto e Stripe configurados no projeto. Você recebe na sua conta direto, sem intermediário cobrando taxa de gateway escondida." },
 ];
 
 const Differentials = () => (
-  <section className="py-28 md:py-36 bg-background">
-    <div className="container-wide">
-      <div className="grid md:grid-cols-12 gap-10 mb-16 items-end rule-b pb-10">
-        <div className="md:col-span-2">
-          <span className="num-mono text-[11px] text-muted-foreground">§ 04</span>
+  <section className="py-24 bg-secondary">
+    <div className="container">
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        className="grid md:grid-cols-[1fr_2fr] gap-8 mb-16 items-end"
+      >
+        <div>
+          <span className="eyebrow text-primary">Por que nos escolher</span>
+          <h2 className="font-display text-3xl md:text-5xl font-bold mt-3">Nossos diferenciais</h2>
         </div>
-        <div className="md:col-span-6">
-          <p className="eyebrow text-muted-foreground mb-4">Princípios</p>
-          <h2 className="display-xl text-[clamp(2.4rem,5vw,4.2rem)]">
-            Como o estúdio <span className="serif-italic">trabalha.</span>
-          </h2>
-        </div>
-        <p className="md:col-span-4 text-sm text-muted-foreground leading-relaxed">
-          Cinco compromissos que valem para todo projeto — independente do tamanho.
+        <p className="text-muted-foreground md:text-lg">
+          A diferença que você sente desde o primeiro WhatsApp — e que continua depois do projeto no ar.
         </p>
-      </div>
+      </motion.div>
 
-      <div className="grid md:grid-cols-12 gap-x-10 gap-y-12">
+      <div className="grid md:grid-cols-2 gap-x-10 gap-y-8 max-w-5xl">
         {items.map((item, i) => (
           <motion.div
             key={item.title}
-            initial={{ opacity: 0, y: 16 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: i * 0.06 }}
-            className="md:col-span-6 lg:col-span-4 flex gap-6 rule-t pt-6"
+            transition={{ delay: i * 0.08 }}
+            className="flex items-start gap-5 py-4 border-t border-border"
           >
-            <span className="num-mono text-[11px] text-muted-foreground shrink-0 w-8">
+            <span className="font-display text-4xl font-extrabold text-gradient leading-none shrink-0 w-12">
               {String(i + 1).padStart(2, "0")}
             </span>
             <div>
-              <h3 className="font-display text-2xl mb-3 leading-tight">{item.title}</h3>
+              <h3 className="font-display font-semibold text-lg mb-1.5">{item.title}</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
             </div>
           </motion.div>

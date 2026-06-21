@@ -14,9 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ['"Instrument Serif"', 'Georgia', "serif"],
-        serif: ['"Instrument Serif"', 'Georgia', "serif"],
-        sans: ['"Work Sans"', "system-ui", "sans-serif"],
+        display: ['"Plus Jakarta Sans"', "system-ui", "sans-serif"],
+        sans: ['Inter', "system-ui", "sans-serif"],
         mono: ['"JetBrains Mono"', "ui-monospace", "monospace"],
       },
       colors: {
@@ -44,10 +43,6 @@ export default {
         accent: {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
-        },
-        accent2: {
-          DEFAULT: "hsl(var(--accent2))",
-          foreground: "hsl(var(--accent2-foreground))",
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",

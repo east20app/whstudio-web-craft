@@ -21,7 +21,7 @@ const SettingsPage = () => {
   return (
     <div className="space-y-6 max-w-2xl">
       <div>
-        <h2 className="text-2xl md:text-3xl font-bold font-display">Configurações</h2>
+        <h2 className="text-2xl md:text-3xl font-bold">Configurações</h2>
         <p className="text-muted-foreground text-sm mt-1">Ajuste as informações principais do site.</p>
       </div>
 
@@ -53,7 +53,7 @@ const SettingsPage = () => {
         </div>
 
         <div className="pt-2">
-          <Button onClick={save}>
+          <Button onClick={save} className="glow">
             <Save className="w-4 h-4 mr-1" /> Salvar configurações
           </Button>
         </div>

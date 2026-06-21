@@ -1,77 +1,86 @@
 import { Link } from "react-router-dom";
-import { navLinks, siteConfig, whatsappLink } from "@/config/site";
+import { MessageCircle, Mail } from "lucide-react";
+import { siteConfig, whatsappLink, navLinks } from "@/config/site";
+import logo from "@/assets/wh-studio-logo.png";
 
 const Footer = () => (
-  <footer className="bg-background border-t border-[hsl(var(--rule))]">
-    <div className="container-wide py-20 md:py-24">
-      <div className="grid md:grid-cols-12 gap-10 mb-16">
-        <div className="md:col-span-5">
-          <Link to="/" aria-label="WH Studio" className="font-display text-3xl">
-            WH<span className="serif-italic text-[hsl(var(--accent))]">·</span>Studio
+  <footer className="py-14 border-t border-border bg-secondary/30">
+    <div className="container">
+      <div className="grid md:grid-cols-4 gap-10 mb-10">
+        <div className="md:col-span-2">
+          <Link to="/" className="inline-flex items-center" aria-label="WH Studio">
+            <img src={logo} alt="WH Studio" className="h-12 w-auto object-contain" />
           </Link>
-          <p className="text-sm text-muted-foreground mt-6 max-w-md leading-relaxed">
-            Estúdio independente de engenharia de software conduzido por Walmry Netto. Sistemas, sites, bots e automações entregues à mão.
+          <p className="text-sm text-muted-foreground mt-3 max-w-sm leading-relaxed">
+            {siteConfig.slogan}. Sites, sistemas, bots e automações sob medida para o seu negócio.
           </p>
-          <div className="num-mono text-[11px] text-muted-foreground mt-8 space-y-1">
-            <div>Natal — Rio Grande do Norte, Brasil</div>
-            <div>Atendendo todo o país desde 2022</div>
+          <div className="flex gap-3 mt-5">
+            <a
+              href={whatsappLink()}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="WhatsApp"
+              className="w-9 h-9 rounded-lg bg-secondary border border-border flex items-center justify-center hover:border-primary/50 hover:text-primary transition-colors"
+            >
+              <MessageCircle className="w-4 h-4" />
+            </a>
+            <a
+              href={`mailto:${siteConfig.email}`}
+              aria-label="E-mail"
+              className="w-9 h-9 rounded-lg bg-secondary border border-border flex items-center justify-center hover:border-primary/50 hover:text-primary transition-colors"
+            >
+              <Mail className="w-4 h-4" />
+            </a>
           </div>
         </div>
 
-        <div className="md:col-span-3 md:col-start-7">
-          <p className="eyebrow text-muted-foreground mb-5">Índice</p>
-          <ul className="space-y-2.5">
-            {navLinks.map((l, i) => (
-              <li key={l.href} className="flex items-baseline gap-3">
-                <span className="num-mono text-[10px] text-muted-foreground">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <Link to={l.href} className="text-sm hover:underline underline-offset-4">
-                  {l.label}
-                </Link>
-              </li>
+        <div>
+          <h4 className="font-semibold mb-4 text-sm">Navegação</h4>
+          <div className="flex flex-col gap-2">
+            {navLinks.map((l) => (
+              <Link
+                key={l.href}
+                to={l.href}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {l.label}
+              </Link>
             ))}
-          </ul>
+          </div>
         </div>
 
-        <div className="md:col-span-3">
-          <p className="eyebrow text-muted-foreground mb-5">Contato</p>
-          <ul className="space-y-2.5 text-sm">
-            <li>
-              <a
-                href={whatsappLink()}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:underline underline-offset-4"
-              >
-                WhatsApp · {siteConfig.whatsapp.display}
-              </a>
-            </li>
-            <li>
-              <a
-                href={`mailto:${siteConfig.email}`}
-                className="hover:underline underline-offset-4"
-              >
-                {siteConfig.email}
-              </a>
-            </li>
-            <li>
-              <a
-                href={siteConfig.discordInvite}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:underline underline-offset-4"
-              >
-                Comunidade no Discord
-              </a>
-            </li>
-          </ul>
+        <div>
+          <h4 className="font-semibold mb-4 text-sm">Contato</h4>
+          <div className="flex flex-col gap-2">
+            <a
+              href={whatsappLink()}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              WhatsApp {siteConfig.whatsapp.display}
+            </a>
+            <a
+              href={`mailto:${siteConfig.email}`}
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {siteConfig.email}
+            </a>
+            <Link
+              to="/contato"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Formulário de contato
+            </Link>
+          </div>
         </div>
       </div>
 
-      <div className="rule-t pt-6 flex flex-col md:flex-row items-baseline justify-between gap-3 num-mono text-[11px] text-muted-foreground">
-        <span>© 2026 WH Studio — Todos os direitos reservados</span>
-        <span>Engenharia por Walmry Netto / CNPJ sob consulta</span>
+      <div className="border-t border-border pt-6 flex flex-col md:flex-row items-center justify-between gap-2 text-xs text-muted-foreground">
+        <p>WH STUDIO © 2026 — Todos os direitos reservados.</p>
+        <p className="text-[11px] tracking-wide">
+          Feito por <span className="font-medium text-foreground/80">Walmry Netto</span>
+        </p>
       </div>
     </div>
   </footer>
