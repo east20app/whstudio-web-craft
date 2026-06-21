@@ -1,46 +1,82 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
-import { navLinks, siteConfig, whatsappLink } from "@/config/site";
-import logo from "@/assets/wh-studio-logo.png";
+import { navLinks, whatsappLink } from "@/config/site";
 
 const Header = () => {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
 
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background border-b border-border">
-      <div className="container flex items-center justify-between h-16">
-        <Link to="/" className="flex items-center gap-2" onClick={() => setOpen(false)} aria-label="WH Studio">
-          <img src={logo} alt="WH Studio" className="h-9 w-auto md:h-10 object-contain" />
+    <header
+      className={`fixed top-0 inset-x-0 z-50 transition-[background,backdrop-filter,border-color] duration-300 ${
+        scrolled
+          ? "bg-background/85 backdrop-blur-md border-b border-[hsl(var(--rule))]"
+          : "bg-transparent border-b border-transparent"
+      }`}
+    >
+      <div className="container-wide flex items-center justify-between h-16 md:h-20">
+        <Link
+          to="/"
+          onClick={() => setOpen(false)}
+          aria-label="WH Studio"
+          className="group flex items-baseline gap-2.5"
+        >
+          <span className="font-display text-2xl md:text-[1.65rem] leading-none tracking-tight">
+            WH<span className="serif-italic text-[hsl(var(--accent))]">·</span>Studio
+          </span>
+          <span className="hidden md:inline eyebrow text-muted-foreground translate-y-[-1px]">
+            est. RN
+          </span>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-7" aria-label="Navegação principal">
-          {navLinks.map((l) => {
+        <nav className="hidden md:flex items-center gap-9" aria-label="Navegação principal">
+          {navLinks.map((l, i) => {
             const active = location.pathname === l.href;
             return (
               <Link
                 key={l.href}
                 to={l.href}
-                className={`relative text-sm font-medium transition-colors ${
-                  active ? "text-foreground" : "text-muted-foreground hover:text-foreground"
-                }`}
+                className="group relative flex items-center gap-2 text-[13px] font-medium"
                 aria-current={active ? "page" : undefined}
               >
-                {l.label}
+                <span className="num-mono text-[10px] text-muted-foreground tabular-nums">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span
+                  className={`transition-colors ${
+                    active ? "text-foreground" : "text-foreground/70 group-hover:text-foreground"
+                  }`}
+                >
+                  {l.label}
+                </span>
                 {active && (
-                  <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-primary rounded-full" />
+                  <span className="absolute -bottom-2 left-7 right-0 h-px bg-foreground" />
                 )}
               </Link>
             );
           })}
-          <Button asChild>
-            <a href={whatsappLink()} target="_blank" rel="noopener noreferrer">
-              Solicitar orçamento
-            </a>
-          </Button>
+          <a
+            href={whatsappLink()}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="ml-2 inline-flex items-center gap-2 text-[13px] font-medium text-foreground"
+          >
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="absolute inset-0 rounded-full bg-[hsl(var(--accent))] opacity-70 animate-ping" />
+              <span className="relative rounded-full h-1.5 w-1.5 bg-[hsl(var(--accent))]" />
+            </span>
+            Disponível — agende uma conversa
+          </a>
         </nav>
 
         <button
@@ -49,7 +85,7 @@ const Header = () => {
           aria-label={open ? "Fechar menu" : "Abrir menu"}
           aria-expanded={open}
         >
-          {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
       </div>
 
@@ -59,32 +95,33 @@ const Header = () => {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="md:hidden overflow-hidden bg-background border-b border-border"
+            className="md:hidden overflow-hidden bg-background border-t border-[hsl(var(--rule))]"
             aria-label="Navegação mobile"
           >
-            <div className="container py-4 flex flex-col gap-1">
-              {navLinks.map((l) => {
-                const active = location.pathname === l.href;
-                return (
-                  <Link
-                    key={l.href}
-                    to={l.href}
-                    onClick={() => setOpen(false)}
-                    className={`px-3 py-3 rounded-lg text-sm font-medium transition-colors ${
-                      active
-                        ? "bg-primary/10 text-primary"
-                        : "text-muted-foreground hover:text-foreground hover:bg-secondary"
-                    }`}
-                  >
-                    {l.label}
-                  </Link>
-                );
-              })}
-              <Button asChild className="w-full mt-3" onClick={() => setOpen(false)}>
-                <a href={whatsappLink()} target="_blank" rel="noopener noreferrer">
-                  Solicitar orçamento
-                </a>
-              </Button>
+            <div className="container-wide py-6 flex flex-col divide-y divide-[hsl(var(--rule))]">
+              {navLinks.map((l, i) => (
+                <Link
+                  key={l.href}
+                  to={l.href}
+                  onClick={() => setOpen(false)}
+                  className="flex items-baseline justify-between py-4 group"
+                >
+                  <span className="font-display text-2xl">{l.label}</span>
+                  <span className="num-mono text-[10px] text-muted-foreground">
+                    {String(i + 1).padStart(2, "0")} →
+                  </span>
+                </Link>
+              ))}
+              <a
+                href={whatsappLink()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-baseline justify-between py-4 text-[hsl(var(--accent))]"
+                onClick={() => setOpen(false)}
+              >
+                <span className="font-display text-2xl">Conversar agora</span>
+                <span className="num-mono text-[10px]">→</span>
+              </a>
             </div>
           </motion.nav>
         )}
