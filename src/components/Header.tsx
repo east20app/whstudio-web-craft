@@ -11,34 +11,31 @@ const Header = () => {
   const location = useLocation();
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/70 backdrop-blur-xl border-b border-border/60 shadow-sm shadow-black/20">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
       <div className="container flex items-center justify-between h-16">
         <Link to="/" className="flex items-center gap-2" onClick={() => setOpen(false)} aria-label="WH Studio">
           <img src={logo} alt="WH Studio" className="h-9 w-auto md:h-10 object-contain" />
         </Link>
 
-        <nav className="hidden md:flex items-center gap-7" aria-label="Navegação principal">
+        <nav className="hidden md:flex items-center gap-8" aria-label="Navegação principal">
           {navLinks.map((l) => {
             const active = location.pathname === l.href;
             return (
               <Link
                 key={l.href}
                 to={l.href}
-                className={`relative text-sm font-medium transition-colors ${
+                className={`eyebrow transition-colors ${
                   active ? "text-foreground" : "text-muted-foreground hover:text-foreground"
                 }`}
                 aria-current={active ? "page" : undefined}
               >
                 {l.label}
-                {active && (
-                  <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-primary rounded-full" />
-                )}
               </Link>
             );
           })}
-          <Button asChild>
+          <Button asChild className="rounded-none h-10">
             <a href={whatsappLink()} target="_blank" rel="noopener noreferrer">
-              Solicitar orçamento
+              Iniciar projeto
             </a>
           </Button>
         </nav>

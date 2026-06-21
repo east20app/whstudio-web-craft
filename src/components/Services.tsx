@@ -1,58 +1,65 @@
 import { motion } from "framer-motion";
-import { Check } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ArrowUpRight } from "lucide-react";
 import { services, siteConfig, whatsappLink } from "@/config/site";
 
 const Services = () => (
-  <section id="servicos" className="py-24 bg-secondary">
+  <section id="servicos" className="py-32 border-t border-border">
     <div className="container">
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        className="text-center mb-16"
-      >
-        <span className="eyebrow text-primary">O que a gente faz</span>
-        <h2 className="font-display text-3xl md:text-5xl font-bold mt-3">Serviços</h2>
-        <p className="text-muted-foreground mt-4 max-w-xl mx-auto">
-          Site, bot, sistema, automação — o que você precisa pra rodar o negócio online.
-        </p>
-      </motion.div>
+      {/* Header editorial em 12 colunas */}
+      <div className="grid md:grid-cols-12 gap-8 mb-20">
+        <div className="md:col-span-3">
+          <p className="eyebrow">[ 01 ] Serviços</p>
+        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="md:col-span-9"
+        >
+          <h2 className="display-huge text-5xl md:text-7xl mb-6">
+            Construímos o que <br />
+            <span className="text-foreground/50">você ainda controla</span> na planilha.
+          </h2>
+          <p className="text-foreground/70 max-w-xl">
+            Cada projeto é escrito do zero. Sem WordPress, sem template comprado, sem mensalidade escondida.
+          </p>
+        </motion.div>
+      </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Lista editorial — não cards repetidos */}
+      <div className="border-t border-border">
         {services.map((s, i) => (
-          <motion.div
+          <motion.a
             key={s.id}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            href={whatsappLink(siteConfig.defaultMessages.service(s.title))}
+            target="_blank"
+            rel="noopener noreferrer"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ delay: Math.min(i * 0.05, 0.3) }}
-            className="card-dark-hover p-7 flex flex-col"
+            transition={{ delay: Math.min(i * 0.04, 0.2) }}
+            className="group grid md:grid-cols-12 gap-6 py-8 md:py-10 border-b border-border items-start hover:bg-foreground/[0.02] px-2 -mx-2 transition-colors"
           >
-            <div className="w-12 h-12 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center mb-5">
-              <s.icon className="w-6 h-6 text-primary" aria-hidden="true" />
+            <div className="md:col-span-1 eyebrow text-foreground/40 pt-2">
+              {String(i + 1).padStart(2, "0")}
             </div>
-            <h3 className="text-lg font-semibold mb-2">{s.title}</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed mb-4">{s.short}</p>
-            <ul className="space-y-2 mb-6 flex-1">
-              {s.benefits.slice(0, 3).map((b) => (
-                <li key={b} className="flex items-start gap-2 text-xs text-muted-foreground">
-                  <Check className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
-                  <span>{b}</span>
-                </li>
-              ))}
-            </ul>
-            <Button variant="outline" size="sm" className="w-full" asChild>
-              <a
-                href={whatsappLink(siteConfig.defaultMessages.service(s.title))}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={`Solicitar orçamento de ${s.title}`}
-              >
-                Solicitar orçamento
-              </a>
-            </Button>
-          </motion.div>
+            <div className="md:col-span-3">
+              <h3 className="font-display text-2xl md:text-3xl font-extrabold tracking-tight">
+                {s.title}
+              </h3>
+            </div>
+            <div className="md:col-span-6">
+              <p className="text-foreground/70 leading-relaxed text-sm md:text-base">{s.short}</p>
+              <div className="flex flex-wrap gap-x-4 gap-y-1 mt-4">
+                {s.benefits.slice(0, 3).map((b) => (
+                  <span key={b} className="eyebrow text-foreground/50">· {b}</span>
+                ))}
+              </div>
+            </div>
+            <div className="md:col-span-2 flex md:justify-end pt-2">
+              <ArrowUpRight className="w-6 h-6 text-foreground/40 group-hover:text-primary group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+            </div>
+          </motion.a>
         ))}
       </div>
     </div>
