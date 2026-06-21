@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,47 +6,48 @@
 
 @layer base {
   :root {
-    --background: 270 25% 4%;
-    --foreground: 270 20% 98%;
+    /* Monocromo editorial — preto / cinza / branco. Azul só como acento. */
+    --background: 0 0% 4%;
+    --foreground: 0 0% 98%;
 
-    --card: 270 25% 9%;
-    --card-foreground: 270 20% 98%;
+    --card: 0 0% 6%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 270 25% 9%;
-    --popover-foreground: 270 20% 98%;
+    --popover: 0 0% 6%;
+    --popover-foreground: 0 0% 98%;
 
-    --primary: 271 91% 65%;
+    --primary: 217 100% 60%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 270 25% 12%;
-    --secondary-foreground: 270 20% 98%;
+    --secondary: 0 0% 8%;
+    --secondary-foreground: 0 0% 98%;
 
-    --muted: 270 20% 14%;
-    --muted-foreground: 270 10% 65%;
+    --muted: 0 0% 10%;
+    --muted-foreground: 0 0% 60%;
 
-    --accent: 271 91% 65%;
+    --accent: 217 100% 60%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 63% 45%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 270 25% 16%;
-    --input: 270 25% 14%;
-    --ring: 271 91% 65%;
+    --border: 0 0% 14%;
+    --input: 0 0% 12%;
+    --ring: 217 100% 60%;
 
-    --radius: 1rem;
+    --radius: 0.5rem;
 
-    --glow-primary: 0 0 30px hsl(271 91% 65% / 0.45);
-    --glow-primary-strong: 0 0 60px hsl(271 91% 65% / 0.55);
+    --glow-primary: 0 0 0 0 transparent;
+    --glow-primary-strong: 0 0 0 0 transparent;
 
-    --sidebar-background: 270 25% 6%;
-    --sidebar-foreground: 270 20% 98%;
-    --sidebar-primary: 271 91% 65%;
+    --sidebar-background: 0 0% 5%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 217 100% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 270 25% 14%;
-    --sidebar-accent-foreground: 270 20% 98%;
-    --sidebar-border: 270 25% 16%;
-    --sidebar-ring: 271 91% 65%;
+    --sidebar-accent: 0 0% 10%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 0 0% 14%;
+    --sidebar-ring: 217 100% 60%;
   }
 }
 
@@ -62,13 +63,16 @@ html {
     @apply bg-background text-foreground;
     font-family: 'Inter', system-ui, sans-serif;
     font-feature-settings: "ss01", "cv11";
+    -webkit-font-smoothing: antialiased;
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.025em;
+    font-weight: 800;
   }
   h1 {
-    letter-spacing: -0.035em;
+    letter-spacing: -0.04em;
+    font-weight: 800;
   }
   .font-mono, code, pre {
     font-family: 'JetBrains Mono', ui-monospace, monospace;
@@ -77,35 +81,44 @@ html {
     font-family: 'JetBrains Mono', ui-monospace, monospace;
     font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: 0.12em;
-    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    font-size: 0.7rem;
+    color: hsl(var(--muted-foreground));
   }
 }
 
 @layer utilities {
+  /* "Gradient" agora é só foreground sólido — editorial, sem brilho cafona */
   .text-gradient {
-    @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, hsl(271 91% 70%), hsl(290 90% 75%));
+    color: hsl(var(--foreground));
   }
-  .glow {
-    box-shadow: var(--glow-primary);
+  .text-accent-blue {
+    color: hsl(var(--primary));
   }
-  .glow-strong {
-    box-shadow: var(--glow-primary-strong);
-  }
+  .glow,
+  .glow-strong,
   .glow-text {
-    text-shadow: 0 0 20px hsl(271 91% 65% / 0.6);
+    box-shadow: none;
+    text-shadow: none;
   }
   .card-dark {
-    @apply bg-card/80 backdrop-blur-sm border border-border rounded-2xl;
+    @apply bg-card border border-border rounded-md;
   }
   .card-dark-hover {
-    @apply card-dark transition-all duration-300;
+    @apply card-dark transition-colors duration-200;
   }
   .card-dark-hover:hover {
-    border-color: hsl(271 91% 65% / 0.5);
-    box-shadow: var(--glow-primary);
-    transform: translateY(-2px);
+    border-color: hsl(0 0% 25%);
+  }
+  .display-huge {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.045em;
+    line-height: 0.92;
+  }
+  .rule {
+    height: 1px;
+    background: hsl(var(--border));
   }
 }
 
@@ -114,9 +127,4 @@ iframe[src*="lovable.dev"],
 div[style*="Edit with Lovable"],
 .lovable-badge {
   display: none !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
-  pointer-events: none !important;
-  position: absolute !important;
-  z-index: -9999 !important;
 }
