@@ -1,94 +1,52 @@
 import { motion } from "framer-motion";
-import { MessageCircle, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { whatsappLink } from "@/config/site";
 
-const fade = {
-  initial: { opacity: 0, y: 16 },
-  animate: { opacity: 1, y: 0 },
-};
-
 const Hero = () => (
-  <section className="relative pt-36 pb-24 md:pt-44 md:pb-32 overflow-hidden">
-    <div className="container">
-      {/* Linha topo: meta editorial */}
+  <section className="relative pt-40 pb-28 md:pt-52 md:pb-40">
+    <div className="container max-w-6xl">
       <motion.div
-        {...fade}
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="flex items-center justify-between mb-14 md:mb-20"
+        className="flex items-center gap-3 eyebrow mb-12"
       >
-        <div className="flex items-center gap-3 eyebrow">
-          <span className="w-6 h-px bg-foreground/40" />
-          <span>Estúdio de desenvolvimento</span>
-        </div>
-        <div className="hidden md:flex items-center gap-3 eyebrow">
-          <span>RN · BR</span>
-          <span className="w-6 h-px bg-foreground/40" />
-          <span>EST. 2023</span>
-        </div>
+        <span className="w-6 h-px bg-foreground/40" />
+        <span>WH Studio — Desenvolvimento web</span>
       </motion.div>
 
-      {/* Headline gigante editorial */}
       <motion.h1
-        {...fade}
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.05 }}
-        className="display-huge text-[14vw] md:text-[10.5vw] lg:text-[9.5rem] leading-[0.9] mb-10"
+        className="display-huge text-[12vw] md:text-[8.5vw] lg:text-[7.5rem] leading-[0.95] mb-10 max-w-5xl"
       >
-        Código que <br className="hidden md:block" />
-        <span className="italic font-light text-foreground/70">resolve</span> —{" "}
-        <span className="text-accent-blue">no ar em 15 dias.</span>
+        Construímos produtos digitais{" "}
+        <span className="text-foreground/55">com cuidado de quem assina cada linha.</span>
       </motion.h1>
 
-      {/* Linha CTA + descrição assimétrica */}
-      <motion.div
-        {...fade}
+      <motion.p
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.15 }}
-        className="grid md:grid-cols-12 gap-8 md:gap-12 items-end border-t border-border pt-10"
+        className="text-base md:text-lg text-foreground/70 max-w-xl mb-12 leading-relaxed"
       >
-        <div className="md:col-span-5">
-          <p className="eyebrow mb-3">O que fazemos</p>
-          <p className="text-base md:text-lg text-foreground/80 leading-relaxed max-w-md">
-            Sites, bots de Discord, sistemas internos, APIs e dashboards.
-            Direto com quem escreve o código — sem comercial, sem proposta de 12 páginas.
-          </p>
-        </div>
+        Estúdio de desenvolvimento no RN. Sites, sistemas e bots feitos do zero —
+        sob a direção de um único profissional, do briefing ao deploy.
+      </motion.p>
 
-        <div className="md:col-span-4 md:col-start-7 flex flex-wrap gap-3">
-          <Button size="lg" className="rounded-none h-12 px-6" asChild>
-            <a href={whatsappLink()} target="_blank" rel="noopener noreferrer">
-              <MessageCircle className="w-4 h-4 mr-2" /> Iniciar projeto
-            </a>
-          </Button>
-          <Button size="lg" variant="outline" className="rounded-none h-12 px-6 border-foreground/30 hover:bg-foreground hover:text-background" asChild>
-            <a href="/portfolio">
-              Ver trabalhos <ArrowUpRight className="w-4 h-4 ml-1" />
-            </a>
-          </Button>
-        </div>
-
-        <div className="md:col-span-2 md:col-start-11 text-right">
-          <p className="eyebrow mb-1">Resposta</p>
-          <p className="text-sm font-medium">em até 24h</p>
-        </div>
-      </motion.div>
-
-      {/* Métricas reais — linha editorial */}
       <motion.div
-        {...fade}
-        transition={{ duration: 0.6, delay: 0.25 }}
-        className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4 mt-24 md:mt-32 border-t border-border pt-10"
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.22 }}
       >
-        {[
-          { v: "70+", l: "Projetos entregues" },
-          { v: "15 dias", l: "Prazo médio" },
-          { v: "99.9%", l: "Uptime médio" },
-          { v: "1:1", l: "Atendimento direto" },
-        ].map((s) => (
-          <div key={s.l}>
-            <p className="display-huge text-4xl md:text-6xl">{s.v}</p>
-            <p className="eyebrow mt-3">{s.l}</p>
-          </div>
-        ))}
+        <Button size="lg" className="rounded-none h-14 px-7 text-base group" asChild>
+          <a href={whatsappLink()} target="_blank" rel="noopener noreferrer">
+            Iniciar um projeto
+            <ArrowUpRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          </a>
+        </Button>
       </motion.div>
     </div>
   </section>

@@ -1,11 +1,9 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Services from "@/components/Services";
-import SocialProof from "@/components/SocialProof";
 import HowItWorks from "@/components/HowItWorks";
-import Plans from "@/components/Plans";
-import Testimonials from "@/components/Testimonials";
-import Differentials from "@/components/Differentials";
+import SocialProof from "@/components/SocialProof";
+import About from "@/components/About";
 import CTAFinal from "@/components/CTAFinal";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
@@ -15,11 +13,9 @@ const Index = () => (
     <Header />
     <Hero />
     <Services />
-    <SocialProof />
     <HowItWorks />
-    <Plans />
-    <Testimonials />
-    <Differentials />
+    <SocialProof />
+    <About />
     <CTAFinal />
     <Footer />
     <WhatsAppButton />

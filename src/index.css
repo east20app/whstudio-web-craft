@@ -6,48 +6,48 @@
 
 @layer base {
   :root {
-    /* Monocromo editorial — preto / cinza / branco. Azul só como acento. */
-    --background: 0 0% 4%;
-    --foreground: 0 0% 98%;
+    /* Paleta WH Studio — preto premium, cards #141414, azul #2563eb como acento único. */
+    --background: 0 0% 4.3%;          /* #0b0b0b */
+    --foreground: 0 0% 100%;          /* #ffffff */
 
-    --card: 0 0% 6%;
-    --card-foreground: 0 0% 98%;
+    --card: 0 0% 7.8%;                /* #141414 */
+    --card-foreground: 0 0% 100%;
 
-    --popover: 0 0% 6%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 0 0% 7.8%;
+    --popover-foreground: 0 0% 100%;
 
-    --primary: 217 100% 60%;
+    --primary: 221 83% 53%;           /* #2563eb */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 0 0% 8%;
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 0 0% 7.8%;
+    --secondary-foreground: 0 0% 100%;
 
     --muted: 0 0% 10%;
     --muted-foreground: 0 0% 60%;
 
-    --accent: 217 100% 60%;
+    --accent: 221 83% 53%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 70% 50%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 14%;
-    --input: 0 0% 12%;
-    --ring: 217 100% 60%;
+    --border: 0 0% 13%;
+    --input: 0 0% 11%;
+    --ring: 221 83% 53%;
 
-    --radius: 0.5rem;
+    --radius: 0.375rem;
 
     --glow-primary: 0 0 0 0 transparent;
     --glow-primary-strong: 0 0 0 0 transparent;
 
     --sidebar-background: 0 0% 5%;
-    --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 217 100% 60%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 221 83% 53%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 0 0% 10%;
-    --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 0 0% 14%;
-    --sidebar-ring: 217 100% 60%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 0 0% 13%;
+    --sidebar-ring: 221 83% 53%;
   }
 }
 
