@@ -1,60 +1,71 @@
 import { motion } from "framer-motion";
-import { MessageCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { DiscordIcon } from "@/components/icons/DiscordIcon";
-import { discordLink, whatsappLink } from "@/config/site";
+import { whatsappLink, discordLink, siteConfig } from "@/config/site";
 
 const CTAFinal = () => (
-  <section className="py-24 bg-background">
-    <div className="container">
-      <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        className="relative max-w-4xl mx-auto rounded-lg border border-border bg-card p-10 md:p-14 overflow-hidden"
-      >
-        <div className="grid md:grid-cols-[0.9fr_1.1fr] gap-8 items-center">
-          <div>
-            <span className="eyebrow text-primary mb-3">Próximo passo</span>
-            <h2 className="font-display text-3xl md:text-5xl font-bold mb-6">
-              Me manda o problema. Eu digo o caminho.
-            </h2>
-            <p className="text-muted-foreground text-base md:text-lg">
-              Pode ser áudio, print da planilha ou um resumo mal escrito no WhatsApp.
-              Se fizer sentido, eu devolvo escopo, prazo e preço. Se não fizer, eu falo também.
-            </p>
-          </div>
-
-          <div>
-            <div className="flex items-center gap-4 mb-8">
-              <div className="w-16 h-16 rounded-full border-2 border-primary/40 overflow-hidden bg-secondary flex items-center justify-center shrink-0">
-                <span className="text-2xl font-extrabold font-display text-primary">W</span>
-              </div>
-              <div className="text-left">
-                <p className="font-semibold font-display text-foreground">Walmry Netto</p>
-                <p className="text-sm text-muted-foreground">Desenvolvedor · RN, Brasil</p>
-                <div className="flex items-center gap-1.5 mt-1">
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                  <span className="text-xs text-primary">Atendendo novos projetos</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Button size="lg" asChild>
-                <a href={whatsappLink()} target="_blank" rel="noopener noreferrer">
-                  <MessageCircle className="w-5 h-5 mr-2" /> Falar no WhatsApp
-                </a>
-              </Button>
-              <Button size="lg" variant="outline" asChild>
-                <a href={discordLink()} target="_blank" rel="noopener noreferrer">
-                  <DiscordIcon className="w-5 h-5 mr-2" /> Entrar no Discord
-                </a>
-              </Button>
-            </div>
-          </div>
+  <section className="py-32 md:py-44 bg-foreground text-background relative overflow-hidden">
+    <div className="container-wide relative">
+      <div className="grid md:grid-cols-12 gap-10 items-end">
+        <div className="md:col-span-2">
+          <span className="num-mono text-[11px] text-background/50">§ 06</span>
         </div>
-      </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="md:col-span-10"
+        >
+          <p className="eyebrow text-background/60 mb-8">Próximo passo</p>
+          <h2 className="display-xl text-background text-[clamp(2.8rem,8vw,7.5rem)] mb-12">
+            Conta o que <span className="serif-italic">precisa rodar</span>
+            <br />— eu respondo hoje.
+          </h2>
+        </motion.div>
+      </div>
+
+      <div className="grid md:grid-cols-12 gap-10 mt-12 rule-t border-background/15 pt-10">
+        <div className="md:col-span-5 md:col-start-3">
+          <p className="text-background/70 text-base md:text-lg leading-relaxed">
+            Quem responde sou eu, <span className="serif-italic text-background">Walmry</span> — sem assistente, sem formulário automático. Conversa por WhatsApp ou Discord, em horário comercial brasileiro.
+          </p>
+        </div>
+
+        <div className="md:col-span-4 md:col-start-9 space-y-4">
+          <a
+            href={whatsappLink()}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-baseline justify-between rule-b border-background/30 pb-3 group"
+          >
+            <div>
+              <div className="num-mono text-[10px] text-background/50 mb-1">WHATSAPP / direto</div>
+              <div className="font-display text-2xl">{siteConfig.whatsapp.display}</div>
+            </div>
+            <span className="num-mono text-sm text-background/70 group-hover:text-background transition-colors">↗</span>
+          </a>
+          <a
+            href={discordLink()}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-baseline justify-between rule-b border-background/30 pb-3 group"
+          >
+            <div>
+              <div className="num-mono text-[10px] text-background/50 mb-1">DISCORD / comunidade</div>
+              <div className="font-display text-2xl">discord.gg/whstudio</div>
+            </div>
+            <span className="num-mono text-sm text-background/70 group-hover:text-background transition-colors">↗</span>
+          </a>
+          <a
+            href={`mailto:${siteConfig.email}`}
+            className="flex items-baseline justify-between pb-3 group"
+          >
+            <div>
+              <div className="num-mono text-[10px] text-background/50 mb-1">E-MAIL / formal</div>
+              <div className="font-display text-2xl">{siteConfig.email}</div>
+            </div>
+            <span className="num-mono text-sm text-background/70 group-hover:text-background transition-colors">↗</span>
+          </a>
+        </div>
+      </div>
     </div>
   </section>
 );

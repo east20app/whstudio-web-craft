@@ -1,122 +1,109 @@
 import { motion } from "framer-motion";
-import { MessageCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { DiscordIcon } from "@/components/icons/DiscordIcon";
-import { discordLink, whatsappLink } from "@/config/site";
+import { whatsappLink } from "@/config/site";
 
-const trustBadges = [
-  { label: "Sem vendedor no meio", desc: "Você fala com quem abre o editor e mexe no banco." },
-  { label: "Escopo fechado", desc: "Antes de começar, você sabe o que entra e o que fica fora." },
-  { label: "Suporte depois da entrega", desc: "Publicou e deu dúvida? Eu não sumo." },
-];
+const Hero = () => {
+  return (
+    <section className="relative pt-32 md:pt-40 pb-24 md:pb-32 overflow-hidden">
+      {/* Top meta row — editorial masthead */}
+      <div className="container-wide rule-b pb-6 mb-16 md:mb-24 flex items-center justify-between text-[11px] eyebrow text-muted-foreground">
+        <span>Vol. 04 · Estúdio independente</span>
+        <span className="hidden sm:inline">Natal — Rio Grande do Norte</span>
+        <span>
+          <span className="text-foreground">Walmry Netto</span> / Engenheiro de software
+        </span>
+      </div>
 
-const commits = [
-  { hash: "a3f2c1d", msg: "feat: tabela de classificação ao vivo" },
-  { hash: "9e81ba2", msg: "feat: inscrição de equipes com Supabase" },
-  { hash: "3c47d9f", msg: "fix: ranking por saldo de gols" },
-  { hash: "d12e8a1", msg: "feat: painel admin com resultados" },
-  { hash: "7b903cc", msg: "init: projeto Copa Ativa Telecom" },
-];
-
-const Hero = () => (
-  <section className="relative min-h-screen flex items-center overflow-hidden pt-24 pb-16">
-    <div className="container relative z-10">
-      <div className="grid lg:grid-cols-[1.08fr_0.92fr] gap-12 lg:gap-16 items-center">
-        <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}>
-          <p className="eyebrow text-primary mb-5">Walmry Netto · RN, Brasil</p>
-
-          <h1 className="heading-display text-4xl md:text-5xl lg:text-6xl mb-6">
-            Seu sistema parou de ser planilha.
-            <br />
-            <span className="text-gradient">Agora ele trabalha.</span>
-          </h1>
-
-          <p className="text-base md:text-lg text-muted-foreground mb-8 max-w-xl">
-            Eu crio site, sistema, bot e automação para tirar tarefa chata da sua mão.
-            Sem reunião infinita. Sem promessa bonita. Código funcionando e alguém responsável por ele.
-          </p>
-
-          <div className="flex flex-wrap gap-3">
-            <Button size="lg" asChild>
-              <a href={whatsappLink()} target="_blank" rel="noopener noreferrer">
-                <MessageCircle className="w-4 h-4 mr-1" /> Falar no WhatsApp
-              </a>
-            </Button>
-            <Button size="lg" variant="outline" asChild>
-              <a href={discordLink()} target="_blank" rel="noopener noreferrer">
-                <DiscordIcon className="w-4 h-4 mr-1" /> Entrar no Discord
-              </a>
-            </Button>
-          </div>
-
-          <div className="grid sm:grid-cols-3 gap-5 mt-10">
-            {trustBadges.map((b) => (
-              <div key={b.label} className="pl-4 border-l border-primary/40">
-                <p className="text-xs font-semibold text-foreground">{b.label}</p>
-                <p className="text-[11px] text-muted-foreground mt-0.5">{b.desc}</p>
-              </div>
-            ))}
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, x: 24 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="hidden lg:block relative"
+      <div className="container-wide grid md:grid-cols-12 gap-y-12 md:gap-x-10 items-end">
+        {/* Left column — number + small caption (asymmetric editorial) */}
+        <motion.aside
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7 }}
+          className="md:col-span-2 md:pt-4"
         >
-          <div className="rounded-lg border border-border bg-card overflow-hidden">
-            <div className="flex items-center gap-2 px-4 py-3 bg-secondary border-b border-border">
-              <div className="w-2.5 h-2.5 rounded-full bg-destructive/70" />
-              <div className="w-2.5 h-2.5 rounded-full bg-accent2/70" />
-              <div className="w-2.5 h-2.5 rounded-full bg-primary/70" />
-              <span className="ml-3 text-[11px] font-mono-label text-muted-foreground">
-                ~/projetos/copa-ativa - zsh
-              </span>
-            </div>
+          <div className="num-mono text-[11px] text-muted-foreground mb-3">— 01 / Manifesto</div>
+          <p className="text-[13px] text-muted-foreground leading-relaxed max-w-[14rem]">
+            Software medido em problemas resolvidos, não em telas entregues.
+          </p>
+        </motion.aside>
 
-            <div className="p-5 font-mono-label text-[12px] leading-relaxed space-y-1">
-              <p className="text-muted-foreground">
-                <span className="text-primary">walmry@wh-studio</span>
-                <span className="text-muted-foreground/60">:</span>
-                <span className="text-accent2">~/projetos/copa-ativa</span>
-                <span className="text-foreground/60"> $</span>
-              </p>
-              <p className="text-foreground/80">git log --oneline -5</p>
-
-              <div className="space-y-1 mt-2 text-[11px]">
-                {commits.map((c) => (
-                  <p key={c.hash}>
-                    <span className="text-primary/70">{c.hash}</span>{" "}
-                    <span className="text-muted-foreground">{c.msg}</span>
-                  </p>
-                ))}
-              </div>
-
-              <div className="mt-4 pt-4 border-t border-border">
-                <p className="text-muted-foreground/60 text-[10px] mb-1">// código real, prazo real, suporte real</p>
-                <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <p className="text-xs font-semibold text-foreground">Copa Ativa Telecom</p>
-                    <p className="text-[10px] text-muted-foreground">Campeonato de Futsal · Serra Caiada, RN</p>
-                  </div>
-                  <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-primary/10 border border-primary/20">
-                    <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                    <span className="text-[10px] font-medium text-primary">Online</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="absolute -bottom-4 -left-4 px-3 py-2 rounded-md bg-background border border-border text-xs font-semibold flex items-center gap-2">
-            <span className="text-primary">OK</span>
-            <span className="text-foreground/80 font-display">70+ projetos entregues</span>
-          </div>
+        {/* Headline — magazine-scale serif */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.85 }}
+          className="md:col-span-10"
+        >
+          <h1 className="display-xl text-[clamp(3.2rem,10vw,9.5rem)]">
+            Engenharia de
+            <br />
+            software <span className="serif-italic">sob medida,</span>
+            <br />
+            entregue à mão.
+          </h1>
         </motion.div>
       </div>
-    </div>
-  </section>
-);
+
+      {/* Bottom band — three editorial columns */}
+      <div className="container-wide mt-20 md:mt-28 grid md:grid-cols-12 gap-y-12 md:gap-x-10 rule-t pt-10">
+        <div className="md:col-span-5">
+          <p className="text-lg md:text-xl leading-snug text-foreground max-w-xl">
+            Construo sistemas, sites e automações para empresas que cresceram além da planilha — com{" "}
+            <span className="serif-italic">tempo, código e cabeça</span> de um único engenheiro responsável.
+          </p>
+        </div>
+
+        <div className="md:col-span-4 md:col-start-7 space-y-5">
+          <div className="flex items-baseline gap-4">
+            <span className="num-mono text-[11px] text-muted-foreground w-10">→ 01</span>
+            <span className="text-sm">Conversa direta, sem comercial intermediário.</span>
+          </div>
+          <div className="flex items-baseline gap-4">
+            <span className="num-mono text-[11px] text-muted-foreground w-10">→ 02</span>
+            <span className="text-sm">Escopo fechado e prazo real antes de começar.</span>
+          </div>
+          <div className="flex items-baseline gap-4">
+            <span className="num-mono text-[11px] text-muted-foreground w-10">→ 03</span>
+            <span className="text-sm">Código próprio do projeto, mantido por quem escreveu.</span>
+          </div>
+        </div>
+
+        <div className="md:col-span-2 md:col-start-11 flex md:justify-end">
+          <a
+            href={whatsappLink()}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group inline-flex items-baseline gap-2 text-sm font-medium"
+          >
+            <span className="ink-link">Iniciar projeto</span>
+            <span className="num-mono text-[10px] text-muted-foreground">↗</span>
+          </a>
+        </div>
+      </div>
+
+      {/* Selected work strip */}
+      <div className="container-wide mt-24 md:mt-32 rule-t pt-6">
+        <div className="flex items-baseline justify-between mb-6">
+          <span className="eyebrow text-muted-foreground">Trabalho recente — 2026</span>
+          <span className="num-mono text-[10px] text-muted-foreground">04 projetos · 12 dias / em média</span>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-[hsl(var(--rule))] border border-[hsl(var(--rule))]">
+          {[
+            { name: "Copa Ativa", kind: "Plataforma esportiva", year: "2026" },
+            { name: "Peixe Store", kind: "Loja digital", year: "2025" },
+            { name: "DroxBot", kind: "Bot Discord + painel", year: "2025" },
+            { name: "Serra Delivery", kind: "Sistema de delivery", year: "2026" },
+          ].map((p) => (
+            <div key={p.name} className="bg-card p-6 group cursor-default">
+              <div className="num-mono text-[10px] text-muted-foreground mb-8">{p.year}</div>
+              <div className="font-display text-2xl mb-1 leading-none">{p.name}</div>
+              <div className="text-xs text-muted-foreground">{p.kind}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
 
 export default Hero;

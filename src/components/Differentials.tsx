@@ -3,45 +3,45 @@ import { motion } from "framer-motion";
 const items = [
   {
     title: "Cronograma sem fantasia",
-    desc: "Eu digo o que dá para fazer no prazo e o que não dá. Melhor cortar escopo agora do que entregar bagunça depois.",
+    desc: "Prefiro cortar escopo no início do que entregar bagunça depois. Você sabe o que entra, o que fica para fase 2 e o que não entra.",
   },
   {
-    title: "WhatsApp direto comigo",
-    desc: "Sem suporte terceirizado, sem chamado perdido. Quem responde é o mesmo dev que mexe no projeto.",
+    title: "Conversa direta",
+    desc: "Sem suporte terceirizado nem chamado perdido. Quem responde no WhatsApp é o mesmo engenheiro que mexe no código.",
   },
   {
     title: "Interface para gente ocupada",
-    desc: "Tela feita para o usuário entender rápido. Menos enfeite, mais botão no lugar certo.",
+    desc: "Tela feita para quem precisa entender em segundos. Menos enfeite, mais decisão tomada com o botão certo no lugar certo.",
   },
   {
-    title: "Código específico para o seu caso",
-    desc: "Nada de tema comprado tentando parecer sistema. A regra do seu negócio entra no código.",
+    title: "Código próprio do seu negócio",
+    desc: "Não compro tema, não revendo template. A regra do seu negócio entra no código — e fica registrada com quem trabalha nele depois.",
   },
   {
-    title: "Pagamento e integração ligados",
-    desc: "PIX, cartão, boleto, Discord, WhatsApp, planilha ou API. O que precisar conversar, a gente conecta.",
+    title: "Pagamento e integração resolvidos",
+    desc: "PIX, cartão, boleto, Discord, WhatsApp, planilha ou API legada. Se precisa conversar com outro sistema, a gente conecta.",
   },
 ];
 
 const Differentials = () => (
-  <section className="py-24 bg-secondary">
-    <div className="container">
-      <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        className="grid md:grid-cols-[1fr_2fr] gap-8 mb-16 items-end"
-      >
-        <div>
-          <span className="eyebrow text-primary mb-3">Por que funciona</span>
-          <h2 className="font-display text-3xl md:text-5xl font-bold">Menos promessa. Mais entrega.</h2>
+  <section className="py-28 md:py-36 bg-background">
+    <div className="container-wide">
+      <div className="grid md:grid-cols-12 gap-10 mb-16 items-end rule-b pb-10">
+        <div className="md:col-span-2">
+          <span className="num-mono text-[11px] text-muted-foreground">§ 04</span>
         </div>
-        <p className="text-muted-foreground md:text-lg">
-          Projeto bom não depende de frase bonita. Depende de escopo claro, código organizado e suporte quando aparece problema.
+        <div className="md:col-span-6">
+          <p className="eyebrow text-muted-foreground mb-4">Princípios</p>
+          <h2 className="display-xl text-[clamp(2.4rem,5vw,4.2rem)]">
+            Como o estúdio <span className="serif-italic">trabalha.</span>
+          </h2>
+        </div>
+        <p className="md:col-span-4 text-sm text-muted-foreground leading-relaxed">
+          Cinco compromissos que valem para todo projeto — independente do tamanho.
         </p>
-      </motion.div>
+      </div>
 
-      <div className="grid md:grid-cols-2 gap-x-10 gap-y-4 max-w-5xl">
+      <div className="grid md:grid-cols-12 gap-x-10 gap-y-12">
         {items.map((item, i) => (
           <motion.div
             key={item.title}
@@ -49,15 +49,13 @@ const Differentials = () => (
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.06 }}
-            className="flex items-start gap-5 p-6 group"
+            className="md:col-span-6 lg:col-span-4 flex gap-6 rule-t pt-6"
           >
-            <div className="shrink-0 w-10 text-right">
-              <span className="text-3xl font-extrabold text-primary/20 group-hover:text-primary/40 transition-colors leading-none font-display">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-            </div>
+            <span className="num-mono text-[11px] text-muted-foreground shrink-0 w-8">
+              {String(i + 1).padStart(2, "0")}
+            </span>
             <div>
-              <h3 className="font-semibold font-display mb-1 text-foreground">{item.title}</h3>
+              <h3 className="font-display text-2xl mb-3 leading-tight">{item.title}</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
             </div>
           </motion.div>
