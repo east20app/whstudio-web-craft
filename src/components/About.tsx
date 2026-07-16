@@ -1,9 +1,10 @@
 import { motion } from "framer-motion";
+import { MapPin, Code2, ShieldCheck } from "lucide-react";
 
 const About = () => (
-  <section id="sobre" className="py-32 border-t border-border">
+  <section id="sobre" className="py-28 md:py-32 border-t border-border">
     <div className="container">
-      <div className="grid md:grid-cols-12 gap-8 mb-20">
+      <div className="grid md:grid-cols-12 gap-8 mb-16">
         <div className="md:col-span-3">
           <p className="eyebrow">[ 06 ] Sobre</p>
         </div>
@@ -13,19 +14,59 @@ const About = () => (
           viewport={{ once: true }}
           className="md:col-span-9"
         >
-          <h2 className="display-huge text-5xl md:text-7xl">
+          <h2 className="display-huge text-4xl md:text-6xl">
             Um estúdio. <br />
             <span className="text-foreground/50">Uma pessoa por trás de cada projeto.</span>
           </h2>
         </motion.div>
       </div>
 
-      <div className="grid md:grid-cols-12 gap-12 md:gap-16">
+      <div className="grid md:grid-cols-12 gap-8 md:gap-10 items-start">
+        {/* Card de perfil */}
+        <motion.aside
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="md:col-span-4"
+        >
+          <div className="card-premium card-premium-featured p-7">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary via-primary to-accent-2 flex items-center justify-center font-display font-extrabold text-2xl text-primary-foreground shadow-[0_0_30px_-6px_hsl(var(--primary))]">
+                WN
+              </div>
+              <div>
+                <p className="font-display text-lg font-extrabold leading-tight">Walmry Netto</p>
+                <p className="eyebrow mt-1">Fundador · Dev</p>
+              </div>
+            </div>
+
+            <div className="space-y-3 text-sm">
+              <div className="flex items-center gap-3 text-foreground/70">
+                <MapPin className="w-4 h-4 text-accent-2 shrink-0" />
+                <span>Rio Grande do Norte, Brasil</span>
+              </div>
+              <div className="flex items-center gap-3 text-foreground/70">
+                <Code2 className="w-4 h-4 text-accent-2 shrink-0" />
+                <span>React · Node · TypeScript · Supabase</span>
+              </div>
+              <div className="flex items-center gap-3 text-foreground/70">
+                <ShieldCheck className="w-4 h-4 text-success shrink-0" />
+                <span>Disponível para novos projetos</span>
+              </div>
+            </div>
+
+            <div className="mt-6 pt-6 border-t border-border">
+              <p className="eyebrow mb-2">Fundado</p>
+              <p className="font-display font-extrabold text-3xl">2023</p>
+            </div>
+          </div>
+        </motion.aside>
+
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="md:col-span-5 md:col-start-2"
+          className="md:col-span-4"
         >
           <p className="eyebrow mb-4">História</p>
           <p className="text-foreground/80 leading-relaxed">
@@ -43,26 +84,23 @@ const About = () => (
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="md:col-span-5"
+          className="md:col-span-4"
         >
           <p className="eyebrow mb-4">Forma de trabalho</p>
           <ul className="space-y-4 text-foreground/80 leading-relaxed">
-            <li className="flex gap-4">
-              <span className="eyebrow text-foreground/40 pt-1 w-8 shrink-0">01</span>
-              <span>Conversa direta no WhatsApp — sem comercial, sem proposta de 12 páginas.</span>
-            </li>
-            <li className="flex gap-4">
-              <span className="eyebrow text-foreground/40 pt-1 w-8 shrink-0">02</span>
-              <span>Escopo e prazo combinados antes da primeira linha de código.</span>
-            </li>
-            <li className="flex gap-4">
-              <span className="eyebrow text-foreground/40 pt-1 w-8 shrink-0">03</span>
-              <span>Preview funcionando a cada etapa, ajustes incluídos no caminho.</span>
-            </li>
-            <li className="flex gap-4">
-              <span className="eyebrow text-foreground/40 pt-1 w-8 shrink-0">04</span>
-              <span>Entrega no ar, treinamento e suporte direto pós-lançamento.</span>
-            </li>
+            {[
+              "Conversa direta no WhatsApp — sem comercial, sem proposta de 12 páginas.",
+              "Escopo e prazo combinados antes da primeira linha de código.",
+              "Preview funcionando a cada etapa, ajustes incluídos no caminho.",
+              "Entrega no ar, treinamento e suporte direto pós-lançamento.",
+            ].map((t, i) => (
+              <li key={i} className="flex gap-4">
+                <span className="eyebrow text-primary pt-1 w-8 shrink-0">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span>{t}</span>
+              </li>
+            ))}
           </ul>
         </motion.div>
       </div>

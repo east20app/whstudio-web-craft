@@ -1,22 +1,22 @@
 import { motion } from "framer-motion";
+import { Quote } from "lucide-react";
 import { testimonials } from "@/config/site";
 
 const SocialProof = () => (
-  <section className="py-32 border-t border-border">
+  <section className="py-28 md:py-32 border-t border-border">
     <div className="container">
-      <div className="grid md:grid-cols-12 gap-8 mb-16">
+      <div className="grid md:grid-cols-12 gap-8 mb-14">
         <div className="md:col-span-3">
           <p className="eyebrow">[ 03 ] Quem confiou</p>
         </div>
         <div className="md:col-span-9">
-          <h2 className="display-huge text-5xl md:text-7xl">
+          <h2 className="display-huge text-4xl md:text-6xl">
             Não é review de e-commerce. <span className="text-foreground/50">É cliente que volta.</span>
           </h2>
         </div>
       </div>
 
-      {/* Grid assimétrico: 1 grande + 2 pequenos */}
-      <div className="grid md:grid-cols-12 gap-6">
+      <div className="grid md:grid-cols-12 gap-5">
         {testimonials.map((t, i) => {
           const big = i === 0;
           return (
@@ -26,13 +26,14 @@ const SocialProof = () => (
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.08 }}
-              className={`border border-border p-8 md:p-10 flex flex-col ${
-                big ? "md:col-span-7 md:row-span-2 bg-foreground/[0.02]" : "md:col-span-5"
-              }`}
+              className={`card-premium p-7 md:p-9 flex flex-col relative ${
+                big ? "md:col-span-7 md:row-span-2" : "md:col-span-5"
+              } ${big ? "card-premium-featured" : ""}`}
             >
+              <Quote className={`w-8 h-8 mb-5 ${big ? "text-primary" : "text-accent-2"} opacity-80`} />
               <blockquote
                 className={`font-display font-extrabold tracking-tight ${
-                  big ? "text-2xl md:text-4xl leading-tight" : "text-lg md:text-xl leading-snug"
+                  big ? "text-2xl md:text-3xl leading-tight" : "text-lg md:text-xl leading-snug"
                 }`}
               >
                 "{t.text}"
@@ -42,7 +43,7 @@ const SocialProof = () => (
                   <p className="text-sm font-semibold">{t.name}</p>
                   <p className="eyebrow mt-1">{t.role}</p>
                 </div>
-                <span className="eyebrow text-accent-blue">★ ★ ★ ★ ★</span>
+                <span className="text-sm tracking-wider text-warning">★ ★ ★ ★ ★</span>
               </figcaption>
             </motion.figure>
           );
