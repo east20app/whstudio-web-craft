@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
-import { navLinks, siteConfig, whatsappLink } from "@/config/site";
+import { navLinks, whatsappLink } from "@/config/site";
 import logo from "@/assets/wh-studio-logo.png";
 
 const Header = () => {
@@ -11,7 +11,7 @@ const Header = () => {
   const location = useLocation();
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-background/75 backdrop-blur-xl border-glow-bottom">
       <div className="container flex items-center justify-between h-16">
         <Link to="/" className="flex items-center gap-2" onClick={() => setOpen(false)} aria-label="WH Studio">
           <img src={logo} alt="WH Studio" className="h-9 w-auto md:h-10 object-contain" />
@@ -33,9 +33,10 @@ const Header = () => {
               </Link>
             );
           })}
-          <Button asChild className="rounded-none h-10">
-            <a href={whatsappLink()} target="_blank" rel="noopener noreferrer">
+          <Button asChild className="h-10 rounded-full px-5 btn-glow-hover glow">
+            <a href={whatsappLink()} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5">
               Iniciar projeto
+              <ArrowUpRight className="w-4 h-4" />
             </a>
           </Button>
         </nav>
@@ -56,7 +57,7 @@ const Header = () => {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="md:hidden overflow-hidden bg-background border-b border-border"
+            className="md:hidden overflow-hidden bg-background/95 backdrop-blur-xl border-b border-border"
             aria-label="Navegação mobile"
           >
             <div className="container py-4 flex flex-col gap-1">
@@ -77,9 +78,9 @@ const Header = () => {
                   </Link>
                 );
               })}
-              <Button asChild className="w-full mt-3" onClick={() => setOpen(false)}>
+              <Button asChild className="w-full mt-3 rounded-full glow" onClick={() => setOpen(false)}>
                 <a href={whatsappLink()} target="_blank" rel="noopener noreferrer">
-                  Solicitar orçamento
+                  Iniciar projeto
                 </a>
               </Button>
             </div>

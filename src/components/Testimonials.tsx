@@ -31,12 +31,12 @@ const Testimonials = () => {
   if (loading || items.length === 0) return null;
 
   return (
-    <section id="depoimentos" className="py-20 md:py-28 px-4 relative">
+    <section id="depoimentos" className="py-20 md:py-28 px-4 relative border-t border-border">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-14">
-          <p className="text-xs uppercase tracking-widest text-primary mb-3">Depoimentos</p>
-          <h2 className="text-3xl md:text-5xl font-bold">
-            O que nossos <span className="text-primary">clientes</span> dizem
+          <p className="eyebrow text-primary mb-3">Depoimentos</p>
+          <h2 className="display-huge text-3xl md:text-5xl">
+            O que nossos <span className="text-accent-blue">clientes</span> dizem
           </h2>
           <p className="text-muted-foreground mt-4 max-w-2xl mx-auto">
             Avaliações reais de projetos entregues pela WH Studio.
@@ -47,9 +47,9 @@ const Testimonials = () => {
           {items.map((t) => (
             <article
               key={t.id}
-              className="card-dark p-6 flex flex-col gap-4 hover:border-primary/40 transition-colors"
+              className="card-premium p-6 flex flex-col gap-4"
             >
-              <Quote className="w-6 h-6 text-primary/60" />
+              <Quote className="w-6 h-6 text-primary/70" />
               <p className="text-sm text-foreground/90 leading-relaxed line-clamp-6">
                 {t.testimonial}
               </p>
@@ -59,7 +59,7 @@ const Testimonials = () => {
                     key={i}
                     className={`w-4 h-4 ${
                       (t.rating ?? 0) > i
-                        ? "text-yellow-300 fill-yellow-300"
+                        ? "text-warning fill-warning"
                         : "text-muted-foreground/40"
                     }`}
                   />
