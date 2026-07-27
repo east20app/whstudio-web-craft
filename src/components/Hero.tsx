@@ -54,7 +54,7 @@ const Hero = () => (
             transition={{ duration: 0.6, delay: 0.22 }}
             className="flex flex-wrap items-center gap-4"
           >
-            <Button size="lg" className="h-14 px-7 text-base rounded-full glow btn-glow-hover group" asChild>
+            <Button size="lg" className="h-14 px-7 text-base rounded-full group" asChild>
               <a href={whatsappLink()} target="_blank" rel="noopener noreferrer">
                 Iniciar um projeto
                 <ArrowUpRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
