@@ -41,34 +41,32 @@ const Services = () => (
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: Math.min(i * 0.05, 0.25) }}
-              className="card-premium group p-6 md:p-7 flex flex-col relative"
+              className="card-premium group p-7 md:p-8 flex flex-col relative"
             >
-              <div className="flex items-start justify-between mb-6">
-                <div className={`w-12 h-12 rounded-xl border border-border bg-background/40 flex items-center justify-center ${accent}`}>
-                  <Icon className="w-5 h-5" />
-                </div>
-                <span className="eyebrow text-foreground/30">
-                  {String(i + 1).padStart(2, "0")}
+              <div className="flex items-baseline justify-between mb-8">
+                <span className="font-mono text-xs text-foreground/35 tracking-widest">
+                  S/{String(i + 1).padStart(2, "0")}
                 </span>
+                <Icon className={`w-5 h-5 ${accent}`} strokeWidth={1.5} />
               </div>
 
-              <h3 className="font-display text-xl md:text-2xl font-extrabold tracking-tight mb-3">
+              <h3 className="font-display text-xl md:text-[1.35rem] font-extrabold tracking-tight mb-3 leading-tight">
                 {s.title}
               </h3>
-              <p className="text-sm text-foreground/70 leading-relaxed mb-5">{s.short}</p>
+              <p className="text-sm text-foreground/65 leading-relaxed mb-6">{s.short}</p>
 
-              <ul className="space-y-1.5 mt-auto mb-5">
+              <ul className="space-y-2 mt-auto mb-6">
                 {s.benefits.slice(0, 3).map((b) => (
-                  <li key={b} className="flex items-start gap-2 text-xs text-foreground/60">
-                    <span className={`mt-1.5 w-1 h-1 rounded-full ${accent === "text-primary" ? "bg-primary" : "bg-accent-2"} shrink-0`} />
+                  <li key={b} className="flex items-start gap-2.5 text-xs text-foreground/55">
+                    <span className="mt-1.5 w-3 h-px bg-foreground/25 shrink-0" />
                     <span>{b}</span>
                   </li>
                 ))}
               </ul>
 
               <div className="flex items-center justify-between pt-4 border-t border-border">
-                <span className="eyebrow text-foreground/50">Solicitar</span>
-                <ArrowUpRight className="w-4 h-4 text-foreground/40 group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                <span className="eyebrow text-foreground/50 group-hover:text-foreground/80 transition-colors">Solicitar</span>
+                <ArrowUpRight className="w-4 h-4 text-foreground/40 group-hover:text-foreground group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
               </div>
             </motion.a>
           );
