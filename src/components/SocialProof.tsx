@@ -26,11 +26,11 @@ const SocialProof = () => (
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.08 }}
-              className={`card-premium p-7 md:p-9 flex flex-col relative ${
+              className={`card-premium p-8 md:p-10 flex flex-col relative ${
                 big ? "md:col-span-7 md:row-span-2" : "md:col-span-5"
-              } ${big ? "card-premium-featured" : ""}`}
+              }`}
             >
-              <Quote className={`w-8 h-8 mb-5 ${big ? "text-primary" : "text-accent-2"} opacity-80`} />
+              <Quote className="w-6 h-6 mb-6 text-foreground/25" strokeWidth={1.5} />
               <blockquote
                 className={`font-display font-extrabold tracking-tight ${
                   big ? "text-2xl md:text-3xl leading-tight" : "text-lg md:text-xl leading-snug"
