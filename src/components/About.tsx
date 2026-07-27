@@ -31,7 +31,7 @@ const About = () => (
         >
           <div className="card-premium card-premium-featured p-7">
             <div className="flex items-center gap-4 mb-6">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary via-primary to-accent-2 flex items-center justify-center font-display font-extrabold text-2xl text-primary-foreground shadow-[0_0_30px_-6px_hsl(var(--primary))]">
+              <div className="w-14 h-14 rounded-xl border border-border bg-background flex items-center justify-center font-display font-extrabold text-lg tracking-tight">
                 WN
               </div>
               <div>
