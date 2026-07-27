@@ -141,14 +141,12 @@ html {
                 background 0.3s ease;
   }
   .card-premium:hover {
-    transform: translateY(-4px);
-    border-color: hsl(var(--primary) / 0.35);
+    transform: translateY(-2px);
+    border-color: hsl(0 0% 100% / 0.12);
     background: var(--gradient-card-hover);
-    box-shadow: var(--glow-primary);
   }
   .card-premium-featured {
-    border-color: hsl(var(--primary) / 0.4);
-    box-shadow: var(--glow-primary);
+    border-color: hsl(0 0% 100% / 0.10);
   }
 
   .card-dark {
