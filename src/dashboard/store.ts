@@ -24,6 +24,8 @@ const mapSettings = (r: any): AdminSettings => ({
   discordLink: r.discord_link,
   footerText: r.footer_text,
   authorName: r.author_name,
+  acceptingProjects: r.accepting_projects ?? true,
+  availabilityNote: r.availability_note ?? "",
 });
 
 const mapProject = (r: any): Project => ({
@@ -241,6 +243,8 @@ export const useSettings = () => {
     discordLink: "https://discord.gg/whstudio",
     footerText: "WH STUDIO © 2026",
     authorName: "Walmry Netto",
+    acceptingProjects: true,
+    availabilityNote: "",
   });
 
   const refresh = useCallback(async () => {
@@ -261,6 +265,8 @@ export const useSettings = () => {
         discord_link: s.discordLink,
         footer_text: s.footerText,
         author_name: s.authorName,
+        accepting_projects: s.acceptingProjects,
+        availability_note: s.availabilityNote,
       })
       .eq("id", s.id);
     if (!error) await refresh();
