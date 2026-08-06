@@ -2,9 +2,21 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
 import { useSettings } from "./store";
 import { toast } from "sonner";
 import { Save } from "lucide-react";
+
+const Field = ({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) => (
+  <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-6 py-5 border-t border-border first:border-t-0">
+    <div>
+      <Label className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">{label}</Label>
+      {hint && <p className="text-xs text-muted-foreground/70 mt-1.5 leading-relaxed">{hint}</p>}
+    </div>
+    <div className="space-y-2">{children}</div>
+  </div>
+);
 
 const SettingsPage = () => {
   const { settings, saveSettings } = useSettings();
@@ -19,45 +31,61 @@ const SettingsPage = () => {
   };
 
   return (
-    <div className="space-y-6 max-w-2xl">
-      <div>
-        <h2 className="text-2xl md:text-3xl font-bold">Configurações</h2>
-        <p className="text-muted-foreground text-sm mt-1">Ajuste as informações principais do site.</p>
-      </div>
+    <div className="max-w-3xl">
+      <header className="mb-8">
+        <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">Sys / Config</p>
+        <h2 className="text-2xl md:text-3xl font-bold tracking-tight mt-2">Configurações</h2>
+      </header>
 
-      <div className="card-dark p-6 space-y-4">
-        <div className="space-y-1.5">
-          <Label>Nome do site</Label>
+      <section className="border border-border rounded-xl bg-card/40 px-5 md:px-6">
+        <Field label="Disponibilidade" hint="Desligue quando não estiver pegando projetos novos. Um aviso aparece no topo do site.">
+          <div className="flex items-center gap-3">
+            <Switch
+              checked={form.acceptingProjects}
+              onCheckedChange={(v) => setForm({ ...form, acceptingProjects: v })}
+              aria-label="Aceitando novos projetos"
+            />
+            <span className="text-sm font-medium">
+              {form.acceptingProjects ? "Aceitando novos projetos" : "Fila fechada — não estamos pegando projetos"}
+            </span>
+          </div>
+          {!form.acceptingProjects && (
+            <Textarea
+              rows={3}
+              value={form.availabilityNote}
+              onChange={(e) => setForm({ ...form, availabilityNote: e.target.value })}
+              placeholder="Ex: Agenda cheia até setembro. Manda mensagem que eu te aviso quando abrir vaga."
+            />
+          )}
+        </Field>
+
+        <Field label="Nome do site">
           <Input value={form.siteName} onChange={(e) => setForm({ ...form, siteName: e.target.value })} />
-        </div>
-        <div className="space-y-1.5">
-          <Label>Número do WhatsApp</Label>
+        </Field>
+        <Field label="WhatsApp" hint="Formato internacional, sem espaços.">
           <Input
             value={form.whatsapp}
             onChange={(e) => setForm({ ...form, whatsapp: e.target.value })}
             placeholder="5584988766134"
+            className="font-mono"
           />
-          <p className="text-xs text-muted-foreground">Formato internacional sem espaços.</p>
-        </div>
-        <div className="space-y-1.5">
-          <Label>Link do Discord</Label>
+        </Field>
+        <Field label="Link do Discord">
           <Input value={form.discordLink} onChange={(e) => setForm({ ...form, discordLink: e.target.value })} />
-        </div>
-        <div className="space-y-1.5">
-          <Label>Texto do footer</Label>
+        </Field>
+        <Field label="Texto do footer">
           <Input value={form.footerText} onChange={(e) => setForm({ ...form, footerText: e.target.value })} />
-        </div>
-        <div className="space-y-1.5">
-          <Label>Nome do autor</Label>
+        </Field>
+        <Field label="Autor">
           <Input value={form.authorName} onChange={(e) => setForm({ ...form, authorName: e.target.value })} />
-        </div>
+        </Field>
 
-        <div className="pt-2">
-          <Button onClick={save} className="glow">
-            <Save className="w-4 h-4 mr-1" /> Salvar configurações
+        <div className="py-5 border-t border-border">
+          <Button onClick={save}>
+            <Save className="w-4 h-4 mr-2" /> Salvar
           </Button>
         </div>
-      </div>
+      </section>
     </div>
   );
 };
