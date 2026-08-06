@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
-import { FileText, Users, Briefcase, MessageSquare, MessageCircle, Hash, TrendingUp } from "lucide-react";
 import StatCard from "./components/StatCard";
 import StatusPill from "./components/StatusPill";
-import { useBudgets, useClients, useProjects, useMessages } from "./store";
+import { useBudgets, useClients, useProjects, useMessages, useSettings } from "./store";
 
 const stageTone = {
   planejamento: "gray" as const,
@@ -12,99 +11,102 @@ const stageTone = {
 };
 const stageLabel = {
   planejamento: "Planejamento",
-  desenvolvimento: "Desenvolvimento",
+  desenvolvimento: "Dev",
   revisao: "Revisão",
   entregue: "Entregue",
 };
+
+const Panel = ({ title, href, children }: { title: string; href: string; children: React.ReactNode }) => (
+  <section className="border border-border rounded-xl overflow-hidden bg-card/30">
+    <header className="flex items-center justify-between px-5 h-12 border-b border-border">
+      <h3 className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">{title}</h3>
+      <Link to={href} className="font-mono text-[10px] uppercase tracking-[0.14em] text-primary hover:underline">
+        ver tudo
+      </Link>
+    </header>
+    {children}
+  </section>
+);
 
 const Overview = () => {
   const { data: budgets } = useBudgets();
   const { data: clients } = useClients();
   const { data: projects } = useProjects();
   const { data: messages } = useMessages();
+  const { settings } = useSettings();
 
   const activeClients = clients.filter((c) => c.status === "ativo").length;
   const ongoing = projects.filter((p) => p.stage !== "entregue").length;
+  const delivered = projects.filter((p) => p.stage === "entregue").length;
   const unread = messages.filter((m) => !m.read).length;
-
-  const whatsappConversions = budgets.filter((b) => b.status === "aprovado").length * 3 + 12;
-  const discordClicks = 84;
+  const newBudgets = budgets.filter((b) => b.status === "novo").length;
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h2 className="text-2xl md:text-3xl font-bold">Visão Geral</h2>
-        <p className="text-muted-foreground text-sm mt-1">Resumo do seu negócio em tempo real.</p>
-      </div>
+    <div className="space-y-10">
+      <header className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">Sys / Overview</p>
+          <h2 className="text-2xl md:text-3xl font-bold tracking-tight mt-2">Visão geral</h2>
+        </div>
+        <Link
+          to="/dashboard/configuracoes"
+          className={`inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.16em] px-3 py-2 rounded-full border ${
+            settings.acceptingProjects
+              ? "border-emerald-400/30 text-emerald-400"
+              : "border-warning/30 text-warning"
+          }`}
+        >
+          <span className={`h-1.5 w-1.5 rounded-full ${settings.acceptingProjects ? "bg-emerald-400" : "bg-warning"}`} />
+          {settings.acceptingProjects ? "Aceitando projetos" : "Fila fechada"}
+        </Link>
+      </header>
 
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
-        <Link to="/dashboard/orcamentos">
-          <StatCard label="Orçamentos" value={budgets.length} icon={FileText} trend="Total no banco" />
-        </Link>
-        <Link to="/dashboard/clientes">
-          <StatCard label="Clientes ativos" value={activeClients} icon={Users} trend={`${clients.length} no total`} />
-        </Link>
-        <Link to="/dashboard/projetos">
-          <StatCard label="Projetos em andamento" value={ongoing} icon={Briefcase} />
-        </Link>
-        <Link to="/dashboard/mensagens">
-          <StatCard label="Mensagens" value={messages.length} icon={MessageSquare} trend={`${unread} não lidas`} />
-        </Link>
-        <StatCard label="Conversões WhatsApp" value={whatsappConversions} icon={MessageCircle} trend="Estimativa" />
-        <StatCard label="Cliques no Discord" value={discordClicks} icon={Hash} trend="Estimativa" />
+      <div className="grid grid-cols-2 lg:grid-cols-4 border-y border-border divide-x divide-border">
+        <StatCard label="Orçamentos" value={budgets.length} trend={`${newBudgets} novos`} />
+        <StatCard label="Clientes ativos" value={activeClients} trend={`${clients.length} no total`} />
+        <StatCard label="Em andamento" value={ongoing} trend={`${delivered} entregues`} />
+        <StatCard label="Mensagens" value={messages.length} trend={`${unread} não lidas`} />
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6">
-        <div className="card-dark p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold">Últimos orçamentos</h3>
-            <Link to="/dashboard/orcamentos" className="text-xs text-primary hover:underline">
-              Ver todos
-            </Link>
-          </div>
+        <Panel title="Últimos orçamentos" href="/dashboard/orcamentos">
           {budgets.length === 0 ? (
-            <p className="text-sm text-muted-foreground py-6 text-center">Nenhum orçamento ainda.</p>
+            <p className="px-5 py-8 text-sm text-muted-foreground">Nenhum orçamento ainda.</p>
           ) : (
             <ul className="divide-y divide-border">
-              {budgets.slice(0, 5).map((b) => (
-                <li key={b.id} className="py-3 flex items-center justify-between gap-3">
-                  <div className="min-w-0">
+              {budgets.slice(0, 5).map((b, i) => (
+                <li key={b.id} className="px-5 py-3.5 flex items-center gap-4">
+                  <span className="font-mono text-[10px] text-muted-foreground/40 tabular-nums">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium truncate">{b.client}</p>
                     <p className="text-xs text-muted-foreground truncate">{b.service}</p>
                   </div>
                   <StatusPill
                     tone={
-                      b.status === "novo"
-                        ? "blue"
-                        : b.status === "em-analise"
-                        ? "yellow"
-                        : b.status === "aprovado"
-                        ? "green"
-                        : "red"
+                      b.status === "novo" ? "blue" : b.status === "em-analise" ? "yellow" : b.status === "aprovado" ? "green" : "red"
                     }
                   >
-                    {b.status === "em-analise" ? "Em análise" : b.status[0].toUpperCase() + b.status.slice(1)}
+                    {b.status === "em-analise" ? "Em análise" : b.status}
                   </StatusPill>
                 </li>
               ))}
             </ul>
           )}
-        </div>
+        </Panel>
 
-        <div className="card-dark p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold">Status dos projetos</h3>
-            <Link to="/dashboard/projetos" className="text-xs text-primary hover:underline">
-              Ver todos
-            </Link>
-          </div>
+        <Panel title="Projetos" href="/dashboard/projetos">
           {projects.length === 0 ? (
-            <p className="text-sm text-muted-foreground py-6 text-center">Nenhum projeto cadastrado.</p>
+            <p className="px-5 py-8 text-sm text-muted-foreground">Nenhum projeto cadastrado.</p>
           ) : (
             <ul className="divide-y divide-border">
-              {projects.slice(0, 5).map((p) => (
-                <li key={p.id} className="py-3 flex items-center justify-between gap-3">
-                  <div className="min-w-0">
+              {projects.slice(0, 5).map((p, i) => (
+                <li key={p.id} className="px-5 py-3.5 flex items-center gap-4">
+                  <span className="font-mono text-[10px] text-muted-foreground/40 tabular-nums">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium truncate">{p.name}</p>
                     <p className="text-xs text-muted-foreground truncate">{p.client}</p>
                   </div>
@@ -113,24 +115,7 @@ const Overview = () => {
               ))}
             </ul>
           )}
-        </div>
-      </div>
-
-      <div className="card-dark p-6">
-        <div className="flex items-center gap-2 mb-3">
-          <TrendingUp className="w-4 h-4 text-primary" />
-          <h3 className="font-semibold">Performance dos últimos 12 períodos</h3>
-        </div>
-        <div className="flex items-end gap-2 h-40">
-          {[40, 60, 50, 70, 55, 80, 65, 90, 75, 88, 82, 95].map((h, i) => (
-            <div key={i} className="flex-1 flex flex-col justify-end">
-              <div
-                className="w-full bg-gradient-to-t from-primary to-primary/40 rounded-t-md"
-                style={{ height: `${h}%` }}
-              />
-            </div>
-          ))}
-        </div>
+        </Panel>
       </div>
     </div>
   );

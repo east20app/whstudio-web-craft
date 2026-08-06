@@ -71,4 +71,6 @@ export type AdminSettings = {
   discordLink: string;
   footerText: string;
   authorName: string;
+  acceptingProjects: boolean;
+  availabilityNote: string;
 };

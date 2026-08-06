@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
 import { navLinks, whatsappLink } from "@/config/site";
 import logo from "@/assets/wh-studio-logo.png";
+import AvailabilityBanner from "@/components/AvailabilityBanner";
 
 const Header = () => {
   const [open, setOpen] = useState(false);
@@ -12,6 +13,7 @@ const Header = () => {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/75 backdrop-blur-xl border-glow-bottom">
+      <AvailabilityBanner />
       <div className="container flex items-center justify-between h-16">
         <Link to="/" className="flex items-center gap-2" onClick={() => setOpen(false)} aria-label="WH Studio">
           <img src={logo} alt="WH Studio" className="h-9 w-auto md:h-10 object-contain" />
