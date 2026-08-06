@@ -208,7 +208,9 @@ export type Database = {
       }
       settings: {
         Row: {
+          accepting_projects: boolean
           author_name: string
+          availability_note: string
           discord_link: string
           footer_text: string
           id: string
@@ -217,7 +219,9 @@ export type Database = {
           whatsapp: string
         }
         Insert: {
+          accepting_projects?: boolean
           author_name?: string
+          availability_note?: string
           discord_link?: string
           footer_text?: string
           id?: string
@@ -226,7 +230,9 @@ export type Database = {
           whatsapp?: string
         }
         Update: {
+          accepting_projects?: boolean
           author_name?: string
+          availability_note?: string
           discord_link?: string
           footer_text?: string
           id?: string
