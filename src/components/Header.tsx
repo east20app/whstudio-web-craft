@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
 import { navLinks, whatsappLink } from "@/config/site";
 import logo from "@/assets/wh-studio-logo.png";
+import AvailabilityBanner from "@/components/AvailabilityBanner";
 
 const Header = () => {
   const [open, setOpen] = useState(false);
