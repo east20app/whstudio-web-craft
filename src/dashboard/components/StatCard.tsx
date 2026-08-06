@@ -1,32 +1,26 @@
 import { ReactNode } from "react";
-import { motion } from "framer-motion";
-import { ArrowUpRight, type LucideIcon } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 type Props = {
   label: string;
   value: ReactNode;
-  icon: LucideIcon;
+  icon?: LucideIcon;
   trend?: string;
   onClick?: () => void;
 };
 
-const StatCard = ({ label, value, icon: Icon, trend, onClick }: Props) => (
-  <motion.button
-    whileHover={{ y: -2 }}
+/** Métrica em bloco técnico: label mono, número tabular, hairline. Sem glow. */
+const StatCard = ({ label, value, trend, onClick }: Props) => (
+  <button
     onClick={onClick}
     type="button"
-    className="text-left card-dark p-5 hover:border-primary/50 transition-colors group w-full"
+    className="group relative w-full text-left px-5 py-5 bg-card/30 hover:bg-card/60 transition-colors"
   >
-    <div className="flex items-start justify-between mb-3">
-      <div className="w-10 h-10 rounded-xl bg-primary/15 border border-primary/30 flex items-center justify-center">
-        <Icon className="w-5 h-5 text-primary" />
-      </div>
-      <ArrowUpRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
-    </div>
-    <p className="text-xs uppercase tracking-wider text-muted-foreground">{label}</p>
-    <p className="text-2xl md:text-3xl font-extrabold mt-1">{value}</p>
-    {trend && <p className="text-xs text-emerald-400 mt-1.5 font-medium">{trend}</p>}
-  </motion.button>
+    <span className="absolute left-0 top-0 h-full w-px bg-border group-hover:bg-primary transition-colors" aria-hidden="true" />
+    <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">{label}</p>
+    <p className="text-3xl md:text-4xl font-bold tabular-nums tracking-tight mt-3 leading-none">{value}</p>
+    {trend && <p className="text-[11px] text-muted-foreground mt-2.5">{trend}</p>}
+  </button>
 );
 
 export default StatCard;
