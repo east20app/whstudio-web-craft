@@ -1,0 +1,73 @@
+import { Loader2, MessageCircle, Wrench } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useMaintenanceMode } from "@/hooks/useMaintenanceMode";
+import { useAuth } from "@/dashboard/store";
+import { siteConfig, whatsappLink } from "@/config/site";
+import logo from "@/assets/wh-studio-logo.png";
+
+/**
+ * Envolve as rotas públicas. Com o modo de manutenção ligado, visitantes não
+ * autenticados veem a tela de manutenção; o admin logado continua navegando.
+ */
+const MaintenanceGate = ({ children }: { children: React.ReactNode }) => {
+  const { active, message, eta, loaded } = useMaintenanceMode();
+  const { user, loading } = useAuth();
+
+  if (!loaded || loading) {
+    return (
+      <div className="min-h-screen grid place-items-center bg-background">
+        <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" aria-label="Carregando" />
+      </div>
+    );
+  }
+
+  if (!active || user) return <>{children}</>;
+
+  return (
+    <main className="min-h-screen grid place-items-center bg-background px-6 py-16">
+      <div className="w-full max-w-lg text-center">
+        <img src={logo} alt={`${siteConfig.name} — logo`} className="h-14 mx-auto mb-10 object-contain" />
+
+        <div className="card-premium p-8 md:p-10">
+          <span className="mx-auto mb-6 flex h-11 w-11 items-center justify-center rounded-full border border-border bg-foreground/[0.03]">
+            <Wrench className="h-5 w-5 text-primary" aria-hidden="true" strokeWidth={1.5} />
+          </span>
+
+          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+            Sys / Manutenção
+          </p>
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight mt-3">Estamos em manutenção</h1>
+
+          <p className="text-sm text-foreground/70 mt-4 leading-relaxed">
+            {message?.trim()
+              ? message
+              : "Estamos fazendo ajustes no site. Voltamos em pouco tempo — se for urgente, fale com a gente pelo WhatsApp."}
+          </p>
+
+          {eta?.trim() && (
+            <div className="mt-6 rounded-lg border border-border bg-foreground/[0.02] px-4 py-3">
+              <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Previsão</p>
+              <p className="text-sm font-medium mt-1">{eta}</p>
+            </div>
+          )}
+
+          <Button asChild className="mt-8 h-11 w-full rounded-full">
+            <a
+              href={whatsappLink("Olá! O site da WH Studio está em manutenção e eu preciso falar com vocês.")}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <MessageCircle className="w-4 h-4 mr-2" aria-hidden="true" /> Falar no WhatsApp
+            </a>
+          </Button>
+        </div>
+
+        <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground/60 mt-8">
+          {siteConfig.name} — {siteConfig.email}
+        </p>
+      </div>
+    </main>
+  );
+};
+
+export default MaintenanceGate;
