@@ -73,4 +73,7 @@ export type AdminSettings = {
   authorName: string;
   acceptingProjects: boolean;
   availabilityNote: string;
+  maintenanceMode: boolean;
+  maintenanceMessage: string;
+  maintenanceEta: string;
 };
