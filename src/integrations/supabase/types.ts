@@ -214,6 +214,9 @@ export type Database = {
           discord_link: string
           footer_text: string
           id: string
+          maintenance_eta: string | null
+          maintenance_message: string | null
+          maintenance_mode: boolean
           site_name: string
           updated_at: string
           whatsapp: string
@@ -225,6 +228,9 @@ export type Database = {
           discord_link?: string
           footer_text?: string
           id?: string
+          maintenance_eta?: string | null
+          maintenance_message?: string | null
+          maintenance_mode?: boolean
           site_name?: string
           updated_at?: string
           whatsapp?: string
@@ -236,9 +242,83 @@ export type Database = {
           discord_link?: string
           footer_text?: string
           id?: string
+          maintenance_eta?: string | null
+          maintenance_message?: string | null
+          maintenance_mode?: boolean
           site_name?: string
           updated_at?: string
           whatsapp?: string
+        }
+        Relationships: []
+      }
+      ticket_messages: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          sender: string
+          ticket_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          sender?: string
+          ticket_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          sender?: string
+          ticket_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ticket_messages_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tickets: {
+        Row: {
+          admin_unread: number
+          client_token: string
+          created_at: string
+          email: string
+          id: string
+          last_message_at: string
+          name: string
+          status: string
+          subject: string
+          updated_at: string
+        }
+        Insert: {
+          admin_unread?: number
+          client_token?: string
+          created_at?: string
+          email?: string
+          id?: string
+          last_message_at?: string
+          name?: string
+          status?: string
+          subject?: string
+          updated_at?: string
+        }
+        Update: {
+          admin_unread?: number
+          client_token?: string
+          created_at?: string
+          email?: string
+          id?: string
+          last_message_at?: string
+          name?: string
+          status?: string
+          subject?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -247,6 +327,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_ticket: {
+        Args: {
+          _email: string
+          _message: string
+          _name: string
+          _subject: string
+        }
+        Returns: string
+      }
       get_feedback_by_token: {
         Args: { _token: string }
         Returns: {
@@ -254,6 +343,31 @@ export type Database = {
           id: string
           project_name: string
         }[]
+      }
+      get_ticket_by_token: {
+        Args: { _token: string }
+        Returns: {
+          created_at: string
+          email: string
+          id: string
+          last_message_at: string
+          name: string
+          status: string
+          subject: string
+        }[]
+      }
+      get_ticket_messages: {
+        Args: { _token: string }
+        Returns: {
+          body: string
+          created_at: string
+          id: string
+          sender: string
+        }[]
+      }
+      post_ticket_message: {
+        Args: { _body: string; _token: string }
+        Returns: boolean
       }
       submit_feedback: {
         Args: {
