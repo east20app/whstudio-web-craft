@@ -94,14 +94,13 @@ export const TicketChatProvider = ({ children }: { children: React.ReactNode }) 
     if (open) bottomRef.current?.scrollIntoView({ block: "end" });
   }, [messages, open]);
 
+  const subjectRef = useRef<string>("Assunto geral");
+
   const requestQuote = useCallback((options?: OpenOptions) => {
-    if (options?.subject) setForm((f) => ({ ...f, subject: options.subject } as typeof f));
     if (options?.prefill) setForm((f) => ({ ...f, message: f.message || options.prefill! }));
     subjectRef.current = options?.subject ?? subjectRef.current;
     setOpen(true);
   }, []);
-
-  const subjectRef = useRef<string>("Assunto geral");
 
   const start = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -114,7 +113,13 @@ export const TicketChatProvider = ({ children }: { children: React.ReactNode }) 
     }
     setErrors({});
     setSending(true);
-    const newToken = await createTicket({ ...parsed.data, subject: subjectRef.current });
+    const newToken = await createTicket({
+      name: form.name.trim(),
+      email: form.email.trim(),
+      message: form.message.trim(),
+      subject: subjectRef.current,
+    });
+
     setSending(false);
     if (!newToken) {
       toast.error("Não foi possível abrir o atendimento agora. Tente pelo WhatsApp.");
