@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate, Outlet } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -10,6 +10,8 @@ import PortfolioPage from "./pages/PortfolioPage.tsx";
 import ContatoPage from "./pages/ContatoPage.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import FeedbackPublicPage from "./pages/FeedbackPublicPage.tsx";
+import MaintenanceGate from "./components/MaintenanceGate";
+import { TicketChatProvider } from "./components/tickets/TicketChat";
 
 import DashboardLayout from "./dashboard/DashboardLayout";
 import { RequireAuth } from "./dashboard/RequireAuth";
@@ -22,6 +24,7 @@ import ServicesPage from "./dashboard/ServicesPage";
 import MessagesPage from "./dashboard/MessagesPage";
 import SettingsPage from "./dashboard/SettingsPage";
 import FeedbacksPage from "./dashboard/FeedbacksPage";
+import TicketsPage from "./dashboard/TicketsPage";
 
 const queryClient = new QueryClient();
 
@@ -32,12 +35,22 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/servicos" element={<ServicosPage />} />
-          <Route path="/planos" element={<PlanosPage />} />
-          <Route path="/portfolio" element={<PortfolioPage />} />
-          <Route path="/contato" element={<ContatoPage />} />
-          <Route path="/feedback/:token" element={<FeedbackPublicPage />} />
+          <Route
+            element={
+              <MaintenanceGate>
+                <TicketChatProvider>
+                  <Outlet />
+                </TicketChatProvider>
+              </MaintenanceGate>
+            }
+          >
+            <Route path="/" element={<Index />} />
+            <Route path="/servicos" element={<ServicosPage />} />
+            <Route path="/planos" element={<PlanosPage />} />
+            <Route path="/portfolio" element={<PortfolioPage />} />
+            <Route path="/contato" element={<ContatoPage />} />
+            <Route path="/feedback/:token" element={<FeedbackPublicPage />} />
+          </Route>
 
           <Route path="/dashboard/login" element={<LoginPage />} />
           <Route
@@ -54,6 +67,7 @@ const App = () => (
             <Route path="projetos" element={<ProjectsPage />} />
             <Route path="servicos" element={<ServicesPage />} />
             <Route path="mensagens" element={<MessagesPage />} />
+            <Route path="tickets" element={<TicketsPage />} />
             <Route path="feedbacks" element={<FeedbacksPage />} />
             <Route path="configuracoes" element={<SettingsPage />} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />

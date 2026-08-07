@@ -26,6 +26,9 @@ const mapSettings = (r: any): AdminSettings => ({
   authorName: r.author_name,
   acceptingProjects: r.accepting_projects ?? true,
   availabilityNote: r.availability_note ?? "",
+  maintenanceMode: r.maintenance_mode ?? false,
+  maintenanceMessage: r.maintenance_message ?? "",
+  maintenanceEta: r.maintenance_eta ?? "",
 });
 
 const mapProject = (r: any): Project => ({
@@ -245,6 +248,9 @@ export const useSettings = () => {
     authorName: "Walmry Netto",
     acceptingProjects: true,
     availabilityNote: "",
+    maintenanceMode: false,
+    maintenanceMessage: "",
+    maintenanceEta: "",
   });
 
   const refresh = useCallback(async () => {
@@ -267,6 +273,9 @@ export const useSettings = () => {
         author_name: s.authorName,
         accepting_projects: s.acceptingProjects,
         availability_note: s.availabilityNote,
+        maintenance_mode: s.maintenanceMode,
+        maintenance_message: s.maintenanceMessage,
+        maintenance_eta: s.maintenanceEta,
       })
       .eq("id", s.id);
     if (!error) await refresh();

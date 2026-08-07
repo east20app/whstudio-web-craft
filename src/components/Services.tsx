@@ -1,11 +1,14 @@
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
-import { services, siteConfig, whatsappLink } from "@/config/site";
+import { services } from "@/config/site";
+import { useOrcamentoAction } from "@/components/tickets/TicketChat";
 
 const accents = ["text-primary", "text-accent-2", "text-primary", "text-accent-2", "text-primary", "text-accent-2"];
 
-const Services = () => (
-  <section id="servicos" className="py-28 md:py-32 border-t border-border">
+const Services = () => {
+  const { requestQuote } = useOrcamentoAction();
+  return (
+    <section id="servicos" className="py-28 md:py-32 border-t border-border">
     <div className="container">
       <div className="grid md:grid-cols-12 gap-8 mb-16">
         <div className="md:col-span-3">
@@ -32,16 +35,16 @@ const Services = () => (
           const Icon = s.icon;
           const accent = accents[i % accents.length];
           return (
-            <motion.a
+            <motion.button
               key={s.id}
-              href={whatsappLink(siteConfig.defaultMessages.service(s.title))}
-              target="_blank"
-              rel="noopener noreferrer"
+              type="button"
+              onClick={() => requestQuote({ subject: s.title, prefill: `Quero um orçamento de ${s.title}. ` })}
+              aria-label={`Solicitar orçamento de ${s.title}`}
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: Math.min(i * 0.05, 0.25) }}
-              className="card-premium group p-7 md:p-8 flex flex-col relative"
+              className="card-premium group p-7 md:p-8 flex flex-col relative text-left"
             >
               <div className="flex items-baseline justify-between mb-8">
                 <span className="font-mono text-xs text-foreground/35 tracking-widest">
@@ -68,12 +71,13 @@ const Services = () => (
                 <span className="eyebrow text-foreground/50 group-hover:text-foreground/80 transition-colors">Solicitar</span>
                 <ArrowUpRight className="w-4 h-4 text-foreground/40 group-hover:text-foreground group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
               </div>
-            </motion.a>
+            </motion.button>
           );
         })}
       </div>
     </div>
-  </section>
-);
+    </section>
+  );
+};
 
 export default Services;

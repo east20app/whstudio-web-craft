@@ -8,6 +8,7 @@ import { Mail, MessageCircle, Send } from "lucide-react";
 import { z } from "zod";
 import { toast } from "sonner";
 import { siteConfig, whatsappLink } from "@/config/site";
+import { useOrcamentoAction } from "@/components/tickets/TicketChat";
 import { supabase } from "@/integrations/supabase/client";
 
 const contactSchema = z.object({
@@ -37,6 +38,7 @@ const initialState: FormData = { name: "", email: "", project: "", message: "" }
 const Contact = () => {
   const [data, setData] = useState<FormData>(initialState);
   const [errors, setErrors] = useState<FormErrors>({});
+  const { requestQuote } = useOrcamentoAction();
 
   const update = (field: keyof FormData, value: string) => {
     setData((d) => ({ ...d, [field]: value }));
@@ -73,9 +75,11 @@ const Contact = () => {
       return;
     }
 
-    const message = siteConfig.defaultMessages.contactForm(result.data);
-    window.open(whatsappLink(message), "_blank", "noopener,noreferrer");
-    toast.success("Mensagem enviada! Abrimos o WhatsApp para você.");
+    requestQuote({
+      subject: result.data.project?.trim() ? result.data.project : "Assunto geral",
+      prefill: fullMessage,
+    });
+    toast.success("Mensagem registrada! Continue a conversa na central de atendimento.");
     setData(initialState);
   };
 
@@ -166,10 +170,10 @@ const Contact = () => {
             </div>
 
             <Button type="submit" size="lg" className="w-full glow">
-              <Send className="w-4 h-4 mr-2" /> Enviar via WhatsApp
+              <Send className="w-4 h-4 mr-2" aria-hidden="true" /> Enviar e abrir atendimento
             </Button>
             <p className="text-xs text-muted-foreground text-center">
-              Ao enviar, abriremos o WhatsApp com sua mensagem pronta.
+              Resposta em até 24 horas úteis — acompanhe pela central de atendimento.
             </p>
           </motion.form>
 
