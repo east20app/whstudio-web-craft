@@ -3,6 +3,7 @@ import { LogOut, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { signOut, useAuth, useSettings } from "./store";
+import { useTickets } from "./ticketsStore";
 import { toast } from "sonner";
 
 const items = [
@@ -11,9 +12,10 @@ const items = [
   { to: "/dashboard/clientes", label: "Clientes", code: "02" },
   { to: "/dashboard/projetos", label: "Projetos", code: "03" },
   { to: "/dashboard/servicos", label: "Serviços", code: "04" },
-  { to: "/dashboard/mensagens", label: "Mensagens", code: "05" },
-  { to: "/dashboard/feedbacks", label: "Feedbacks", code: "06" },
-  { to: "/dashboard/configuracoes", label: "Configurações", code: "07" },
+  { to: "/dashboard/tickets", label: "Tickets", code: "05", badge: "tickets" as const },
+  { to: "/dashboard/mensagens", label: "Mensagens", code: "06" },
+  { to: "/dashboard/feedbacks", label: "Feedbacks", code: "07" },
+  { to: "/dashboard/configuracoes", label: "Configurações", code: "08" },
 ];
 
 const DashboardLayout = () => {
@@ -21,6 +23,7 @@ const DashboardLayout = () => {
   const navigate = useNavigate();
   const { settings } = useSettings();
   const { user } = useAuth();
+  const { unread } = useTickets();
 
   const onLogout = async () => {
     await signOut();
@@ -64,6 +67,11 @@ const DashboardLayout = () => {
             >
               <span className="font-mono text-[10px] text-muted-foreground/50 tabular-nums">{it.code}</span>
               <span className="font-medium">{it.label}</span>
+              {"badge" in it && it.badge === "tickets" && unread > 0 && (
+                <span className="ml-auto font-mono text-[9px] px-1.5 py-0.5 rounded-full bg-primary/15 text-primary border border-primary/30 tabular-nums">
+                  {unread}
+                </span>
+              )}
             </NavLink>
           ))}
         </nav>
@@ -92,6 +100,12 @@ const DashboardLayout = () => {
             <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
               Painel interno
             </p>
+            {settings.maintenanceMode && (
+              <span className="hidden sm:inline-flex items-center gap-2 rounded-full border border-yellow-500/40 bg-yellow-500/10 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-yellow-300">
+                <span className="h-1.5 w-1.5 rounded-full bg-yellow-300" aria-hidden="true" />
+                Site em manutenção para visitantes
+              </span>
+            )}
           </div>
           <div className="flex items-center gap-2">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" aria-hidden="true" />
