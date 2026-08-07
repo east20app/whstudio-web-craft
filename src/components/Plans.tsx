@@ -1,9 +1,12 @@
 import { motion } from "framer-motion";
 import { Check, ArrowUpRight, Clock, LifeBuoy } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { plans, siteConfig, whatsappLink } from "@/config/site";
+import { plans } from "@/config/site";
+import { useOrcamentoAction } from "@/components/tickets/TicketChat";
 
-const Plans = () => (
+const Plans = () => {
+  const { requestQuote } = useOrcamentoAction();
+  return (
   <section id="planos" className="py-28 md:py-32 border-t border-border relative overflow-hidden">
     <div
       className="absolute inset-0 -z-10 opacity-70"
@@ -80,21 +83,21 @@ const Plans = () => (
                   ? "glow btn-glow-hover"
                   : "border-foreground/20 hover:border-primary/50 hover:bg-primary/5"
               }`}
-              asChild
+              onClick={() =>
+                requestQuote({
+                  subject: `Plano ${p.name}`,
+                  prefill: `Tenho interesse no plano ${p.name}. `,
+                })
+              }
             >
-              <a
-                href={whatsappLink(siteConfig.defaultMessages.plan(p.name))}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {p.ctaLabel} <ArrowUpRight className="w-4 h-4 ml-1" />
-              </a>
+              {p.ctaLabel} <ArrowUpRight className="w-4 h-4 ml-1" aria-hidden="true" />
             </Button>
           </motion.div>
         ))}
       </div>
     </div>
-  </section>
-);
+    </section>
+  );
+};
 
 export default Plans;
