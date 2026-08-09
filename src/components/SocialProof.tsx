@@ -1,57 +1,43 @@
 import { motion } from "framer-motion";
-import { Quote, Star } from "lucide-react";
+import { Star } from "lucide-react";
 import { testimonials } from "@/config/site";
 
 const SocialProof = () => (
-  <section className="py-28 md:py-32 border-t border-border">
+  <section className="py-24 md:py-32 border-t border-border">
     <div className="container">
-      <div className="grid md:grid-cols-12 gap-8 mb-14">
-        <div className="md:col-span-3">
-          <p className="eyebrow">[ 03 ] Quem confiou</p>
-        </div>
-        <div className="md:col-span-9">
-          <h2 className="display-huge text-4xl md:text-6xl">
-            Não é review de e-commerce. <span className="text-foreground/50">É cliente que volta.</span>
+      <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-16">
+        <div>
+          <p className="eyebrow mb-4">Quem confiou</p>
+          <h2 className="display-huge text-5xl md:text-7xl max-w-3xl">
+            Não é review de e-commerce. <em>É cliente que volta.</em>
           </h2>
         </div>
       </div>
 
-      <div className="grid md:grid-cols-12 gap-5">
-        {testimonials.map((t, i) => {
-          const big = i === 0;
-          return (
-            <motion.figure
-              key={t.name}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.08 }}
-              className={`card-premium p-8 md:p-10 flex flex-col relative ${
-                big ? "md:col-span-7 md:row-span-2" : "md:col-span-5"
-              }`}
-            >
-              <Quote className="w-6 h-6 mb-6 text-foreground/25" strokeWidth={1.5} />
-              <blockquote
-                className={`font-display font-extrabold tracking-tight ${
-                  big ? "text-2xl md:text-3xl leading-tight" : "text-lg md:text-xl leading-snug"
-                }`}
-              >
-                "{t.text}"
-              </blockquote>
-              <figcaption className="mt-auto pt-8 flex items-center justify-between border-t border-border">
-                <div>
-                  <p className="text-sm font-semibold">{t.name}</p>
-                  <p className="eyebrow mt-1">{t.role}</p>
-                </div>
-                <span className="inline-flex items-center gap-0.5" aria-label="5 de 5 estrelas">
-                  {Array.from({ length: 5 }).map((_, s) => (
-                    <Star key={s} className="w-3.5 h-3.5 text-warning fill-warning" aria-hidden="true" />
-                  ))}
-                </span>
-              </figcaption>
-            </motion.figure>
-          );
-        })}
+      <div className="grid md:grid-cols-2 lg:grid-cols-3">
+        {testimonials.map((t, i) => (
+          <motion.figure
+            key={t.name}
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4, delay: i * 0.05 }}
+            className="flex flex-col py-8 pr-6 border-b border-border md:border-r md:last:border-r-0"
+          >
+            <div className="flex items-center gap-0.5 mb-4" aria-label="5 de 5 estrelas">
+              {Array.from({ length: 5 }).map((_, s) => (
+                <Star key={s} className="w-3.5 h-3.5 text-warning fill-warning" aria-hidden="true" />
+              ))}
+            </div>
+            <blockquote className="font-display text-xl md:text-2xl leading-snug flex-1">
+              "{t.text}"
+            </blockquote>
+            <figcaption className="mt-6">
+              <p className="text-sm font-semibold">{t.name}</p>
+              <p className="eyebrow mt-1">{t.role}</p>
+            </figcaption>
+          </motion.figure>
+        ))}
       </div>
     </div>
   </section>

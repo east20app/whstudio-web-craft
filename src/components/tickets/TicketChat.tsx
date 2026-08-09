@@ -156,7 +156,7 @@ export const TicketChatProvider = ({ children }: { children: React.ReactNode }) 
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Prefiro falar no WhatsApp"
-          className="flex items-center gap-2 rounded-full border border-[#25D366]/30 bg-[#25D366]/10 px-4 py-2 text-xs font-medium text-[#25D366] backdrop-blur-sm transition-colors hover:bg-[#25D366]/20"
+          className="flex items-center gap-2 border border-[#25D366]/30 bg-[#25D366]/10 px-4 py-2 text-xs font-medium text-[#25D366] transition-colors hover:bg-[#25D366]/20"
         >
           <MessageCircle className="w-4 h-4" aria-hidden="true" /> Prefiro WhatsApp
         </a>
@@ -165,7 +165,7 @@ export const TicketChatProvider = ({ children }: { children: React.ReactNode }) 
           <button
             onClick={() => setOpen(true)}
             aria-label="Abrir central de atendimento"
-            className="flex items-center gap-2 rounded-full bg-primary px-5 h-12 text-sm font-semibold text-primary-foreground shadow-lg transition-transform hover:scale-[1.02]"
+            className="flex items-center gap-2 bg-primary px-5 h-12 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
           >
             <MessageSquare className="w-4 h-4" aria-hidden="true" />
             {ticket ? "Minha conversa" : "Solicitar orçamento"}
@@ -182,7 +182,7 @@ export const TicketChatProvider = ({ children }: { children: React.ReactNode }) 
             transition={{ duration: 0.18 }}
             role="dialog"
             aria-label="Central de atendimento"
-            className="fixed bottom-6 right-6 z-[60] w-[calc(100vw-3rem)] sm:w-[380px] max-h-[min(70vh,560px)] flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-2xl"
+            className="fixed bottom-6 right-6 z-[60] w-[calc(100vw-3rem)] sm:w-[380px] max-h-[min(70vh,560px)] flex flex-col overflow-hidden border border-border bg-card"
           >
             <header className="flex items-start justify-between gap-3 border-b border-border px-5 py-4">
               <div className="min-w-0">
@@ -263,7 +263,7 @@ export const TicketChatProvider = ({ children }: { children: React.ReactNode }) 
                   />
                   {errors.message && <p className="text-xs text-destructive">{errors.message}</p>}
                 </div>
-                <Button type="submit" className="w-full h-11 rounded-full" disabled={sending}>
+                <Button type="submit" className="w-full h-11" disabled={sending}>
                   {sending ? <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" /> : "Abrir atendimento"}
                 </Button>
               </form>

@@ -9,28 +9,28 @@ const ContatoPage = () => (
     <Seo {...pageSeo.contato} />
     <Header />
     <main className="pt-16">
-      <section className="py-20 border-b border-border bg-secondary/30">
-        <div className="container text-center max-w-3xl">
-          <motion.span
+      <section className="py-20 md:py-28 border-b border-border">
+        <div className="container max-w-4xl">
+          <motion.p
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-sm font-medium text-primary uppercase tracking-widest"
+            className="eyebrow mb-6"
           >
             Contato
-          </motion.span>
+          </motion.p>
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05 }}
-            className="text-4xl md:text-5xl font-extrabold mt-3 mb-5"
+            className="display-huge text-5xl md:text-7xl"
           >
-            Bora tirar sua ideia <span className="text-gradient">do chão</span>
+            Bora tirar sua ideia <em>do chão.</em>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-muted-foreground text-base md:text-lg"
+            className="text-muted-foreground text-base md:text-lg mt-6 max-w-2xl"
           >
             Me conta o que você precisa. Eu devolvo um orçamento fechado em até 24 horas úteis.
           </motion.p>

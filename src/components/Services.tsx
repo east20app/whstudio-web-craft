@@ -6,73 +6,53 @@ import { useOrcamentoAction } from "@/components/tickets/TicketChat";
 const Services = () => {
   const { requestQuote } = useOrcamentoAction();
   return (
-    <section id="servicos" className="py-28 md:py-32 border-t border-border">
-    <div className="container">
-      <div className="grid md:grid-cols-12 gap-8 mb-16">
-        <div className="md:col-span-3">
-          <p className="eyebrow">[ 01 ] Serviços</p>
-        </div>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="md:col-span-9"
-        >
-          <h2 className="display-huge text-4xl md:text-6xl mb-5">
-            Construímos o que <br />
-            <span className="text-foreground/50">você ainda controla</span> na planilha.
-          </h2>
-          <p className="text-foreground/70 max-w-xl">
-            Cada projeto é escrito do zero. Sem WordPress, sem template comprado, sem mensalidade escondida.
+    <section id="servicos" className="py-24 md:py-32 border-t border-border">
+      <div className="container">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-16">
+          <div>
+            <p className="eyebrow mb-4">Serviços</p>
+            <h2 className="display-huge text-5xl md:text-7xl max-w-2xl">
+              O que a gente <em>constrói.</em>
+            </h2>
+          </div>
+          <p className="text-muted-foreground max-w-sm md:pb-2">
+            Cada projeto é escrito do zero. Sem WordPress, sem template comprado,
+            sem mensalidade escondida.
           </p>
-        </motion.div>
-      </div>
+        </div>
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        {services.map((s, i) => {
-          const Icon = s.icon;
-          return (
-            <motion.button
-              key={s.id}
-              type="button"
-              onClick={() => requestQuote({ subject: s.title, prefill: `Quero um orçamento de ${s.title}. ` })}
-              aria-label={`Solicitar orçamento de ${s.title}`}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: Math.min(i * 0.05, 0.25) }}
-              className="card-premium group p-7 md:p-8 flex flex-col relative text-left"
-            >
-              <div className="flex items-baseline justify-between mb-8">
-                <span className="font-mono text-xs text-muted-foreground tracking-widest">
-                  S/{String(i + 1).padStart(2, "0")}
+        <div className="border-t border-border">
+          {services.map((s, i) => {
+            const Icon = s.icon;
+            return (
+              <motion.button
+                key={s.id}
+                type="button"
+                onClick={() => requestQuote({ subject: s.title, prefill: `Quero um orçamento de ${s.title}. ` })}
+                aria-label={`Solicitar orçamento de ${s.title}`}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: Math.min(i * 0.04, 0.2) }}
+                className="group w-full grid md:grid-cols-12 gap-x-4 gap-y-2 items-baseline py-8 md:py-10 border-b border-border text-left transition-colors hover:bg-foreground/[0.02]"
+              >
+                <span className="md:col-span-1 flex items-center gap-3 font-mono text-xs text-muted-foreground">
+                  <Icon className="w-4 h-4" strokeWidth={1.5} />
+                  {String(i + 1).padStart(2, "0")}
                 </span>
-                <Icon className="w-5 h-5 text-muted-foreground" strokeWidth={1.5} />
-              </div>
-
-              <h3 className="font-display text-xl md:text-[1.35rem] font-extrabold tracking-tight mb-3 leading-tight">
-                {s.title}
-              </h3>
-              <p className="text-sm text-foreground/65 leading-relaxed mb-6">{s.short}</p>
-
-              <ul className="space-y-2 mt-auto mb-6">
-                {s.benefits.slice(0, 3).map((b) => (
-                  <li key={b} className="flex items-start gap-2.5 text-xs text-foreground/55">
-                    <span className="mt-1.5 w-3 h-px bg-foreground/25 shrink-0" />
-                    <span>{b}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <div className="flex items-center justify-between pt-4 border-t border-border">
-                <span className="eyebrow text-foreground/50 group-hover:text-foreground/80 transition-colors">Solicitar</span>
-                <ArrowUpRight className="w-4 h-4 text-foreground/40 group-hover:text-foreground group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
-              </div>
-            </motion.button>
-          );
-        })}
+                <h3 className="md:col-span-4 font-display text-3xl md:text-4xl leading-tight group-hover:text-primary transition-colors">
+                  {s.title}
+                </h3>
+                <p className="md:col-span-5 text-sm text-muted-foreground leading-relaxed">{s.short}</p>
+                <span className="md:col-span-2 flex items-center justify-end gap-2 text-sm font-medium">
+                  Solicitar
+                  <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </span>
+              </motion.button>
+            );
+          })}
+        </div>
       </div>
-    </div>
     </section>
   );
 };

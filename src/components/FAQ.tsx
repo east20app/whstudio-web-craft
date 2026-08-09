@@ -34,39 +34,34 @@ const faqs = [
 ];
 
 const FAQ = () => (
-  <section id="faq" className="py-28 md:py-32 border-t border-border">
+  <section id="faq" className="py-24 md:py-32 border-t border-border">
     <div className="container">
-      <div className="grid md:grid-cols-12 gap-8">
-        <div className="md:col-span-4">
-          <p className="eyebrow">[ 06 ] Perguntas</p>
-          <h2 className="display-huge text-4xl md:text-5xl mt-5">
-            Antes de <br />
-            <span className="text-foreground/50">você perguntar.</span>
+      <div className="grid lg:grid-cols-12 gap-10">
+        <div className="lg:col-span-4">
+          <p className="eyebrow mb-4">Perguntas</p>
+          <h2 className="display-huge text-4xl md:text-6xl">
+            Antes de <em>você perguntar.</em>
           </h2>
-          <p className="text-foreground/60 text-sm mt-5 max-w-sm">
+          <p className="text-muted-foreground text-sm mt-5 max-w-sm leading-relaxed">
             As dúvidas que mais chegam na central de atendimento — respondidas aqui pra você não
             perder tempo.
           </p>
         </div>
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="md:col-span-8"
+          transition={{ duration: 0.4 }}
+          className="lg:col-span-8"
         >
-          <Accordion type="single" collapsible className="w-full">
+          <Accordion type="single" collapsible className="w-full border-t border-border">
             {faqs.map((f, i) => (
-              <AccordionItem key={f.q} value={`faq-${i}`} className="border-border">
-                <AccordionTrigger className="text-left text-base md:text-lg font-semibold hover:no-underline">
-                  <span className="flex gap-4">
-                    <span className="font-mono text-[11px] text-foreground/35 pt-1.5 tabular-nums">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    {f.q}
-                  </span>
+              <AccordionItem key={f.q} value={`faq-${i}`} className="border-b border-border">
+                <AccordionTrigger className="py-5 font-display text-xl md:text-2xl text-left hover:no-underline">
+                  {f.q}
                 </AccordionTrigger>
-                <AccordionContent className="text-sm text-foreground/70 leading-relaxed pl-9">
+                <AccordionContent className="text-sm text-muted-foreground leading-relaxed">
                   {f.a}
                 </AccordionContent>
               </AccordionItem>

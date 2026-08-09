@@ -21,6 +21,7 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -141,6 +142,7 @@ const ProjectsPage = () => {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Novo projeto</DialogTitle>
+              <DialogDescription className="sr-only">Cadastre um novo projeto.</DialogDescription>
             </DialogHeader>
             <div className="space-y-3">
               <div className="space-y-1.5">

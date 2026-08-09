@@ -26,7 +26,7 @@ const MaintenanceGate = ({ children }: { children: React.ReactNode }) => {
   return (
     <main className="min-h-screen grid place-items-center bg-background px-6 py-16">
       <div className="w-full max-w-lg text-center">
-        <img src={logo} alt={`${siteConfig.name} — logo`} className="h-14 mx-auto mb-10 object-contain" />
+        <img src={logo} alt={`${siteConfig.name} — logo`} className="logo-invert h-14 mx-auto mb-10 object-contain" />
 
         <div className="card-premium p-8 md:p-10">
           <span className="mx-auto mb-6 flex h-11 w-11 items-center justify-center rounded-full border border-border bg-foreground/[0.03]">
@@ -36,7 +36,7 @@ const MaintenanceGate = ({ children }: { children: React.ReactNode }) => {
           <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
             Sys / Manutenção
           </p>
-          <h1 className="text-2xl md:text-3xl font-bold tracking-tight mt-3">Estamos em manutenção</h1>
+          <h1 className="font-display text-3xl md:text-4xl tracking-tight mt-3">Estamos em manutenção</h1>
 
           <p className="text-sm text-foreground/70 mt-4 leading-relaxed">
             {message?.trim()
@@ -51,7 +51,7 @@ const MaintenanceGate = ({ children }: { children: React.ReactNode }) => {
             </div>
           )}
 
-          <Button asChild className="mt-8 h-11 w-full rounded-full">
+          <Button asChild className="mt-8 h-11 w-full rounded-none">
             <a
               href={whatsappLink("Olá! O site da WH Studio está em manutenção e eu preciso falar com vocês.")}
               target="_blank"

@@ -107,7 +107,7 @@ const FeedbacksPage = () => {
                   <TableCell className="text-muted-foreground">{f.projectName}</TableCell>
                   <TableCell>
                     {f.rating ? (
-                      <span className="inline-flex items-center gap-1 text-yellow-300">
+                      <span className="inline-flex items-center gap-1 text-yellow-600">
                         <Star className="w-3.5 h-3.5 fill-current" /> {f.rating}/5
                       </span>
                     ) : (

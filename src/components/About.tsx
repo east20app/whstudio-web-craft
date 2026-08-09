@@ -2,107 +2,76 @@ import { motion } from "framer-motion";
 import { MapPin, Code2, ShieldCheck } from "lucide-react";
 
 const About = () => (
-  <section id="sobre" className="py-28 md:py-32 border-t border-border">
+  <section id="sobre" className="py-24 md:py-32 border-t border-border">
     <div className="container">
-      <div className="grid md:grid-cols-12 gap-8 mb-16">
-        <div className="md:col-span-3">
-          <p className="eyebrow">[ 07 ] Sobre</p>
-        </div>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="md:col-span-9"
-        >
-          <h2 className="display-huge text-4xl md:text-6xl">
-            Um estúdio. <br />
-            <span className="text-foreground/50">Uma pessoa por trás de cada projeto.</span>
+      <div className="grid lg:grid-cols-12 gap-12 items-start">
+        <div className="lg:col-span-5">
+          <p className="eyebrow mb-4">Sobre</p>
+          <h2 className="display-huge text-5xl md:text-6xl">
+            Um estúdio. <em>Uma pessoa por trás de cada projeto.</em>
           </h2>
-        </motion.div>
-      </div>
 
-      <div className="grid md:grid-cols-12 gap-8 md:gap-10 items-start">
-        {/* Card de perfil */}
-        <motion.aside
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="md:col-span-4"
-        >
-          <div className="card-premium card-premium-featured p-7">
-            <div className="flex items-center gap-4 mb-6">
-              <div className="w-14 h-14 rounded-xl border border-border bg-background flex items-center justify-center font-display font-extrabold text-lg tracking-tight">
+          <div className="mt-10 border-t border-border pt-6 space-y-4 text-sm">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-none border border-border bg-card flex items-center justify-center font-display text-2xl">
                 WN
               </div>
               <div>
-                <p className="font-display text-lg font-extrabold leading-tight">Walmry Netto</p>
+                <p className="font-semibold">Walmry Netto</p>
                 <p className="eyebrow mt-1">Fundador · Dev</p>
               </div>
             </div>
-
-            <div className="space-y-3 text-sm">
-              <div className="flex items-center gap-3 text-muted-foreground">
-                <MapPin className="w-4 h-4 text-primary shrink-0" />
-                <span>Rio Grande do Norte, Brasil</span>
-              </div>
-              <div className="flex items-center gap-3 text-muted-foreground">
-                <Code2 className="w-4 h-4 text-primary shrink-0" />
-                <span>React · Node · TypeScript · Supabase</span>
-              </div>
-              <div className="flex items-center gap-3 text-muted-foreground">
-                <ShieldCheck className="w-4 h-4 text-success shrink-0" />
-                <span>Disponível para novos projetos</span>
-              </div>
+            <div className="flex items-center gap-3 text-muted-foreground">
+              <MapPin className="w-4 h-4 text-primary shrink-0" />
+              <span>Rio Grande do Norte, Brasil</span>
             </div>
-
-            <div className="mt-6 pt-6 border-t border-border">
-              <p className="eyebrow mb-2">Fundado</p>
-              <p className="font-display font-extrabold text-3xl">2023</p>
+            <div className="flex items-center gap-3 text-muted-foreground">
+              <Code2 className="w-4 h-4 text-primary shrink-0" />
+              <span>React · Node · TypeScript · Supabase</span>
+            </div>
+            <div className="flex items-center gap-3 text-muted-foreground">
+              <ShieldCheck className="w-4 h-4 text-success shrink-0" />
+              <span>Disponível para novos projetos</span>
             </div>
           </div>
-        </motion.aside>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="md:col-span-4"
-        >
-          <p className="eyebrow mb-4">História</p>
-          <p className="text-foreground/80 leading-relaxed">
+        <div className="lg:col-span-7">
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="font-display text-2xl md:text-3xl leading-snug max-w-xl"
+          >
             A WH Studio começou em 2023 no Rio Grande do Norte, fundada pelo desenvolvedor
             Walmry Netto. Nasceu de um incômodo simples: agência grande demora, freelancer
             sumido entrega tarde — e quem paga a conta é o cliente.
-          </p>
-          <p className="text-foreground/80 leading-relaxed mt-4">
+          </motion.p>
+          <p className="text-muted-foreground leading-relaxed mt-6 max-w-xl">
             Aqui o atendimento, a arquitetura e o código passam pela mesma pessoa.
-            Sem repasse, sem ruído.
+            Sem repasse, sem ruído. Fundado em 2023, operando por projetos.
           </p>
-        </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="md:col-span-4"
-        >
-          <p className="eyebrow mb-4">Forma de trabalho</p>
-          <ul className="space-y-4 text-foreground/80 leading-relaxed">
-            {[
-              "Conversa direta no WhatsApp — sem comercial, sem proposta de 12 páginas.",
-              "Escopo e prazo combinados antes da primeira linha de código.",
-              "Preview funcionando a cada etapa, ajustes incluídos no caminho.",
-              "Entrega no ar, treinamento e suporte direto pós-lançamento.",
-            ].map((t, i) => (
-              <li key={i} className="flex gap-4">
-                <span className="eyebrow text-primary pt-1 w-8 shrink-0">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <span>{t}</span>
-              </li>
-            ))}
-          </ul>
-        </motion.div>
+          <div className="mt-12">
+            <p className="eyebrow mb-0">Forma de trabalho</p>
+            <ul className="border-t border-border">
+              {[
+                "Conversa direta no WhatsApp — sem comercial, sem proposta de 12 páginas.",
+                "Escopo e prazo combinados antes da primeira linha de código.",
+                "Preview funcionando a cada etapa, ajustes incluídos no caminho.",
+                "Entrega no ar, treinamento e suporte direto pós-lançamento.",
+              ].map((t, i) => (
+                <li key={i} className="flex gap-6 py-4 border-b border-border text-sm leading-relaxed">
+                  <span className="font-mono text-xs text-muted-foreground pt-0.5 w-6 shrink-0 tabular-nums">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span>{t}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   </section>

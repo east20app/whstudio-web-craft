@@ -49,11 +49,11 @@ const LoginPage = () => {
     <div className="min-h-screen flex items-center justify-center px-4 bg-background">
       <form onSubmit={onSubmit} className="w-full max-w-md card-dark p-8">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-xl bg-primary/15 border border-primary/30 flex items-center justify-center">
+          <div className="w-10 h-10 border border-primary/30 bg-primary/10 flex items-center justify-center">
             <Lock className="w-5 h-5 text-primary" />
           </div>
           <div>
-            <h1 className="text-xl font-bold">Acesse o painel</h1>
+            <h1 className="font-display text-2xl">Acesse o painel</h1>
             <p className="text-xs text-muted-foreground">WH Studio · acesso restrito</p>
           </div>
         </div>

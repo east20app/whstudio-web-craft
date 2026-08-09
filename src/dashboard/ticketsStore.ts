@@ -21,6 +21,14 @@ export type AdminTicketMessage = {
   createdAt: string;
 };
 
+/**
+ * Nomes de canal únicos por instância. `useTickets` roda em mais de um componente
+ * ao mesmo tempo (badge da sidebar + página de tickets); o Supabase deduplica canais
+ * pelo nome e quebra o `.on()` depois do `.subscribe()`.
+ */
+let channelSeq = 0;
+const channelName = (base: string) => `${base}-${Date.now().toString(36)}-${channelSeq++}`;
+
 const mapTicket = (r: any): AdminTicket => ({
   id: r.id,
   name: r.name ?? "",
@@ -38,10 +46,11 @@ export const useTickets = () => {
   const [loading, setLoading] = useState(true);
 
   const refresh = useCallback(async () => {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("tickets")
       .select("*")
       .order("last_message_at", { ascending: false });
+    if (error) console.error("useTickets.refresh", error);
     if (data) setTickets((data as any[]).map(mapTicket));
     setLoading(false);
   }, []);
@@ -52,7 +61,7 @@ export const useTickets = () => {
 
   useEffect(() => {
     const channel = supabase
-      .channel("admin-tickets")
+      .channel(channelName("admin-tickets"))
       .on("postgres_changes", { event: "*", schema: "public", table: "tickets" }, () => refresh())
       .subscribe();
     return () => {
@@ -77,7 +86,10 @@ export const useTickets = () => {
       sender: "admin",
       body: body.trim(),
     });
-    if (error) return false;
+    if (error) {
+      console.error("useTickets.reply insert", error);
+      return false;
+    }
     await supabase
       .from("tickets")
       .update({ status: "respondido", last_message_at: new Date().toISOString(), admin_unread: 0 })
@@ -109,11 +121,12 @@ export const useTicketMessages = (ticketId: string | null) => {
       return;
     }
     setLoading(true);
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("ticket_messages")
       .select("*")
       .eq("ticket_id", ticketId)
       .order("created_at", { ascending: true });
+    if (error) console.error("useTicketMessages.refresh", error);
     setMessages(
       ((data as any[]) ?? []).map((r) => ({
         id: r.id,
@@ -133,7 +146,7 @@ export const useTicketMessages = (ticketId: string | null) => {
   useEffect(() => {
     if (!ticketId) return;
     const channel = supabase
-      .channel(`admin-ticket-${ticketId}`)
+      .channel(channelName(`admin-ticket-${ticketId}`))
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "ticket_messages", filter: `ticket_id=eq.${ticketId}` },

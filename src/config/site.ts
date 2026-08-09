@@ -248,13 +248,22 @@ export const portfolio: PortfolioProject[] = [
 ];
 
 export const statusLabels: Record<ProjectStatus, { label: string; className: string }> = {
-  online: { label: "Online", className: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30" },
-  demo: { label: "Demonstração", className: "bg-violet-500/15 text-violet-400 border-violet-500/30" },
+  online: {
+    label: "Online",
+    className: "bg-background/80 border-emerald-500/30 text-emerald-600 dark:text-emerald-300",
+  },
+  demo: {
+    label: "Demonstração",
+    className: "bg-background/80 border-violet-500/30 text-violet-600 dark:text-violet-300",
+  },
   "em-desenvolvimento": {
     label: "Em desenvolvimento",
-    className: "bg-yellow-500/15 text-yellow-400 border-yellow-500/30",
+    className: "bg-background/80 border-yellow-500/30 text-yellow-600 dark:text-yellow-300",
   },
-  privado: { label: "Projeto privado", className: "bg-zinc-500/15 text-zinc-300 border-zinc-500/30" },
+  privado: {
+    label: "Projeto privado",
+    className: "bg-background/80 border-zinc-500/30 text-zinc-500 dark:text-zinc-300",
+  },
 };
 
 // =============== NAVEGAÇÃO ===============

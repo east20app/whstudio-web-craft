@@ -8,6 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogFooter,
@@ -144,6 +145,9 @@ const ServicesPage = () => {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>{editing ? "Editar serviço" : "Novo serviço"}</DialogTitle>
+            <DialogDescription className="sr-only">
+              {editing ? "Edite os dados do serviço." : "Cadastre um novo serviço."}
+            </DialogDescription>
           </DialogHeader>
           <div className="space-y-3">
             <div className="space-y-1.5">

@@ -263,21 +263,22 @@ export const useSettings = () => {
   }, [refresh]);
 
   const saveSettings = async (s: AdminSettings) => {
-    const { error } = await supabase
-      .from("settings")
-      .update({
-        site_name: s.siteName,
-        whatsapp: s.whatsapp,
-        discord_link: s.discordLink,
-        footer_text: s.footerText,
-        author_name: s.authorName,
-        accepting_projects: s.acceptingProjects,
-        availability_note: s.availabilityNote,
-        maintenance_mode: s.maintenanceMode,
-        maintenance_message: s.maintenanceMessage,
-        maintenance_eta: s.maintenanceEta,
-      })
-      .eq("id", s.id);
+    const payload = {
+      site_name: s.siteName,
+      whatsapp: s.whatsapp,
+      discord_link: s.discordLink,
+      footer_text: s.footerText,
+      author_name: s.authorName,
+      accepting_projects: s.acceptingProjects,
+      availability_note: s.availabilityNote,
+      maintenance_mode: s.maintenanceMode,
+      maintenance_message: s.maintenanceMessage,
+      maintenance_eta: s.maintenanceEta,
+    };
+    const query = s.id
+      ? supabase.from("settings").update(payload).eq("id", s.id)
+      : supabase.from("settings").insert(payload).select("id").single();
+    const { error } = await query;
     if (!error) await refresh();
     return !error;
   };

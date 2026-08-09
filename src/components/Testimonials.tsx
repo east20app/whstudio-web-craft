@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Star, Quote } from "lucide-react";
+import { Star } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import SocialProof from "@/components/SocialProof";
@@ -38,48 +38,41 @@ const Testimonials = () => {
   if (items.length === 0) return <SocialProof />;
 
   return (
-    <section id="depoimentos" className="py-28 md:py-32 border-t border-border">
+    <section id="depoimentos" className="py-24 md:py-32 border-t border-border">
       <div className="container">
-        <div className="grid md:grid-cols-12 gap-8 mb-14">
-          <div className="md:col-span-3">
-            <p className="eyebrow">[ 03 ] Quem confiou</p>
-          </div>
-          <div className="md:col-span-9">
-            <h2 className="display-huge text-4xl md:text-6xl">
-              Avaliação de quem recebeu o projeto.{" "}
-              <span className="text-foreground/50">Escrita por eles.</span>
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-16">
+          <div>
+            <p className="eyebrow mb-4">Quem confiou</p>
+            <h2 className="display-huge text-5xl md:text-7xl max-w-3xl">
+              Avaliação de quem recebeu o projeto. <em>Escrita por eles.</em>
             </h2>
           </div>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3">
           {items.map((t, i) => (
             <motion.article
               key={t.id}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.06 }}
-              className="card-premium p-7 flex flex-col gap-4"
+              transition={{ duration: 0.4, delay: i * 0.05 }}
+              className="flex flex-col py-8 pr-6 border-b border-border md:border-r md:last:border-r-0"
             >
-              <Quote className="w-5 h-5 text-foreground/25" strokeWidth={1.5} aria-hidden="true" />
-              <p className="text-sm text-foreground/85 leading-relaxed">{t.testimonial}</p>
-              <div className="flex items-center gap-1 mt-auto">
+              <div className="flex items-center gap-0.5 mb-4" aria-label={`${t.rating ?? 0} de 5 estrelas`}>
                 {Array.from({ length: 5 }).map((_, s) => (
                   <Star
                     key={s}
-                    className={`w-4 h-4 ${
-                      (t.rating ?? 0) > s ? "text-warning fill-warning" : "text-muted-foreground/30"
-                    }`}
+                    className={`w-3.5 h-3.5 ${(t.rating ?? 0) > s ? "text-warning fill-warning" : "text-muted-foreground/25"}`}
                     aria-hidden="true"
                   />
                 ))}
-                <span className="sr-only">{t.rating ?? 0} de 5 estrelas</span>
               </div>
-              <div className="border-t border-border pt-4">
+              <p className="font-display text-xl md:text-2xl leading-snug flex-1">"{t.testimonial}"</p>
+              <footer className="mt-6">
                 <p className="text-sm font-semibold">{t.client_name || "Cliente WH Studio"}</p>
                 {t.project_name && <p className="eyebrow mt-1">{t.project_name}</p>}
-              </div>
+              </footer>
             </motion.article>
           ))}
         </div>

@@ -34,7 +34,7 @@ const DashboardLayout = () => {
   return (
     <div className="min-h-screen flex w-full bg-background">
       <aside
-        className={`fixed lg:sticky top-0 inset-y-0 left-0 z-40 w-[248px] h-screen bg-[hsl(240_10%_2.5%)] border-r border-border flex flex-col transition-transform lg:translate-x-0 ${
+        className={`fixed lg:sticky top-0 inset-y-0 left-0 z-40 w-[248px] h-screen bg-card border-r border-border flex flex-col transition-transform lg:translate-x-0 ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -101,8 +101,8 @@ const DashboardLayout = () => {
               Painel interno
             </p>
             {settings.maintenanceMode && (
-              <span className="hidden sm:inline-flex items-center gap-2 rounded-full border border-yellow-500/40 bg-yellow-500/10 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-yellow-300">
-                <span className="h-1.5 w-1.5 rounded-full bg-yellow-300" aria-hidden="true" />
+              <span className="hidden sm:inline-flex items-center gap-2 rounded-full border border-yellow-600/40 bg-yellow-500/10 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-yellow-700">
+                <span className="h-1.5 w-1.5 rounded-full bg-yellow-600" aria-hidden="true" />
                 Site em manutenção para visitantes
               </span>
             )}

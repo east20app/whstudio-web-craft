@@ -3,7 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#0a0a0f" />
+    <meta name="theme-color" content="#fbfaf6" />
+
+    <script>
+      // Aplica o tema antes do React carregar, para não piscar.
+      (function () {
+        try {
+          var t = localStorage.getItem("theme");
+          if (t === "dark" || (!t && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+            document.documentElement.classList.add("dark");
+          }
+        } catch (e) {}
+      })();
+    </script>
 
     <title>WH Studio — Sites, sistemas e bots sob medida</title>
     <meta name="description" content="WH Studio cria sites profissionais, lojas virtuais, bots para Discord, sistemas personalizados, dashboards e automações. Solicite um orçamento pelo WhatsApp." />

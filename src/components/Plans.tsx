@@ -7,87 +7,74 @@ import { useOrcamentoAction } from "@/components/tickets/TicketChat";
 const Plans = () => {
   const { requestQuote } = useOrcamentoAction();
   return (
-  <section id="planos" className="py-28 md:py-32 border-t border-border">
-    <div className="container">
-      <div className="grid md:grid-cols-12 gap-8 mb-16">
-        <div className="md:col-span-3">
-          <p className="eyebrow">[ 04 ] Planos</p>
-        </div>
-        <div className="md:col-span-9">
-          <h2 className="display-huge text-4xl md:text-6xl mb-5">
-            Qual nível faz sentido <br />
-            <span className="text-foreground/50">pra onde você está?</span>
-          </h2>
-          <p className="text-foreground/70 max-w-xl">
+    <section id="planos" className="py-24 md:py-32 border-t border-border">
+      <div className="container">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-16">
+          <div>
+            <p className="eyebrow mb-4">Planos</p>
+            <h2 className="display-huge text-5xl md:text-7xl max-w-2xl">
+              Qual nível faz sentido <em>pra onde você está?</em>
+            </h2>
+          </div>
+          <p className="text-muted-foreground max-w-sm md:pb-2">
             Cada projeto é orçado depois de entender o escopo. O que muda aqui é a profundidade da entrega.
           </p>
         </div>
-      </div>
 
-      <div className="grid md:grid-cols-3 gap-5 md:gap-6 items-stretch">
-        {plans.map((p, i) => (
-          <motion.div
-            key={p.id}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.08 }}
-            className={`card-premium p-7 md:p-8 flex flex-col relative ${
-              p.popular ? "card-premium-featured md:-mt-4 md:mb-0" : ""
-            }`}
-          >
-            {p.popular && (
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-[10px] font-mono uppercase tracking-widest px-3 py-1 rounded-full bg-primary text-primary-foreground">
-                Mais escolhido
-              </span>
-            )}
-
-            <div className="flex items-baseline justify-between mb-2">
-              <h3 className="font-display text-2xl md:text-3xl font-extrabold">{p.name}</h3>
-              <span className="eyebrow text-foreground/40">{String(i + 1).padStart(2, "0")}</span>
-            </div>
-            <p className="text-sm text-foreground/60 mb-6">{p.tagline}</p>
-
-            <div className="grid grid-cols-2 gap-3 mb-6">
-              <div className="rounded-lg border border-border bg-background/40 p-3">
-                <Clock className={`w-3.5 h-3.5 mb-1.5 ${p.popular ? "text-primary" : "text-muted-foreground"}`} />
-                <p className="eyebrow mb-0.5">Prazo</p>
-                <p className="text-xs font-medium">{p.deliveryTime}</p>
-              </div>
-              <div className="rounded-lg border border-border bg-background/40 p-3">
-                <LifeBuoy className={`w-3.5 h-3.5 mb-1.5 ${p.popular ? "text-primary" : "text-muted-foreground"}`} />
-                <p className="eyebrow mb-0.5">Suporte</p>
-                <p className="text-xs font-medium">{p.support}</p>
-              </div>
-            </div>
-
-            <ul className="space-y-2.5 mb-8">
-              {p.features.map((f) => (
-                <li key={f} className="flex items-start gap-2.5 text-sm text-foreground/80">
-                  <Check className={`w-4 h-4 shrink-0 mt-0.5 ${p.popular ? "text-primary" : "text-muted-foreground"}`} />
-                  <span>{f}</span>
-                </li>
-              ))}
-            </ul>
-
-            <Button
-              variant={p.popular ? "default" : "outline"}
-              className={`h-12 mt-auto rounded-lg ${
-                p.popular ? "" : "border-foreground/20 hover:border-primary/50 hover:bg-primary/5"
-              }`}
-              onClick={() =>
-                requestQuote({
-                  subject: `Plano ${p.name}`,
-                  prefill: `Tenho interesse no plano ${p.name}. `,
-                })
-              }
+        <div className="border-t border-border grid md:grid-cols-3">
+          {plans.map((p, i) => (
+            <motion.div
+              key={p.id}
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: i * 0.06 }}
+              className={`py-8 md:py-10 md:px-8 ${i > 0 ? "md:border-l border-border" : ""} md:first:pl-0 flex flex-col`}
             >
-              {p.ctaLabel} <ArrowUpRight className="w-4 h-4 ml-1" aria-hidden="true" />
-            </Button>
-          </motion.div>
-        ))}
+              <div className="flex items-baseline justify-between gap-4">
+                <h3 className="font-display text-3xl md:text-4xl">{p.name}</h3>
+                {p.popular && <span className="eyebrow text-primary whitespace-nowrap">Mais escolhido</span>}
+              </div>
+              <p className="text-sm text-muted-foreground mt-2">{p.tagline}</p>
+
+              <div className="mt-6 space-y-2 text-sm">
+                <p className="flex items-center gap-2.5">
+                  <Clock className="w-4 h-4 text-muted-foreground shrink-0" strokeWidth={1.5} />
+                  <span className="text-muted-foreground">Prazo</span>
+                  <span className="ml-auto font-medium text-right">{p.deliveryTime}</span>
+                </p>
+                <p className="flex items-center gap-2.5">
+                  <LifeBuoy className="w-4 h-4 text-muted-foreground shrink-0" strokeWidth={1.5} />
+                  <span className="text-muted-foreground">Suporte</span>
+                  <span className="ml-auto font-medium text-right">{p.support}</span>
+                </p>
+              </div>
+
+              <ul className="mt-6 border-t border-border pt-6 space-y-3 flex-1">
+                {p.features.map((f) => (
+                  <li key={f} className="flex items-start gap-3 text-sm text-foreground/85">
+                    <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" strokeWidth={2} />
+                    <span>{f}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <Button
+                variant={p.popular ? "default" : "outline"}
+                className="w-full mt-8 rounded-none"
+                onClick={() =>
+                  requestQuote({
+                    subject: `Plano ${p.name}`,
+                    prefill: `Tenho interesse no plano ${p.name}. `,
+                  })
+                }
+              >
+                {p.ctaLabel} <ArrowUpRight className="w-4 h-4 ml-1" aria-hidden="true" />
+              </Button>
+            </motion.div>
+          ))}
+        </div>
       </div>
-    </div>
     </section>
   );
 };
