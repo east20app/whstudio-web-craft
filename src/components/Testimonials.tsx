@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Star, Quote } from "lucide-react";
+import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
+import SocialProof from "@/components/SocialProof";
 
 type Item = {
   id: string;
@@ -10,6 +12,10 @@ type Item = {
   testimonial: string | null;
 };
 
+/**
+ * Depoimentos reais aprovados no painel (feedbacks publicados).
+ * Se ainda não houver nenhum publicado, cai no conteúdo fixo do SocialProof.
+ */
 const Testimonials = () => {
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
@@ -28,50 +34,53 @@ const Testimonials = () => {
     })();
   }, []);
 
-  if (loading || items.length === 0) return null;
+  if (loading) return null;
+  if (items.length === 0) return <SocialProof />;
 
   return (
-    <section id="depoimentos" className="py-20 md:py-28 px-4 relative border-t border-border">
-      <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-14">
-          <p className="eyebrow text-primary mb-3">Depoimentos</p>
-          <h2 className="display-huge text-3xl md:text-5xl">
-            O que nossos <span className="text-accent-blue">clientes</span> dizem
-          </h2>
-          <p className="text-muted-foreground mt-4 max-w-2xl mx-auto">
-            Avaliações reais de projetos entregues pela WH Studio.
-          </p>
+    <section id="depoimentos" className="py-28 md:py-32 border-t border-border">
+      <div className="container">
+        <div className="grid md:grid-cols-12 gap-8 mb-14">
+          <div className="md:col-span-3">
+            <p className="eyebrow">[ 03 ] Quem confiou</p>
+          </div>
+          <div className="md:col-span-9">
+            <h2 className="display-huge text-4xl md:text-6xl">
+              Avaliação de quem recebeu o projeto.{" "}
+              <span className="text-foreground/50">Escrita por eles.</span>
+            </h2>
+          </div>
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {items.map((t) => (
-            <article
+          {items.map((t, i) => (
+            <motion.article
               key={t.id}
-              className="card-premium p-6 flex flex-col gap-4"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.06 }}
+              className="card-premium p-7 flex flex-col gap-4"
             >
-              <Quote className="w-6 h-6 text-primary/70" />
-              <p className="text-sm text-foreground/90 leading-relaxed line-clamp-6">
-                {t.testimonial}
-              </p>
+              <Quote className="w-5 h-5 text-foreground/25" strokeWidth={1.5} aria-hidden="true" />
+              <p className="text-sm text-foreground/85 leading-relaxed">{t.testimonial}</p>
               <div className="flex items-center gap-1 mt-auto">
-                {Array.from({ length: 5 }).map((_, i) => (
+                {Array.from({ length: 5 }).map((_, s) => (
                   <Star
-                    key={i}
+                    key={s}
                     className={`w-4 h-4 ${
-                      (t.rating ?? 0) > i
-                        ? "text-warning fill-warning"
-                        : "text-muted-foreground/40"
+                      (t.rating ?? 0) > s ? "text-warning fill-warning" : "text-muted-foreground/30"
                     }`}
+                    aria-hidden="true"
                   />
                 ))}
+                <span className="sr-only">{t.rating ?? 0} de 5 estrelas</span>
               </div>
-              <div className="border-t border-border pt-3">
+              <div className="border-t border-border pt-4">
                 <p className="text-sm font-semibold">{t.client_name || "Cliente WH Studio"}</p>
-                {t.project_name && (
-                  <p className="text-xs text-muted-foreground">{t.project_name}</p>
-                )}
+                {t.project_name && <p className="eyebrow mt-1">{t.project_name}</p>}
               </div>
-            </article>
+            </motion.article>
           ))}
         </div>
       </div>
