@@ -6,7 +6,6 @@ import SocialProof from "@/components/SocialProof";
 import About from "@/components/About";
 import CTAFinal from "@/components/CTAFinal";
 import Footer from "@/components/Footer";
-import WhatsAppButton from "@/components/WhatsAppButton";
 
 const Index = () => (
   <>
@@ -18,7 +17,6 @@ const Index = () => (
     <About />
     <CTAFinal />
     <Footer />
-    <WhatsAppButton />
   </>
 );
 

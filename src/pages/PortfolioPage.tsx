@@ -1,6 +1,5 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import WhatsAppButton from "@/components/WhatsAppButton";
 import Portfolio from "@/components/Portfolio";
 import CTAFinal from "@/components/CTAFinal";
 import { motion } from "framer-motion";
@@ -41,7 +40,6 @@ const PortfolioPage = () => (
       <CTAFinal />
     </main>
     <Footer />
-    <WhatsAppButton />
   </>
 );
 

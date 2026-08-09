@@ -1,6 +1,5 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import WhatsAppButton from "@/components/WhatsAppButton";
 import Services from "@/components/Services";
 import CTAFinal from "@/components/CTAFinal";
 import { motion } from "framer-motion";
@@ -90,7 +89,6 @@ const ServicosPage = () => (
       <CTAFinal />
     </main>
     <Footer />
-    <WhatsAppButton />
   </>
 );
 

@@ -1,6 +1,5 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import WhatsAppButton from "@/components/WhatsAppButton";
 import Plans from "@/components/Plans";
 import CTAFinal from "@/components/CTAFinal";
 import { motion } from "framer-motion";
@@ -42,7 +41,6 @@ const PlanosPage = () => (
       <CTAFinal />
     </main>
     <Footer />
-    <WhatsAppButton />
   </>
 );
 
