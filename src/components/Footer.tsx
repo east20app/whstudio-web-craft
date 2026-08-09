@@ -9,7 +9,7 @@ const Footer = () => (
       <div className="grid md:grid-cols-4 gap-10 mb-10">
         <div className="md:col-span-2">
           <Link to="/" className="inline-flex items-center" aria-label="WH Studio">
-            <img src={logo} alt="WH Studio" className="h-12 w-auto object-contain" />
+            <img src={logo} alt="WH Studio" width={200} height={48} loading="lazy" decoding="async" className="h-12 w-auto object-contain" />
           </Link>
           <p className="text-sm text-muted-foreground mt-3 max-w-sm leading-relaxed">
             {siteConfig.slogan}. Sites, sistemas, bots e automações sob medida para o seu negócio.

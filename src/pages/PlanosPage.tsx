@@ -1,12 +1,14 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import WhatsAppButton from "@/components/WhatsAppButton";
 import Plans from "@/components/Plans";
+import PlansComparison from "@/components/PlansComparison";
 import CTAFinal from "@/components/CTAFinal";
+import Seo, { pageSeo } from "@/components/Seo";
 import { motion } from "framer-motion";
 
 const PlanosPage = () => (
   <>
+    <Seo {...pageSeo.planos} />
     <Header />
     <main className="pt-16">
       <section className="py-20 border-b border-border bg-secondary/30">
@@ -39,10 +41,10 @@ const PlanosPage = () => (
       </section>
 
       <Plans />
+      <PlansComparison />
       <CTAFinal />
     </main>
     <Footer />
-    <WhatsAppButton />
   </>
 );
 

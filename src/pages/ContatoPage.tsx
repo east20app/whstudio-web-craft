@@ -1,11 +1,12 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import WhatsAppButton from "@/components/WhatsAppButton";
 import Contact from "@/components/Contact";
+import Seo, { pageSeo } from "@/components/Seo";
 import { motion } from "framer-motion";
 
 const ContatoPage = () => (
   <>
+    <Seo {...pageSeo.contato} />
     <Header />
     <main className="pt-16">
       <section className="py-20 border-b border-border bg-secondary/30">
@@ -39,7 +40,6 @@ const ContatoPage = () => (
       <Contact />
     </main>
     <Footer />
-    <WhatsAppButton />
   </>
 );
 
