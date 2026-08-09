@@ -16,7 +16,7 @@ const Header = () => {
       <AvailabilityBanner />
       <div className="container flex items-center justify-between h-16">
         <Link to="/" className="flex items-center gap-2" onClick={() => setOpen(false)} aria-label="WH Studio">
-          <img src={logo} alt="WH Studio" className="h-9 w-auto md:h-10 object-contain" />
+          <img src={logo} alt="WH Studio" width={160} height={40} loading="eager" decoding="async" className="h-9 w-auto md:h-10 object-contain" />
         </Link>
 
         <nav className="hidden md:flex items-center gap-8" aria-label="Navegação principal">
