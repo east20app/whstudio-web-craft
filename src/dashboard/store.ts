@@ -352,14 +352,7 @@ export const signIn = async (email: string, password: string) => {
   return error?.message ?? null;
 };
 
-export const signUp = async (email: string, password: string) => {
-  const { error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: { emailRedirectTo: `${window.location.origin}/dashboard` },
-  });
-  return error?.message ?? null;
-};
+// Cadastro público removido por segurança: o painel é exclusivo do administrador.
 
 export const signOut = async () => {
   await supabase.auth.signOut();
