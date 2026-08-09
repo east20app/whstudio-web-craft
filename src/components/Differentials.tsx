@@ -9,8 +9,6 @@ const items = [
   { icon: CreditCard, title: "Pagamento já vem ligado", desc: "PIX, cartão, boleto e Stripe configurados. Você recebe direto, sem intermediário." },
 ];
 
-const accents = ["text-primary", "text-accent-2", "text-primary", "text-accent-2", "text-primary"];
-
 const Differentials = () => (
   <section className="py-28 md:py-32 border-t border-border">
     <div className="container">
@@ -29,7 +27,6 @@ const Differentials = () => (
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {items.map((item, i) => {
           const Icon = item.icon;
-          const accent = accents[i % accents.length];
           return (
             <motion.div
               key={item.title}
@@ -39,7 +36,7 @@ const Differentials = () => (
               transition={{ delay: i * 0.06 }}
               className="card-premium p-6 md:p-7 flex flex-col"
             >
-              <div className={`w-11 h-11 rounded-xl border border-border bg-background/40 flex items-center justify-center mb-5 ${accent}`}>
+              <div className="w-11 h-11 rounded-lg border border-border bg-foreground/[0.02] flex items-center justify-center mb-5 text-muted-foreground">
                 <Icon className="w-5 h-5" />
               </div>
               <h3 className="font-display font-extrabold text-lg mb-2">{item.title}</h3>

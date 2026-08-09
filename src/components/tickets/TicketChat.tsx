@@ -165,7 +165,7 @@ export const TicketChatProvider = ({ children }: { children: React.ReactNode }) 
           <button
             onClick={() => setOpen(true)}
             aria-label="Abrir central de atendimento"
-            className="flex items-center gap-2 rounded-full bg-primary px-5 h-12 text-sm font-semibold text-primary-foreground shadow-[0_0_28px_-8px_hsl(var(--primary))] transition-transform hover:scale-[1.03]"
+            className="flex items-center gap-2 rounded-full bg-primary px-5 h-12 text-sm font-semibold text-primary-foreground shadow-lg transition-transform hover:scale-[1.02]"
           >
             <MessageSquare className="w-4 h-4" aria-hidden="true" />
             {ticket ? "Minha conversa" : "Solicitar orçamento"}

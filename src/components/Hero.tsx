@@ -1,17 +1,12 @@
 import { motion } from "framer-motion";
-import { ArrowUpRight, Sparkles, Activity, Clock, Star } from "lucide-react";
+import { ArrowUpRight, Activity, Clock, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { whatsappLink } from "@/config/site";
 
 const Hero = () => (
   <section className="relative pt-36 pb-24 md:pt-44 md:pb-32 overflow-hidden">
-    {/* Spotlight radial + grid sutil */}
+    {/* Grid sutil de fundo */}
     <div className="absolute inset-0 -z-10 bg-grid" aria-hidden />
-    <div
-      className="absolute inset-0 -z-10 opacity-90"
-      style={{ background: "var(--gradient-radial-primary)" }}
-      aria-hidden
-    />
 
     <div className="container">
       <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
@@ -35,14 +30,14 @@ const Hero = () => (
             className="h1-hero mb-8 max-w-3xl"
           >
             Construímos produtos digitais{" "}
-            <span className="text-foreground/55">com cuidado de quem assina cada linha.</span>
+            <span className="text-muted-foreground">com cuidado de quem assina cada linha.</span>
           </motion.h1>
 
           <motion.p
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.15 }}
-            className="text-base md:text-lg text-foreground/70 max-w-xl mb-10 leading-relaxed"
+            className="text-base md:text-lg text-muted-foreground max-w-xl mb-10 leading-relaxed"
           >
             Estúdio de desenvolvimento no RN. Sites, sistemas e bots feitos do zero —
             sob a direção de um único profissional, do briefing ao deploy.
@@ -54,19 +49,19 @@ const Hero = () => (
             transition={{ duration: 0.6, delay: 0.22 }}
             className="flex flex-wrap items-center gap-4"
           >
-            <Button size="lg" className="h-14 px-7 text-base rounded-full group" asChild>
+            <Button size="lg" className="h-14 px-7 text-base rounded-lg group" asChild>
               <a href={whatsappLink()} target="_blank" rel="noopener noreferrer">
                 Iniciar um projeto
                 <ArrowUpRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </a>
             </Button>
-            <a href="#servicos" className="eyebrow text-muted-foreground hover:text-foreground transition-colors">
+            <a href="#servicos" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               Ver serviços →
             </a>
           </motion.div>
         </div>
 
-        {/* Card lateral com métricas — densidade visual de SaaS */}
+        {/* Card lateral com métricas */}
         <motion.aside
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -75,18 +70,11 @@ const Hero = () => (
         >
           <div className="card-premium card-premium-featured p-6 md:p-7">
             <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-primary/15 border border-primary/30 flex items-center justify-center">
-                  <Sparkles className="w-4 h-4 text-primary" />
-                </div>
-                <p className="text-sm font-semibold">WH Studio</p>
-              </div>
-              <span className="text-[10px] font-mono px-2 py-1 rounded-full bg-success/10 text-success border border-success/30">
-                ● online
-              </span>
+              <p className="text-sm font-semibold">WH Studio</p>
+              <span className="eyebrow">Disponível para projetos</span>
             </div>
 
-            <p className="eyebrow mb-4">Números do estúdio</p>
+            <p className="eyebrow mb-4">Em números</p>
 
             <div className="grid grid-cols-3 gap-3 mb-6">
               {[
@@ -94,25 +82,25 @@ const Hero = () => (
                 { icon: Clock, k: "12d", v: "Prazo médio" },
                 { icon: Star, k: "5.0", v: "Avaliação" },
               ].map(({ icon: Icon, k, v }) => (
-                <div key={v} className="rounded-lg border border-border bg-background/40 p-3">
-                  <Icon className="w-3.5 h-3.5 text-accent-2 mb-2" />
+                <div key={v} className="rounded-md border border-border bg-foreground/[0.02] p-3">
+                  <Icon className="w-3.5 h-3.5 text-muted-foreground mb-2" strokeWidth={1.5} />
                   <p className="font-display font-extrabold text-xl leading-none">{k}</p>
                   <p className="text-[10px] text-muted-foreground mt-1 uppercase tracking-wider">{v}</p>
                 </div>
               ))}
             </div>
 
-            <div className="rounded-lg border border-border bg-background/40 p-4 font-mono text-xs leading-relaxed">
-              <p className="text-muted-foreground">$ status</p>
-              <p className="text-foreground">
-                <span className="text-accent-2">→</span> Disponível para novos projetos
-              </p>
-              <p className="text-foreground">
-                <span className="text-accent-2">→</span> Resposta em até 24h úteis
-              </p>
-              <p className="text-foreground">
-                <span className="text-accent-2">→</span> Entrega em até 15 dias
-              </p>
+            <div className="rounded-md border border-border bg-foreground/[0.02] p-4 space-y-2 text-sm">
+              {[
+                ["Atendimento", "WhatsApp direto"],
+                ["Resposta", "Até 24h úteis"],
+                ["Prazo médio", "12 dias"],
+              ].map(([k, v]) => (
+                <p key={k} className="flex items-baseline justify-between gap-4">
+                  <span className="text-muted-foreground">{k}</span>
+                  <span className="text-foreground font-medium text-right">{v}</span>
+                </p>
+              ))}
             </div>
           </div>
         </motion.aside>

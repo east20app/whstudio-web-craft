@@ -169,7 +169,7 @@ const Contact = () => {
               )}
             </div>
 
-            <Button type="submit" size="lg" className="w-full glow">
+            <Button type="submit" size="lg" className="w-full">
               <Send className="w-4 h-4 mr-2" aria-hidden="true" /> Enviar e abrir atendimento
             </Button>
             <p className="text-xs text-muted-foreground text-center">

@@ -78,7 +78,7 @@ const ServicesPage = () => {
           <h2 className="text-2xl md:text-3xl font-bold">Serviços</h2>
           <p className="text-muted-foreground text-sm mt-1">Cadastre e edite os serviços oferecidos.</p>
         </div>
-        <Button className="glow" onClick={openNew}>
+        <Button onClick={openNew}>
           <Plus className="w-4 h-4 mr-1" /> Novo serviço
         </Button>
       </div>

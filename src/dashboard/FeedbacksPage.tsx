@@ -128,7 +128,7 @@ const FeedbacksPage = () => {
                         </Button>
                       )}
                       {(f.status === "received" || f.status === "hidden") && f.allowPublish && (
-                        <Button size="sm" className="glow" onClick={() => setStatus(f.id, "published")}>
+                        <Button size="sm" onClick={() => setStatus(f.id, "published")}>
                           <Send className="w-3.5 h-3.5 mr-1" /> Publicar
                         </Button>
                       )}

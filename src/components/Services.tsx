@@ -3,8 +3,6 @@ import { ArrowUpRight } from "lucide-react";
 import { services } from "@/config/site";
 import { useOrcamentoAction } from "@/components/tickets/TicketChat";
 
-const accents = ["text-primary", "text-accent-2", "text-primary", "text-accent-2", "text-primary", "text-accent-2"];
-
 const Services = () => {
   const { requestQuote } = useOrcamentoAction();
   return (
@@ -33,7 +31,6 @@ const Services = () => {
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {services.map((s, i) => {
           const Icon = s.icon;
-          const accent = accents[i % accents.length];
           return (
             <motion.button
               key={s.id}
@@ -47,10 +44,10 @@ const Services = () => {
               className="card-premium group p-7 md:p-8 flex flex-col relative text-left"
             >
               <div className="flex items-baseline justify-between mb-8">
-                <span className="font-mono text-xs text-foreground/35 tracking-widest">
+                <span className="font-mono text-xs text-muted-foreground tracking-widest">
                   S/{String(i + 1).padStart(2, "0")}
                 </span>
-                <Icon className={`w-5 h-5 ${accent}`} strokeWidth={1.5} />
+                <Icon className="w-5 h-5 text-muted-foreground" strokeWidth={1.5} />
               </div>
 
               <h3 className="font-display text-xl md:text-[1.35rem] font-extrabold tracking-tight mb-3 leading-tight">

@@ -93,7 +93,7 @@ const ClientsPage = () => {
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button className="glow">
+            <Button>
               <Plus className="w-4 h-4 mr-1" /> Novo cliente
             </Button>
           </DialogTrigger>

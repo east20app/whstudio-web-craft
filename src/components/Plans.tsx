@@ -7,13 +7,7 @@ import { useOrcamentoAction } from "@/components/tickets/TicketChat";
 const Plans = () => {
   const { requestQuote } = useOrcamentoAction();
   return (
-  <section id="planos" className="py-28 md:py-32 border-t border-border relative overflow-hidden">
-    <div
-      className="absolute inset-0 -z-10 opacity-70"
-      style={{ background: "var(--gradient-radial-primary)" }}
-      aria-hidden
-    />
-
+  <section id="planos" className="py-28 md:py-32 border-t border-border">
     <div className="container">
       <div className="grid md:grid-cols-12 gap-8 mb-16">
         <div className="md:col-span-3">
@@ -43,7 +37,7 @@ const Plans = () => {
             }`}
           >
             {p.popular && (
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-[10px] font-mono uppercase tracking-widest px-3 py-1 rounded-full bg-primary text-primary-foreground shadow-[0_0_20px_-4px_hsl(var(--primary))]">
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-[10px] font-mono uppercase tracking-widest px-3 py-1 rounded-full bg-primary text-primary-foreground">
                 Mais escolhido
               </span>
             )}
@@ -56,12 +50,12 @@ const Plans = () => {
 
             <div className="grid grid-cols-2 gap-3 mb-6">
               <div className="rounded-lg border border-border bg-background/40 p-3">
-                <Clock className={`w-3.5 h-3.5 mb-1.5 ${p.popular ? "text-primary" : "text-accent-2"}`} />
+                <Clock className={`w-3.5 h-3.5 mb-1.5 ${p.popular ? "text-primary" : "text-muted-foreground"}`} />
                 <p className="eyebrow mb-0.5">Prazo</p>
                 <p className="text-xs font-medium">{p.deliveryTime}</p>
               </div>
               <div className="rounded-lg border border-border bg-background/40 p-3">
-                <LifeBuoy className={`w-3.5 h-3.5 mb-1.5 ${p.popular ? "text-primary" : "text-accent-2"}`} />
+                <LifeBuoy className={`w-3.5 h-3.5 mb-1.5 ${p.popular ? "text-primary" : "text-muted-foreground"}`} />
                 <p className="eyebrow mb-0.5">Suporte</p>
                 <p className="text-xs font-medium">{p.support}</p>
               </div>
@@ -70,7 +64,7 @@ const Plans = () => {
             <ul className="space-y-2.5 mb-8">
               {p.features.map((f) => (
                 <li key={f} className="flex items-start gap-2.5 text-sm text-foreground/80">
-                  <Check className={`w-4 h-4 shrink-0 mt-0.5 ${p.popular ? "text-primary" : "text-accent-2"}`} />
+                  <Check className={`w-4 h-4 shrink-0 mt-0.5 ${p.popular ? "text-primary" : "text-muted-foreground"}`} />
                   <span>{f}</span>
                 </li>
               ))}
@@ -78,10 +72,8 @@ const Plans = () => {
 
             <Button
               variant={p.popular ? "default" : "outline"}
-              className={`h-12 mt-auto rounded-full ${
-                p.popular
-                  ? "glow btn-glow-hover"
-                  : "border-foreground/20 hover:border-primary/50 hover:bg-primary/5"
+              className={`h-12 mt-auto rounded-lg ${
+                p.popular ? "" : "border-foreground/20 hover:border-primary/50 hover:bg-primary/5"
               }`}
               onClick={() =>
                 requestQuote({

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Quote } from "lucide-react";
+import { Quote, Star } from "lucide-react";
 import { testimonials } from "@/config/site";
 
 const SocialProof = () => (
@@ -43,7 +43,11 @@ const SocialProof = () => (
                   <p className="text-sm font-semibold">{t.name}</p>
                   <p className="eyebrow mt-1">{t.role}</p>
                 </div>
-                <span className="text-sm tracking-wider text-warning">★ ★ ★ ★ ★</span>
+                <span className="inline-flex items-center gap-0.5" aria-label="5 de 5 estrelas">
+                  {Array.from({ length: 5 }).map((_, s) => (
+                    <Star key={s} className="w-3.5 h-3.5 text-warning fill-warning" aria-hidden="true" />
+                  ))}
+                </span>
               </figcaption>
             </motion.figure>
           );

@@ -4,7 +4,7 @@ import { siteConfig, whatsappLink, navLinks } from "@/config/site";
 import logo from "@/assets/wh-studio-logo.png";
 
 const Footer = () => (
-  <footer className="py-14 border-glow-top bg-background/60">
+  <footer className="py-14 border-t border-border bg-background">
     <div className="container">
       <div className="grid md:grid-cols-4 gap-10 mb-10">
         <div className="md:col-span-2">

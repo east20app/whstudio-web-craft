@@ -12,7 +12,7 @@ const Header = () => {
   const location = useLocation();
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/75 backdrop-blur-xl border-glow-bottom">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border">
       <AvailabilityBanner />
       <div className="container flex items-center justify-between h-16">
         <Link to="/" className="flex items-center gap-2" onClick={() => setOpen(false)} aria-label="WH Studio">
@@ -35,7 +35,7 @@ const Header = () => {
               </Link>
             );
           })}
-          <Button asChild className="h-10 rounded-full px-5 btn-glow-hover glow">
+          <Button asChild className="h-10 rounded-lg px-5">
             <a href={whatsappLink()} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5">
               Iniciar projeto
               <ArrowUpRight className="w-4 h-4" />
@@ -80,7 +80,7 @@ const Header = () => {
                   </Link>
                 );
               })}
-              <Button asChild className="w-full mt-3 rounded-full glow" onClick={() => setOpen(false)}>
+              <Button asChild className="w-full mt-3 rounded-lg" onClick={() => setOpen(false)}>
                 <a href={whatsappLink()} target="_blank" rel="noopener noreferrer">
                   Iniciar projeto
                 </a>

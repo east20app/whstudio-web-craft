@@ -134,7 +134,7 @@ const ProjectsPage = () => {
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button className="glow">
+            <Button>
               <Plus className="w-4 h-4 mr-1" /> Novo projeto
             </Button>
           </DialogTrigger>
@@ -290,7 +290,6 @@ const ProjectsPage = () => {
                           return (
                             <Button
                               size="sm"
-                              className="glow"
                               onClick={() => onReleaseFeedback({ id: p.id, name: p.name, client: p.client })}
                             >
                               <Send className="w-3.5 h-3.5 mr-1" /> Liberar feedback

@@ -6,7 +6,7 @@ const About = () => (
     <div className="container">
       <div className="grid md:grid-cols-12 gap-8 mb-16">
         <div className="md:col-span-3">
-          <p className="eyebrow">[ 06 ] Sobre</p>
+          <p className="eyebrow">[ 07 ] Sobre</p>
         </div>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -41,15 +41,15 @@ const About = () => (
             </div>
 
             <div className="space-y-3 text-sm">
-              <div className="flex items-center gap-3 text-foreground/70">
-                <MapPin className="w-4 h-4 text-accent-2 shrink-0" />
+              <div className="flex items-center gap-3 text-muted-foreground">
+                <MapPin className="w-4 h-4 text-primary shrink-0" />
                 <span>Rio Grande do Norte, Brasil</span>
               </div>
-              <div className="flex items-center gap-3 text-foreground/70">
-                <Code2 className="w-4 h-4 text-accent-2 shrink-0" />
+              <div className="flex items-center gap-3 text-muted-foreground">
+                <Code2 className="w-4 h-4 text-primary shrink-0" />
                 <span>React · Node · TypeScript · Supabase</span>
               </div>
-              <div className="flex items-center gap-3 text-foreground/70">
+              <div className="flex items-center gap-3 text-muted-foreground">
                 <ShieldCheck className="w-4 h-4 text-success shrink-0" />
                 <span>Disponível para novos projetos</span>
               </div>

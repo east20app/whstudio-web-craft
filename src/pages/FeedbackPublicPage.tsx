@@ -83,9 +83,8 @@ const FeedbackPublicPage = () => {
   return (
     <>
       <Header />
-      <main className="min-h-screen pt-28 pb-20 px-4 bg-background relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,hsl(271_91%_65%/0.18),transparent_50%)] pointer-events-none" />
-        <div className="relative max-w-xl mx-auto">
+      <main className="min-h-screen pt-28 pb-20 px-4 bg-background">
+        <div className="max-w-xl mx-auto">
           {state.kind === "loading" && (
             <div className="card-dark p-8 text-center text-sm text-muted-foreground">
               Carregando…
@@ -114,7 +113,7 @@ const FeedbackPublicPage = () => {
           )}
 
           {state.kind === "ready" && (
-            <form onSubmit={onSubmit} className="card-dark p-8 glow space-y-5">
+            <form onSubmit={onSubmit} className="card-dark p-8 space-y-5">
               <div>
                 <p className="text-xs uppercase tracking-widest text-primary mb-1">
                   Avaliação de projeto
@@ -178,7 +177,7 @@ const FeedbackPublicPage = () => {
                 <span>Autorizo a WH Studio a exibir este depoimento no site.</span>
               </label>
 
-              <Button type="submit" className="w-full glow" disabled={submitting}>
+              <Button type="submit" className="w-full" disabled={submitting}>
                 {submitting ? "Enviando…" : "Enviar feedback"}
               </Button>
             </form>
