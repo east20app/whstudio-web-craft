@@ -365,6 +365,7 @@ export type Database = {
           sender: string
         }[]
       }
+      is_admin: { Args: never; Returns: boolean }
       post_ticket_message: {
         Args: { _body: string; _token: string }
         Returns: boolean
