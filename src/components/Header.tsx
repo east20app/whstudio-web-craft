@@ -25,6 +25,17 @@ const Header = () => {
         <nav className="hidden md:flex items-center gap-7" aria-label="Navegação principal">
           {navLinks.map((l) => {
             const active = location.pathname === l.href;
+            if (l.href.includes("#")) {
+              return (
+                <a
+                  key={l.href}
+                  href={l.href}
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {l.label}
+                </a>
+              );
+            }
             return (
               <Link
                 key={l.href}
@@ -73,6 +84,18 @@ const Header = () => {
             <div className="container py-4 flex flex-col gap-1">
               {navLinks.map((l) => {
                 const active = location.pathname === l.href;
+                if (l.href.includes("#")) {
+                  return (
+                    <a
+                      key={l.href}
+                      href={l.href}
+                      onClick={() => setOpen(false)}
+                      className="px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      {l.label}
+                    </a>
+                  );
+                }
                 return (
                   <Link
                     key={l.href}
