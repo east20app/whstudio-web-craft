@@ -47,7 +47,7 @@ const detectPrazo = (text: string): string => {
 
 const detectConteudo = (text: string): string => {
   const t = norm(text);
-  if (/(parcial|mais ou menos|metade|em parte|algumas|só o logo|so o logo)/.test(t)) return "Parcial";
+  if (/(parcial|mais ou menos|metade|em parte|algumas|apenas|somente|só o|so o|logo só|logo so)/.test(t)) return "Parcial";
   if (/(nao|não|nada|zero|nenhum)/.test(t)) return "Não";
   return "Sim";
 };
