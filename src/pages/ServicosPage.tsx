@@ -6,7 +6,8 @@ import Seo, { pageSeo } from "@/components/Seo";
 import { motion } from "framer-motion";
 import { Check, ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { services, portfolio } from "@/config/site";
+import { services } from "@/config/site";
+import { usePortfolio } from "@/hooks/usePortfolio";
 
 /** Serviço -> projeto real correspondente no portfólio. */
 const serviceExample: Record<string, string> = {
@@ -19,7 +20,10 @@ const serviceExample: Record<string, string> = {
 
 const anchorFor = (title: string) => `/portfolio#projeto-${title.toLowerCase().replace(/\s+/g, "-")}`;
 
-const ServicosPage = () => (
+const ServicosPage = () => {
+  const { data: portfolio } = usePortfolio(true);
+
+  return (
   <>
     <Seo {...pageSeo.servicos} />
     <Header />
@@ -118,6 +122,8 @@ const ServicosPage = () => (
     </main>
     <Footer />
   </>
-);
+  );
+};
+
 
 export default ServicosPage;

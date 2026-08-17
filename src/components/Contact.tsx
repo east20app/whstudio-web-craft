@@ -22,6 +22,12 @@ const contactSchema = z.object({
     .trim()
     .email("Informe um e-mail válido")
     .max(255, "E-mail muito longo"),
+  phone: z
+    .string()
+    .trim()
+    .regex(/^[\d\s()+-]{8,20}$/, "Informe um telefone/WhatsApp válido")
+    .optional()
+    .or(z.literal("")),
   project: z.string().trim().max(100, "Tipo de projeto muito longo").optional(),
   message: z
     .string()
@@ -33,7 +39,7 @@ const contactSchema = z.object({
 type FormData = z.infer<typeof contactSchema>;
 type FormErrors = Partial<Record<keyof FormData, string>>;
 
-const initialState: FormData = { name: "", email: "", project: "", message: "" };
+const initialState: FormData = { name: "", email: "", phone: "", project: "", message: "" };
 
 const Contact = () => {
   const [data, setData] = useState<FormData>(initialState);
@@ -60,9 +66,10 @@ const Contact = () => {
       return;
     }
 
-    const fullMessage = result.data.project
+    const contactLine = result.data.phone?.trim() ? `\n\nWhatsApp/Telefone: ${result.data.phone.trim()}` : "";
+    const fullMessage = (result.data.project
       ? `[${result.data.project}] ${result.data.message}`
-      : result.data.message;
+      : result.data.message) + contactLine;
 
     const { error } = await supabase.from("messages").insert({
       name: result.data.name,
@@ -138,6 +145,24 @@ const Contact = () => {
               />
               {errors.email && (
                 <p id="email-error" className="text-xs text-destructive">{errors.email}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="phone">WhatsApp / Telefone (opcional)</Label>
+              <Input
+                id="phone"
+                type="tel"
+                inputMode="tel"
+                placeholder="(84) 98876-6134"
+                value={data.phone}
+                onChange={(e) => update("phone", e.target.value)}
+                aria-invalid={!!errors.phone}
+                aria-describedby={errors.phone ? "phone-error" : undefined}
+                maxLength={20}
+              />
+              {errors.phone && (
+                <p id="phone-error" className="text-xs text-destructive">{errors.phone}</p>
               )}
             </div>
 

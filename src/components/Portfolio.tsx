@@ -1,25 +1,28 @@
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { ExternalLink, Lock } from "lucide-react";
-import { portfolio, statusLabels } from "@/config/site";
+import { statusLabels } from "@/config/site";
+import { usePortfolio } from "@/hooks/usePortfolio";
 
 const Portfolio = () => {
   const [filter, setFilter] = useState("all");
+  const { data: portfolio, loading } = usePortfolio(true);
 
-  // Filtros derivados do próprio array (categorias + tecnologias) — sem banco.
+  // Filtros derivados dos projetos cadastrados no painel.
   const filters = useMemo(() => {
-    const categories = Array.from(new Set(portfolio.map((p) => p.category)));
+    const categories = Array.from(new Set(portfolio.map((p) => p.category).filter(Boolean)));
     const techs = Array.from(new Set(portfolio.flatMap((p) => p.tech)));
     return { categories, techs };
-  }, []);
+  }, [portfolio]);
 
   const filtered = useMemo(
     () =>
       filter === "all"
         ? portfolio
         : portfolio.filter((p) => p.category === filter || p.tech.includes(filter)),
-    [filter]
+    [filter, portfolio]
   );
+
 
   const chip = (value: string, label: string) => (
     <button

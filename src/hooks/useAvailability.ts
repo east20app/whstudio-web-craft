@@ -14,11 +14,9 @@ export const useAvailability = (): Availability => {
   useEffect(() => {
     let alive = true;
     supabase
-      .from("settings")
-      .select("accepting_projects, availability_note")
-      .limit(1)
+      .rpc("get_public_settings" as any)
       .maybeSingle()
-      .then(({ data }) => {
+      .then(({ data }: any) => {
         if (!alive) return;
         setState({
           accepting: data?.accepting_projects ?? true,

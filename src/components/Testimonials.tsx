@@ -22,14 +22,9 @@ const Testimonials = () => {
 
   useEffect(() => {
     (async () => {
-      const { data } = await supabase
-        .from("feedbacks")
-        .select("id, client_name, project_name, rating, testimonial")
-        .eq("status", "published")
-        .eq("allow_publish", true)
-        .order("submitted_at", { ascending: false })
-        .limit(9);
-      setItems((data ?? []) as Item[]);
+      const { data } = await supabase.rpc("get_published_feedbacks" as any, { _limit: 9 });
+      setItems(((data ?? []) as unknown) as Item[]);
+
       setLoading(false);
     })();
   }, []);

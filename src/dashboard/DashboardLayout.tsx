@@ -15,7 +15,8 @@ const items = [
   { to: "/dashboard/tickets", label: "Tickets", code: "05", badge: "tickets" as const },
   { to: "/dashboard/mensagens", label: "Mensagens", code: "06" },
   { to: "/dashboard/feedbacks", label: "Feedbacks", code: "07" },
-  { to: "/dashboard/configuracoes", label: "Configurações", code: "08" },
+  { to: "/dashboard/portfolio", label: "Portfólio", code: "08" },
+  { to: "/dashboard/configuracoes", label: "Configurações", code: "09" },
 ];
 
 const DashboardLayout = () => {

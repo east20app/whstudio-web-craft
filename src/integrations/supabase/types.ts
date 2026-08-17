@@ -179,6 +179,51 @@ export type Database = {
         }
         Relationships: []
       }
+      portfolio_projects: {
+        Row: {
+          category: string
+          color: string
+          created_at: string
+          description: string
+          id: string
+          published: boolean
+          sort_order: number
+          status: string
+          tech: string[]
+          title: string
+          updated_at: string
+          url: string | null
+        }
+        Insert: {
+          category?: string
+          color?: string
+          created_at?: string
+          description?: string
+          id?: string
+          published?: boolean
+          sort_order?: number
+          status?: string
+          tech?: string[]
+          title: string
+          updated_at?: string
+          url?: string | null
+        }
+        Update: {
+          category?: string
+          color?: string
+          created_at?: string
+          description?: string
+          id?: string
+          published?: boolean
+          sort_order?: number
+          status?: string
+          tech?: string[]
+          title?: string
+          updated_at?: string
+          url?: string | null
+        }
+        Relationships: []
+      }
       projects: {
         Row: {
           client: string
@@ -372,6 +417,31 @@ export type Database = {
           client_name: string
           id: string
           project_name: string
+        }[]
+      }
+      get_public_settings: {
+        Args: never
+        Returns: {
+          accepting_projects: boolean
+          author_name: string
+          availability_note: string
+          discord_link: string
+          footer_text: string
+          maintenance_eta: string
+          maintenance_message: string
+          maintenance_mode: boolean
+          site_name: string
+          whatsapp: string
+        }[]
+      }
+      get_published_feedbacks: {
+        Args: { _limit?: number }
+        Returns: {
+          client_name: string
+          id: string
+          project_name: string
+          rating: number
+          testimonial: string
         }[]
       }
       get_ticket_by_token: {
