@@ -1,4 +1,6 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { fetchActivity, type ActivityEntry } from "@/lib/activity";
 import StatCard from "./components/StatCard";
 import StatusPill from "./components/StatusPill";
 import { useBudgets, useClients, useProjects, useMessages, useSettings } from "./store";
@@ -34,6 +36,11 @@ const Overview = () => {
   const { data: projects } = useProjects();
   const { data: messages } = useMessages();
   const { settings } = useSettings();
+  const [activity, setActivity] = useState<ActivityEntry[]>([]);
+
+  useEffect(() => {
+    fetchActivity(12).then(setActivity);
+  }, []);
 
   const activeClients = clients.filter((c) => c.status === "ativo").length;
   const ongoing = projects.filter((p) => p.stage !== "entregue").length;
@@ -117,6 +124,36 @@ const Overview = () => {
           )}
         </Panel>
       </div>
+
+      <section className="border border-border rounded-xl overflow-hidden bg-card/30">
+        <header className="flex items-center justify-between px-5 h-12 border-b border-border">
+          <h3 className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+            Atividade recente
+          </h3>
+          <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground/60">
+            {activity.length} registros
+          </span>
+        </header>
+        {activity.length === 0 ? (
+          <p className="px-5 py-8 text-sm text-muted-foreground">Nenhuma ação registrada ainda.</p>
+        ) : (
+          <ul className="divide-y divide-border">
+            {activity.map((a) => (
+              <li key={a.id} className="px-5 py-3 flex flex-wrap items-center gap-3">
+                <span className="font-mono text-[10px] text-muted-foreground/60 tabular-nums">
+                  {new Date(a.createdAt).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" })}
+                </span>
+                <span className="font-mono text-[10px] uppercase tracking-wider px-1.5 py-0.5 border border-border text-muted-foreground">
+                  {a.action}
+                </span>
+                <span className="text-sm truncate min-w-0">{a.details || a.entity}</span>
+                <span className="ml-auto text-xs text-muted-foreground truncate">{a.actor}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
     </div>
   );
 };

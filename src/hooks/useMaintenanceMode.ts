@@ -26,11 +26,9 @@ export const useMaintenanceMode = (): MaintenanceState => {
 
     const load = () =>
       supabase
-        .from("settings")
-        .select("maintenance_mode, maintenance_message, maintenance_eta")
-        .limit(1)
+        .rpc("get_public_settings" as any)
         .maybeSingle()
-        .then(({ data }) => {
+        .then(({ data }: any) => {
           if (alive) setState(mapRow(data));
         });
 

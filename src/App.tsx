@@ -26,6 +26,7 @@ import MessagesPage from "./dashboard/MessagesPage";
 import SettingsPage from "./dashboard/SettingsPage";
 import FeedbacksPage from "./dashboard/FeedbacksPage";
 import TicketsPage from "./dashboard/TicketsPage";
+import PortfolioAdminPage from "./dashboard/PortfolioAdminPage";
 
 const queryClient = new QueryClient();
 
@@ -70,6 +71,7 @@ const App = () => (
             <Route path="servicos" element={<ServicesPage />} />
             <Route path="mensagens" element={<MessagesPage />} />
             <Route path="tickets" element={<TicketsPage />} />
+            <Route path="portfolio" element={<PortfolioAdminPage />} />
             <Route path="feedbacks" element={<FeedbacksPage />} />
             <Route path="configuracoes" element={<SettingsPage />} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
