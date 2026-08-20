@@ -11,7 +11,8 @@ export const RequireAuth = ({ children }: { children: JSX.Element }) => {
     );
   }
   if (!user) return <Navigate to="/dashboard/login" replace />;
-  if ((user.email ?? "").toLowerCase() !== "whgamersc@gmail.com") {
+  const admins = ["whgamersc@gmail.com", "whstudio@whstudio.site"];
+  if (!admins.includes((user.email ?? "").toLowerCase())) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background px-4">
         <div className="card-dark p-8 max-w-md text-center">
