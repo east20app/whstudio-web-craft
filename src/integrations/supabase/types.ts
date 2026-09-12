@@ -397,6 +397,300 @@ export type Database = {
         }
         Relationships: []
       }
+      whia_conversations: {
+        Row: {
+          archived: boolean
+          created_at: string
+          id: string
+          mode: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          archived?: boolean
+          created_at?: string
+          id?: string
+          mode?: string
+          title?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          archived?: boolean
+          created_at?: string
+          id?: string
+          mode?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      whia_files: {
+        Row: {
+          conversation_id: string | null
+          created_at: string
+          file_name: string
+          id: string
+          mime_type: string
+          size_bytes: number
+          status: string
+          storage_path: string
+          user_id: string
+        }
+        Insert: {
+          conversation_id?: string | null
+          created_at?: string
+          file_name: string
+          id?: string
+          mime_type: string
+          size_bytes: number
+          status?: string
+          storage_path: string
+          user_id: string
+        }
+        Update: {
+          conversation_id?: string | null
+          created_at?: string
+          file_name?: string
+          id?: string
+          mime_type?: string
+          size_bytes?: number
+          status?: string
+          storage_path?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "whia_files_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "whia_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      whia_messages: {
+        Row: {
+          content: string
+          conversation_id: string
+          created_at: string
+          id: string
+          metadata: Json
+          rating: number | null
+          role: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          metadata?: Json
+          rating?: number | null
+          role: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          metadata?: Json
+          rating?: number | null
+          role?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "whia_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "whia_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      whia_plans: {
+        Row: {
+          created_at: string
+          description: string
+          features: Json
+          id: string
+          is_active: boolean
+          is_popular: boolean
+          max_file_bytes: number
+          monthly_credits: number
+          name: string
+          price_cents: number
+          slug: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          features?: Json
+          id?: string
+          is_active?: boolean
+          is_popular?: boolean
+          max_file_bytes: number
+          monthly_credits: number
+          name: string
+          price_cents?: number
+          slug: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          features?: Json
+          id?: string
+          is_active?: boolean
+          is_popular?: boolean
+          max_file_bytes?: number
+          monthly_credits?: number
+          name?: string
+          price_cents?: number
+          slug?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      whia_profiles: {
+        Row: {
+          avatar_path: string | null
+          created_at: string
+          full_name: string
+          id: string
+          language: string
+          notification_sound: boolean
+          send_with_enter: boolean
+          theme: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_path?: string | null
+          created_at?: string
+          full_name?: string
+          id: string
+          language?: string
+          notification_sound?: boolean
+          send_with_enter?: boolean
+          theme?: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_path?: string | null
+          created_at?: string
+          full_name?: string
+          id?: string
+          language?: string
+          notification_sound?: boolean
+          send_with_enter?: boolean
+          theme?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      whia_subscriptions: {
+        Row: {
+          created_at: string
+          credits_used: number
+          period_ends_at: string
+          period_started_at: string
+          plan_id: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          period_ends_at?: string
+          period_started_at?: string
+          plan_id: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          period_ends_at?: string
+          period_started_at?: string
+          plan_id?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "whia_subscriptions_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "whia_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      whia_usage_logs: {
+        Row: {
+          conversation_id: string | null
+          created_at: string
+          credits: number
+          id: string
+          metadata: Json
+          usage_type: string
+          user_id: string
+        }
+        Insert: {
+          conversation_id?: string | null
+          created_at?: string
+          credits: number
+          id?: string
+          metadata?: Json
+          usage_type: string
+          user_id: string
+        }
+        Update: {
+          conversation_id?: string | null
+          created_at?: string
+          credits?: number
+          id?: string
+          metadata?: Json
+          usage_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      whia_user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -410,6 +704,15 @@ export type Database = {
           _subject: string
         }
         Returns: string
+      }
+      ensure_whia_account: {
+        Args: { _full_name?: string }
+        Returns: {
+          credits_limit: number
+          credits_used: number
+          plan_slug: string
+          profile_id: string
+        }[]
       }
       get_feedback_by_token: {
         Args: { _token: string }
@@ -479,6 +782,10 @@ export type Database = {
           _token: string
         }
         Returns: boolean
+      }
+      whia_create_conversation: {
+        Args: { _mode?: string; _title: string }
+        Returns: string
       }
     }
     Enums: {
