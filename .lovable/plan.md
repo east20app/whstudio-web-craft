@@ -1,58 +1,42 @@
+# WHIA — Plataforma SaaS de Inteligência Artificial
 
+## Objetivo
 
-# WH STUDIO — Rebuild Completo (Dark Premium)
+Criar uma experiência independente da WHIA dentro do projeto atual, preservando o site público e o painel administrativo da WH Studio. A marca visível será somente WHIA, com visual escuro premium, navegação responsiva e fluxos reais de conta, arquivos, conversas e preferências.
 
-Rebuild total do site com tema dark premium, múltiplas páginas e foco em conversão.
+## Experiência a construir
 
-## Visão Geral
+- Autenticação completa em `/login`, `/register` e `/forgot-password`, incluindo Google, validações, recuperação de senha e retornos visuais.
+- Aplicativo protegido com Início, Conversas, Nova conversa, Biblioteca, Configurações, Uso e Planos.
+- Área inicial com saudação, campo de pergunta, anexos, microfone e sugestões rápidas.
+- Chat profissional com histórico, modos WHIA, mensagens em streaming visual, Markdown, código, copiar, regenerar, avaliar e continuar.
+- Biblioteca de arquivos com upload, abertura, uso em conversa e exclusão.
+- Configurações de perfil, conta, segurança, preferências, plano e consumo.
+- Tela de planos com valores administráveis, estado atual e comparação objetiva.
+- Navegação móvel com menu lateral e campo de mensagem fixo, sem rolagem horizontal.
 
-Transformar o site atual (light, single-page) em um site multi-página dark premium com 5 rotas, animações, prova social, planos de preço e CTAs de conversão.
+## Dados e segurança
 
-## Design System
+- Criar dados isolados por usuário para perfil, conversas, mensagens, arquivos, preferências, plano e registros de uso.
+- Aplicar regras de acesso para cada pessoa enxergar apenas seus próprios dados.
+- Criar armazenamento privado com validação de tipo e limite de tamanho.
+- Manter chaves e provedores fora do navegador; preparar um único ponto de integração segura para a futura camada de IA.
+- Implementar limites e consumo no servidor, sem confiar em valores enviados pela tela.
+- Preservar as regras atuais do painel administrativo da WH Studio.
 
-- **Fundo**: `#0a0a0f` / Cards: `#1a1a2e` / Destaque: `#3b82f6`
-- **Tipografia**: Inter (já importada)
-- **Efeitos**: glow azul sutil, hover scale, fade-in animations via framer-motion
-- **100% responsivo**, bordas arredondadas
+## Direção visual
 
-## Arquitetura de Arquivos
+- Fundo quase preto, superfícies grafite, azul luminoso controlado e tipografia limpa.
+- Cantos moderados, linhas finas, sombras discretas e bastante espaço negativo.
+- Identidade própria WHIA, sem nomes de provedores, mascotes, robôs ou clichês visuais.
+- Animações suaves de 150–250 ms e detalhes tecnológicos discretos apenas na autenticação.
+- Estados completos: vazio, carregando, erro, sucesso e skeleton.
 
-### Arquivos Modificados
-1. **`src/index.css`** — Reescrever CSS variables para tema dark premium
-2. **`tailwind.config.ts`** — Adicionar utilitários glow, animações customizadas
-3. **`src/App.tsx`** — Adicionar rotas: `/servicos`, `/planos`, `/portfolio`, `/contato`
+## Detalhes técnicos
 
-### Componentes Reescritos
-4. **`src/components/Header.tsx`** — Navbar dark com links para todas as páginas, logo "WH STUDIO"
-5. **`src/components/Hero.tsx`** — Novo hero dark com título "Crie Sites, Bots e Sistemas...", mockup de dashboard, dois CTAs
-6. **`src/components/Services.tsx`** — 5 cards dark (Sites, Bots Discord, Sistemas, Hospedagem, Automações) com botão "Solicitar"
-7. **`src/components/Portfolio.tsx`** — Cards com projetos fictícios (delivery, bot, dashboard)
-8. **`src/components/Contact.tsx`** — Formulário dark + botões WhatsApp/Discord
-9. **`src/components/Footer.tsx`** — Footer completo com links para todas as páginas
-10. **`src/components/WhatsAppButton.tsx`** — Manter, ajustar estilo
-
-### Novos Componentes
-11. **`src/components/SocialProof.tsx`** — "50+ clientes", 3 depoimentos com estrelas
-12. **`src/components/Plans.tsx`** — 3 planos (Básico R$150, Pro R$350 destaque, Premium R$800+)
-13. **`src/components/Differentials.tsx`** — Lista de diferenciais com ícones
-14. **`src/components/HowItWorks.tsx`** — 3 passos: Contato → Desenvolvimento → Entrega
-15. **`src/components/CTAFinal.tsx`** — CTA de conversão final com botões WhatsApp + criar projeto
-16. **`src/components/PriceSimulator.tsx`** — Simulador simples com checkboxes (site, bot, sistema, hospedagem) que calcula preço estimado
-
-### Novas Páginas
-17. **`src/pages/Index.tsx`** — Landing completa: Hero → Serviços → Prova Social → Como Funciona → Planos → Diferenciais → CTA Final
-18. **`src/pages/ServicosPage.tsx`** — Serviços detalhados com benefícios
-19. **`src/pages/PlanosPage.tsx`** — Planos com comparação de recursos
-20. **`src/pages/PortfolioPage.tsx`** — Portfólio expandido
-21. **`src/pages/ContatoPage.tsx`** — Formulário + links de contato
-
-## Detalhes Técnicos
-
-- Todas as animações via `framer-motion` (já instalado)
-- Ícones via `lucide-react`
-- Links WhatsApp apontando para `5584988766134`
-- Scroll suave via CSS `scroll-behavior: smooth`
-- Cards com `border border-white/10` e `hover:border-blue-500/50` para efeito glow
-- Plano Pro com `ring-2 ring-blue-500` e badge "POPULAR"
-- Navegação entre páginas via `react-router-dom` (Link)
-
+- Rotas do produto: `/login`, `/register`, `/forgot-password`, `/app`, `/chat`, `/chat/:id`, `/library`, `/settings`, `/usage` e `/plans`.
+- Componentes de conversa baseados em AI Elements, adaptados ao design WHIA.
+- Camada de serviços separada da interface para autenticação, arquivos, conversas e futura IA.
+- Google configurado na autenticação; Discord será apresentado como integração futura sem simular login inexistente.
+- A IA real será preparada, mas não será fingida: sem provedor/chave ativo, a interface exibirá um estado claro de indisponibilidade em vez de respostas falsas.
+- Verificação final em desktop e celular, incluindo login, cadastro, recuperação, navegação, uploads e chat.
