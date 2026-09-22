@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { MessageCircle, MessageSquare, ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SignatureUnderline } from "@/components/SignatureScribble";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { useOrcamentoAction } from "@/components/tickets/TicketChat";
 
@@ -24,7 +25,10 @@ const CTAFinal = () => {
             <div className="lg:col-span-8">
               <h2 className="display-huge text-5xl md:text-8xl leading-[1.02]">
                 Bora começar. <br />
-                <em>Eu mesmo respondo.</em>
+                <em className="relative inline-block">
+                  Eu mesmo respondo.
+                  <SignatureUnderline className="absolute left-0 top-full mt-1 w-48 md:w-64 h-[0.38em] text-primary" />
+                </em>
               </h2>
             </div>
             <div className="lg:col-span-4">
@@ -41,7 +45,7 @@ const CTAFinal = () => {
                   }
                 >
                   <span className="flex items-center">
-                    <MessageSquare className="w-4 h-4 mr-2" /> Iniciar projeto por chat
+                    <MessageSquare className="w-4 h-4 mr-2" /> Solicitar orçamento por chat
                   </span>
                   <ArrowUpRight className="w-5 h-5" />
                 </Button>

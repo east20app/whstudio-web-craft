@@ -3,11 +3,11 @@ import Footer from "@/components/Footer";
 import Plans from "@/components/Plans";
 import PlansComparison from "@/components/PlansComparison";
 import CTAFinal from "@/components/CTAFinal";
-import Seo, { pageSeo } from "@/components/Seo";
+import Seo, { pageSeo, orgJsonLd } from "@/components/Seo";
 
 const PlanosPage = () => (
   <>
-    <Seo {...pageSeo.planos} />
+    <Seo {...pageSeo.planos} jsonLd={orgJsonLd} />
     <Header />
     <main className="pt-16">
       <section className="py-20 md:py-28 border-b border-border">

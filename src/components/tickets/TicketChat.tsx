@@ -182,7 +182,7 @@ export const TicketChatProvider = ({ children }: { children: React.ReactNode }) 
             transition={{ duration: 0.18 }}
             role="dialog"
             aria-label="Central de atendimento"
-            className="fixed bottom-6 right-6 z-[60] w-[calc(100vw-3rem)] sm:w-[380px] max-h-[min(70vh,560px)] flex flex-col overflow-hidden border border-border bg-card"
+            className="fixed inset-x-0 bottom-0 z-[60] flex h-[92dvh] w-full flex-col overflow-hidden border-t border-border bg-card sm:inset-x-auto sm:right-6 sm:bottom-6 sm:h-auto sm:max-h-[min(70vh,560px)] sm:w-[380px] sm:border"
           >
             <header className="flex items-start justify-between gap-3 border-b border-border px-5 py-4">
               <div className="min-w-0">

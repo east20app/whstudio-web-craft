@@ -51,9 +51,10 @@ const Header = () => {
             />
           </Link>
 
-          <nav className="hidden md:flex items-center gap-8" aria-label="Navegação principal">
+          <nav className="hidden lg:flex items-center gap-6" aria-label="Navegação principal">
             {navLinks.map((l) => {
-              const active = location.pathname === l.href;
+              const active =
+                l.href === "/" ? location.pathname === "/" : location.pathname.startsWith(l.href);
               return (
                 <Link
                   key={l.href}
@@ -77,12 +78,12 @@ const Header = () => {
               }}
               className="h-9 rounded-none px-4 font-mono text-[11px] uppercase tracking-[0.14em]"
             >
-              Iniciar projeto
+              Solicitar orçamento
               <ArrowUpRight className="w-4 h-4 ml-1.5" />
             </Button>
           </nav>
 
-          <div className="md:hidden flex items-center gap-2">
+          <div className="lg:hidden flex items-center gap-2">
             <ThemeToggle />
             <button
               className="p-2 -mr-2 text-foreground"
@@ -102,12 +103,13 @@ const Header = () => {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="md:hidden overflow-hidden bg-background border-b border-border"
+            className="lg:hidden overflow-hidden bg-background border-b border-border"
             aria-label="Navegação mobile"
           >
             <div className="container py-4 flex flex-col divide-y divide-border">
               {navLinks.map((l) => {
-                const active = location.pathname === l.href;
+                const active =
+                  l.href === "/" ? location.pathname === "/" : location.pathname.startsWith(l.href);
                 return (
                   <Link
                     key={l.href}
@@ -123,7 +125,7 @@ const Header = () => {
                 );
               })}
               <Button className="w-full mt-3 rounded-none" onClick={startProject}>
-                Iniciar projeto
+                Solicitar orçamento
                 <ArrowUpRight className="w-4 h-4 ml-1.5" />
               </Button>
             </div>

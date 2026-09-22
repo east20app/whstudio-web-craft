@@ -2,7 +2,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Services from "@/components/Services";
 import CTAFinal from "@/components/CTAFinal";
-import Seo, { pageSeo } from "@/components/Seo";
+import Seo, { pageSeo, orgJsonLd } from "@/components/Seo";
 import { motion } from "framer-motion";
 import { Check, ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -34,7 +34,7 @@ const ServicosPage = () => {
 
   return (
   <>
-    <Seo {...pageSeo.servicos} />
+    <Seo {...pageSeo.servicos} jsonLd={orgJsonLd} />
     <Header />
     <main className="pt-16">
       <section className="py-20 md:py-28 border-b border-border">

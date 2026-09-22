@@ -132,7 +132,8 @@ const Portfolio = () => {
 
         <div className="grid md:grid-cols-2 gap-x-10 gap-y-14 max-w-6xl">
           {filtered.map((p, i) => {
-            const featured = i === 0;
+            const anyFeatured = filtered.some((x) => x.featured);
+            const featured = anyFeatured ? !!p.featured : i === 0;
             const status = statusLabels[p.status];
             const hasUrl = !!p.url;
 

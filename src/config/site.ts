@@ -223,9 +223,12 @@ export const statusLabels: Record<ProjectStatus, { label: string; className: str
 
 // =============== NAVEGAÇÃO ===============
 export const navLinks = [
+  { label: "Início", href: "/" },
   { label: "Serviços", href: "/servicos" },
+  { label: "Sistemas", href: "/sistemas" },
   { label: "Portfólio", href: "/portfolio" },
   { label: "Planos", href: "/planos" },
+  { label: "Sobre", href: "/sobre" },
   { label: "Contato", href: "/contato" },
 ];
 

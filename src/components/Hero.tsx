@@ -82,7 +82,7 @@ const Hero = () => {
 
             <div className="mt-8 flex flex-col sm:flex-row sm:items-center gap-4">
               <Button onClick={start} className="h-12 rounded-none px-6">
-                Iniciar projeto
+                Solicitar orçamento
                 <ArrowUpRight className="w-5 h-5 ml-2" />
               </Button>
               <a

@@ -1,11 +1,11 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Contact from "@/components/Contact";
-import Seo, { pageSeo } from "@/components/Seo";
+import Seo, { pageSeo, orgJsonLd } from "@/components/Seo";
 
 const ContatoPage = () => (
   <>
-    <Seo {...pageSeo.contato} />
+    <Seo {...pageSeo.contato} jsonLd={orgJsonLd} />
     <Header />
     <main className="pt-16">
       <section className="py-20 md:py-28 border-b border-border">

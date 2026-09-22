@@ -36,3 +36,6 @@ export function SignatureScribble({ className }: SignatureScribbleProps) {
     </svg>
   );
 }
+
+/** Nome editorial aliased: a "assinatura" desenhada sob palavras em destaque. */
+export { SignatureScribble as SignatureUnderline };

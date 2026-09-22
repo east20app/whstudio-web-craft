@@ -182,9 +182,10 @@ export type Database = {
       portfolio_projects: {
         Row: {
           category: string
-          color: string
+          cover_url: string | null
           created_at: string
           description: string
+          featured: boolean
           id: string
           published: boolean
           sort_order: number
@@ -196,9 +197,10 @@ export type Database = {
         }
         Insert: {
           category?: string
-          color?: string
+          cover_url?: string | null
           created_at?: string
           description?: string
+          featured?: boolean
           id?: string
           published?: boolean
           sort_order?: number
@@ -210,9 +212,10 @@ export type Database = {
         }
         Update: {
           category?: string
-          color?: string
+          cover_url?: string | null
           created_at?: string
           description?: string
+          featured?: boolean
           id?: string
           published?: boolean
           sort_order?: number
@@ -259,25 +262,31 @@ export type Database = {
           active: boolean
           created_at: string
           description: string
+          icon: string
           id: string
           name: string
           price: string
+          sort_order: number
         }
         Insert: {
           active?: boolean
           created_at?: string
           description?: string
+          icon?: string
           id?: string
           name: string
           price?: string
+          sort_order?: number
         }
         Update: {
           active?: boolean
           created_at?: string
           description?: string
+          icon?: string
           id?: string
           name?: string
           price?: string
+          sort_order?: number
         }
         Relationships: []
       }
@@ -720,6 +729,33 @@ export type Database = {
           client_name: string
           id: string
           project_name: string
+        }[]
+      }
+      get_public_portfolio: {
+        Args: never
+        Returns: {
+          category: string
+          cover_url: string | null
+          description: string
+          featured: boolean
+          id: string
+          published: boolean
+          sort_order: number
+          status: string
+          tech: string[]
+          title: string
+          url: string | null
+        }[]
+      }
+      get_public_services: {
+        Args: never
+        Returns: {
+          description: string
+          icon: string
+          id: string
+          name: string
+          price: string
+          sort_order: number
         }[]
       }
       get_public_settings: {

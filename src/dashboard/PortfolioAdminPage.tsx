@@ -44,6 +44,7 @@ type Draft = {
   removeCover: boolean;
   published: boolean;
   sortOrder: number;
+  featured: boolean;
 };
 
 const emptyDraft: Draft = {
@@ -57,6 +58,7 @@ const emptyDraft: Draft = {
   removeCover: false,
   published: true,
   sortOrder: 0,
+  featured: false,
 };
 
 const PortfolioAdminPage = () => {
@@ -87,6 +89,7 @@ const PortfolioAdminPage = () => {
       removeCover: false,
       published: p.published,
       sortOrder: p.sortOrder,
+      featured: p.featured,
     });
     setOpen(true);
   };
@@ -156,6 +159,7 @@ const PortfolioAdminPage = () => {
       coverUrl: draft.removeCover ? "" : (draft.coverUrl.trim() || undefined),
       published: draft.published,
       sortOrder: Number(draft.sortOrder) || 0,
+      featured: draft.featured,
     };
 
     const ok = editing
@@ -253,6 +257,11 @@ const PortfolioAdminPage = () => {
                   {!p.published && (
                     <span className="font-mono text-[9px] uppercase tracking-widest px-2 py-0.5 border border-border text-muted-foreground">
                       Oculto
+                    </span>
+                  )}
+                  {p.featured && (
+                    <span className="font-mono text-[9px] uppercase tracking-widest px-2 py-0.5 border border-primary/40 text-primary">
+                      Destaque
                     </span>
                   )}
                 </div>
@@ -420,6 +429,17 @@ const PortfolioAdminPage = () => {
                   onChange={(e) => setDraft({ ...draft, sortOrder: Number(e.target.value) })}
                 />
               </div>
+            </div>
+            <div className="flex items-center justify-between border border-border px-4 py-3">
+              <div>
+                <p className="text-sm font-medium">Destaque no site</p>
+                <p className="text-xs text-muted-foreground">O projeto destacado aparece maior na primeira posição.</p>
+              </div>
+              <Switch
+                checked={draft.featured}
+                onCheckedChange={(v) => setDraft({ ...draft, featured: v })}
+                aria-label="Destaque no site"
+              />
             </div>
             <div className="flex items-center justify-between border border-border px-4 py-3">
               <div>

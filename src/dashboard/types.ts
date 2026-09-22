@@ -35,8 +35,10 @@ export type AdminService = {
   id: string;
   name: string;
   description: string;
-  price: "Sob consulta";
+  price: string;
   active: boolean;
+  icon: string;
+  sortOrder: number;
 };
 
 export type ContactMessage = {

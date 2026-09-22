@@ -38,7 +38,7 @@ const Seo = ({ title, description, path, jsonLd }: SeoProps) => {
   );
 };
 
-/** Textos de SEO das 5 páginas públicas — mesmo tom de voz do site. */
+/** Textos de SEO das páginas públicas — mesmo tom de voz do site. */
 export const pageSeo = {
   home: {
     title: "WH Studio — Sites, sistemas e bots feitos do zero",
@@ -51,6 +51,12 @@ export const pageSeo = {
     description:
       "Criação de sites, bots para Discord, APIs e sistemas, automação, dashboards e delivery. Veja o que está incluído em cada serviço.",
     path: "/servicos",
+  },
+  sistemas: {
+    title: "Sistemas sob medida — Painel, login e integrações | WH Studio",
+    description:
+      "Sistema web feito para o processo da sua empresa: painel com login, cadastros, relatórios e integrações. Escopo fechado antes de escrever o código.",
+    path: "/sistemas",
   },
   planos: {
     title: "Planos e prazos — Inicial, Profissional e Premium | WH Studio",
@@ -70,6 +76,25 @@ export const pageSeo = {
       "Conte o que você precisa e receba um orçamento fechado em até 24 horas úteis. Atendimento pela central do site ou pelo WhatsApp.",
     path: "/contato",
   },
+  sobre: {
+    title: "Sobre — Como trabalha a WH Studio",
+    description:
+      "Um estúdio, uma pessoa por trás de cada projeto. Conheça os princípios, as etapas de trabalho e os limites honestos da WH Studio.",
+    path: "/sobre",
+  },
 } as const;
+
+/** JSON-LD: organização / estúdio de serviços profissionais. */
+export const orgJsonLd: Record<string, unknown> = {
+  "@context": "https://schema.org",
+  "@type": ["Organization", "ProfessionalService"],
+  name: "WH Studio",
+  url: siteConfig.url,
+  email: siteConfig.email,
+  founder: { "@type": "Person", name: siteConfig.author },
+  areaServed: "BR",
+  description: siteConfig.description,
+  sameAs: [siteConfig.social.discord],
+};
 
 export default Seo;

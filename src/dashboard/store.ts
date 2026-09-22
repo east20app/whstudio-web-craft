@@ -197,25 +197,37 @@ export const useAdminServices = () => {
     id: r.id,
     name: r.name,
     description: r.description ?? "",
-    price: "Sob consulta",
+    price: r.price ?? "Sob consulta",
     active: r.active,
-  }));
+    icon: r.icon ?? "",
+    sortOrder: r.sort_order ?? 0,
+  }), "sort_order", true);
 
   const addService = async (s: Omit<AdminService, "id">) => {
     const { error } = await supabase.from("services").insert({
       name: s.name,
       description: s.description,
-      price: "Sob consulta",
+      price: s.price || "Sob consulta",
       active: s.active,
+      icon: s.icon ?? "",
+      sort_order: s.sortOrder ?? 0,
     });
     if (!error) await t.refresh();
     return !error;
   };
   const updateService = async (id: string, patch: Partial<AdminService>) => {
-    const upd: Partial<{ name: string; description: string; active: boolean }> = {};
+    const upd: Partial<{
+      name: string;
+      description: string;
+      active: boolean;
+      icon: string;
+      sort_order: number;
+    }> = {};
     if (patch.name !== undefined) upd.name = patch.name;
     if (patch.description !== undefined) upd.description = patch.description;
     if (patch.active !== undefined) upd.active = patch.active;
+    if (patch.icon !== undefined) upd.icon = patch.icon;
+    if (patch.sortOrder !== undefined) upd.sort_order = patch.sortOrder;
     const { error } = await supabase.from("services").update(upd).eq("id", id);
     if (!error) await t.refresh();
     return !error;

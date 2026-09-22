@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { services as configServices } from "@/config/site";
-import { Code2, type LucideIcon } from "lucide-react";
+import { type LucideIcon } from "lucide-react";
+import { resolveServiceIcon } from "@/lib/serviceIcons";
 
 export type PublicService = {
   key: string;
@@ -16,6 +17,8 @@ type DbServiceRow = {
   id: string;
   name: string;
   description: string;
+  icon?: string | null;
+  sort_order?: number | null;
 };
 
 const normalize = (s: string) =>
@@ -62,7 +65,7 @@ function fetchServices(): Promise<PublicService[] | null> {
               title: c?.title ?? r.name,
               desc: r.description || c?.short || "",
               short: c?.short ?? r.description ?? "",
-              icon: c?.icon ?? Code2,
+              icon: r.icon ? resolveServiceIcon(r.icon) : (c?.icon ?? resolveServiceIcon("")),
               benefits: c?.benefits ?? [],
             } as PublicService;
           });
