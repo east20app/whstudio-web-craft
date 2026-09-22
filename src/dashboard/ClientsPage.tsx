@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Search, Trash2, MessageCircle, Plus } from "lucide-react";
+import { Search, Trash2, MessageCircle, Plus, Pencil } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -44,11 +44,21 @@ const statusOptions: { value: ClientStatus; label: string }[] = [
 
 const tone = (s: ClientStatus) => (s === "ativo" ? "green" : s === "lead" ? "blue" : "gray");
 
+type ClientsPageClient = {
+  id: string;
+  name: string;
+  whatsapp: string | null;
+  discord: string | null;
+  service: string | null;
+  status: ClientStatus;
+};
+
 const ClientsPage = () => {
-  const { data: clients, loading, addClient, removeClient } = useClients();
+  const { data: clients, loading, addClient, updateClient, removeClient } = useClients();
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<ClientStatus | "all">("all");
   const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState<ClientsPageClient | null>(null);
   const [form, setForm] = useState({
     name: "",
     whatsapp: "",
@@ -67,15 +77,27 @@ const ClientsPage = () => {
     [clients, search, filter]
   );
 
-  const add = async () => {
+  const openAdd = () => {
+    setEditing(null);
+    setForm({ name: "", whatsapp: "", discord: "", service: "", status: "ativo" });
+    setOpen(true);
+  };
+
+  const openEdit = (c: ClientsPageClient) => {
+    setEditing(c);
+    setForm({ name: c.name, whatsapp: c.whatsapp ?? "", discord: c.discord ?? "", service: c.service ?? "", status: c.status });
+    setOpen(true);
+  };
+
+  const save = async () => {
     if (!form.name) return toast.error("Informe o nome");
-    const ok = await addClient(form);
+    const ok = editing ? await updateClient(editing.id, form) : await addClient(form);
     if (ok) {
       setForm({ name: "", whatsapp: "", discord: "", service: "", status: "ativo" });
       setOpen(false);
-      toast.success("Cliente adicionado");
+      toast.success(editing ? "Cliente atualizado" : "Cliente adicionado");
     } else {
-      toast.error("Erro ao adicionar cliente");
+      toast.error("Erro ao salvar cliente");
     }
   };
 
@@ -92,16 +114,18 @@ const ClientsPage = () => {
           <h2 className="text-2xl md:text-3xl font-bold">Clientes</h2>
           <p className="text-muted-foreground text-sm mt-1">Gerencie clientes ativos, leads e contratos.</p>
         </div>
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog open={open} onOpenChange={(o) => { setOpen(o); if (!o) setEditing(null); }}>
           <DialogTrigger asChild>
-            <Button>
+            <Button onClick={openAdd}>
               <Plus className="w-4 h-4 mr-1" /> Novo cliente
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Adicionar cliente</DialogTitle>
-              <DialogDescription className="sr-only">Cadastre um novo cliente.</DialogDescription>
+              <DialogTitle>{editing ? "Editar cliente" : "Adicionar cliente"}</DialogTitle>
+              <DialogDescription className="sr-only">
+                {editing ? "Atualize os dados do cliente." : "Cadastre um novo cliente."}
+              </DialogDescription>
             </DialogHeader>
             <div className="space-y-3">
               <div className="space-y-1.5">
@@ -142,7 +166,7 @@ const ClientsPage = () => {
               <Button variant="outline" onClick={() => setOpen(false)}>
                 Cancelar
               </Button>
-              <Button onClick={add}>Adicionar</Button>
+              <Button onClick={save}>{editing ? "Salvar" : "Adicionar"}</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -186,7 +210,7 @@ const ClientsPage = () => {
             <div key={c.id} className="card-dark p-5 flex flex-col gap-3 hover:border-primary/50 transition-colors">
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-11 h-11 rounded-full bg-primary/15 border border-primary/30 flex items-center justify-center font-bold text-primary shrink-0">
+                  <div className="w-11 h-11 border border-primary/30 bg-primary/15 flex items-center justify-center font-bold text-primary shrink-0">
                     {c.name.charAt(0)}
                   </div>
                   <div className="min-w-0">
@@ -213,6 +237,9 @@ const ClientsPage = () => {
               </div>
 
               <div className="flex gap-2 mt-auto pt-2">
+                <Button size="icon" variant="ghost" onClick={() => openEdit(c)} aria-label="Editar cliente">
+                  <Pencil className="w-4 h-4" />
+                </Button>
                 {c.whatsapp && (
                   <Button size="sm" variant="outline" asChild className="flex-1">
                     <a

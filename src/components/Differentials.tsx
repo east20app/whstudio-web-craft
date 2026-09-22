@@ -1,46 +1,67 @@
 import { motion } from "framer-motion";
-import { CalendarCheck, MessageSquare, PenTool, Code2, CreditCard } from "lucide-react";
 
 const items = [
-  { icon: CalendarCheck, title: "Prazo que cabe na realidade", desc: "No ar em até 15 dias úteis. Cronograma combinado antes de qualquer linha de código." },
-  { icon: MessageSquare, title: "WhatsApp direto comigo", desc: "Sem suporte terceirizado, sem chamado. Quem responde é o mesmo que escreveu o código." },
-  { icon: PenTool, title: "Design que não envelhece", desc: "Tipografia, cor e espaçamento alinhados com o que está sendo feito de bom hoje." },
-  { icon: Code2, title: "Código escrito pro seu caso", desc: "Sem tema do WordPress, sem template. Cada funcionalidade feita do zero." },
-  { icon: CreditCard, title: "Pagamento já vem ligado", desc: "PIX, cartão, boleto e Stripe configurados. Você recebe direto, sem intermediário." },
+  {
+    title: "Prazo que cabe na realidade",
+    desc: "No ar em até 15 dias úteis. Cronograma combinado antes de qualquer linha de código.",
+  },
+  {
+    title: "WhatsApp direto comigo",
+    desc: "Sem suporte terceirizado, sem chamado. Quem responde é o mesmo que escreveu o código.",
+  },
+  {
+    title: "Design que não envelhece",
+    desc: "Tipografia, cor e espaço alinhados com o que está sendo feito de bom hoje — do zero.",
+  },
+  {
+    title: "Código escrito pro seu caso",
+    desc: "Sem tema pronto e sem template. Cada funcionalidade feita pra existir no seu projeto.",
+  },
+  {
+    title: "Pagamento já entra no caminho",
+    desc: "PIX, cartão, boleto e Stripe configurados. Você recebe direto, sem intermediário.",
+  },
 ];
 
 const Differentials = () => (
-  <section className="py-24 md:py-32 border-t border-border">
+  <section id="diferenciais" className="py-24 md:py-32 border-t border-border">
     <div className="container">
-      <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-16">
-        <div>
-          <p className="eyebrow mb-4">Diferenciais</p>
-          <h2 className="display-huge text-5xl md:text-7xl max-w-2xl">
-            Por que contratar <em>a WH Studio.</em>
+      <div className="grid lg:grid-cols-12 gap-x-12 gap-y-12">
+        <div className="lg:col-span-6">
+          <p className="eyebrow mb-5">Diferenciais</p>
+          <h2 className="display-huge text-5xl md:text-6xl leading-[1.05]">
+            Você fala com quem <em>escreve o código.</em>
           </h2>
+          <p className="mt-6 text-muted-foreground leading-relaxed max-w-md">
+            Sem comercial, sem repasse, sem escopo mudando no meio do caminho.
+            Só o essencial pra tirar o projeto do papel e colocar no ar.
+          </p>
         </div>
-      </div>
 
-      <div className="grid sm:grid-cols-2 gap-x-10">
-        {items.map((item, i) => {
-          const Icon = item.icon;
-          return (
-            <motion.div
-              key={item.title}
-              initial={{ opacity: 0, y: 12 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: i * 0.04 }}
-              className="border-t border-border py-7"
-            >
-              <h3 className="text-lg font-semibold flex items-center gap-3">
-                <Icon className="w-4 h-4 text-primary shrink-0" strokeWidth={1.5} />
-                {item.title}
-              </h3>
-              <p className="text-sm text-muted-foreground leading-relaxed mt-2 max-w-md">{item.desc}</p>
-            </motion.div>
-          );
-        })}
+        <div className="lg:col-span-5 lg:col-start-8 self-start">
+          <ul className="border-t border-border">
+            {items.map((it, i) => (
+              <motion.li
+                key={it.title}
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true, margin: "-8%" }}
+                transition={{ duration: 0.4, delay: i * 0.04 }}
+                className="flex gap-6 border-b border-border py-5"
+              >
+                <span className="num-label pt-1 w-8 shrink-0 tabular-nums">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <div>
+                  <h3 className="text-base font-semibold">{it.title}</h3>
+                  <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed max-w-[46ch]">
+                    {it.desc}
+                  </p>
+                </div>
+              </motion.li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   </section>

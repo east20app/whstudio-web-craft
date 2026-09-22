@@ -1,56 +1,68 @@
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
-import { services } from "@/config/site";
+import { usePublicServices, toPublicService } from "@/hooks/usePublicServices";
+import { services as configServices } from "@/config/site";
 import { useOrcamentoAction } from "@/components/tickets/TicketChat";
 
 const Services = () => {
+  const live = usePublicServices();
+  const list = live && live.length > 0 ? live : configServices.map(toPublicService);
   const { requestQuote } = useOrcamentoAction();
+
   return (
-    <section id="servicos" className="py-24 md:py-32 border-t border-border">
+    <section id="servicos" className="border-t border-border py-24 md:py-32">
       <div className="container">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-16">
-          <div>
-            <p className="eyebrow mb-4">Serviços</p>
-            <h2 className="display-huge text-5xl md:text-7xl max-w-2xl">
-              O que a gente <em>constrói.</em>
+        <div className="grid lg:grid-cols-12 gap-8 items-end mb-16">
+          <div className="lg:col-span-8">
+            <p className="eyebrow mb-5">Serviços</p>
+            <h2 className="display-huge text-5xl md:text-6xl max-w-2xl">
+              O que eu <em>construo.</em>
             </h2>
           </div>
-          <p className="text-muted-foreground max-w-sm md:pb-2">
-            Cada projeto é escrito do zero. Sem WordPress, sem template comprado,
-            sem mensalidade escondida.
+          <p className="lg:col-span-4 text-sm md:text-base text-muted-foreground leading-relaxed max-w-md">
+            Cada serviço é um escopo, não um template. Primeiro entendemos o que
+            precisa existir; depois eu escrevo o código, publico e te entrego.
           </p>
         </div>
 
         <div className="border-t border-border">
-          {services.map((s, i) => {
-            const Icon = s.icon;
-            return (
-              <motion.button
-                key={s.id}
-                type="button"
-                onClick={() => requestQuote({ subject: s.title, prefill: `Quero um orçamento de ${s.title}. ` })}
-                aria-label={`Solicitar orçamento de ${s.title}`}
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: Math.min(i * 0.04, 0.2) }}
-                className="group w-full grid md:grid-cols-12 gap-x-4 gap-y-2 items-baseline py-8 md:py-10 border-b border-border text-left transition-colors hover:bg-foreground/[0.02]"
-              >
-                <span className="md:col-span-1 flex items-center gap-3 font-mono text-xs text-muted-foreground">
-                  <Icon className="w-4 h-4" strokeWidth={1.5} />
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <h3 className="md:col-span-4 font-display text-3xl md:text-4xl leading-tight group-hover:text-primary transition-colors">
-                  {s.title}
-                </h3>
-                <p className="md:col-span-5 text-sm text-muted-foreground leading-relaxed">{s.short}</p>
-                <span className="md:col-span-2 flex items-center justify-end gap-2 text-sm font-medium">
-                  Solicitar
+          {list.map((s, i) => (
+            <motion.article
+              key={s.key}
+              initial={{ opacity: 0, x: -16 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-8%" }}
+              transition={{ duration: 0.4 }}
+              className="group grid md:grid-cols-12 items-baseline gap-x-6 gap-y-3 border-b border-border py-8 md:py-10"
+            >
+              <p className="md:col-span-1 num-label group-hover:text-primary transition-colors">
+                {String(i + 1).padStart(2, "0")}
+              </p>
+              <h3 className="md:col-span-4 font-display text-3xl md:text-4xl leading-tight group-hover:text-primary transition-colors">
+                {s.title}
+              </h3>
+              <div className="md:col-span-4">
+                <p className="text-sm md:text-base text-muted-foreground leading-relaxed max-w-[50ch] group-hover:text-foreground/80 transition-colors">
+                  {s.desc}
+                </p>
+              </div>
+              <div className="md:col-span-3 md:flex md:justify-end">
+                <button
+                  type="button"
+                  onClick={() =>
+                    requestQuote({
+                      subject: `Serviço: ${s.title}`,
+                      prefill: `Quero um orçamento para: ${s.title}. `,
+                    })
+                  }
+                  className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground transition-colors cursor-pointer bg-transparent"
+                >
+                  Solicitar orçamento
                   <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                </span>
-              </motion.button>
-            );
-          })}
+                </button>
+              </div>
+            </motion.article>
+          ))}
         </div>
       </div>
     </section>

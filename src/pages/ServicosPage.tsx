@@ -6,22 +6,31 @@ import Seo, { pageSeo } from "@/components/Seo";
 import { motion } from "framer-motion";
 import { Check, ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { services } from "@/config/site";
+import { services as configServices } from "@/config/site";
+import { usePublicServices, toPublicService } from "@/hooks/usePublicServices";
 import { usePortfolio } from "@/hooks/usePortfolio";
 
+const normalize = (s: string) =>
+  s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
 /** Serviço -> projeto real correspondente no portfólio. */
-const serviceExample: Record<string, string> = {
-  "criacao-sites": "Peixe Store",
-  "bots-discord": "DroxBot",
-  "apis-sistemas": "Copa Ativa",
-  dashboards: "DroxBot",
-  delivery: "Serra Delivery",
+const EXAMPLE_BY_TITLE: Record<string, string> = {
+  "criacao de sites": "Peixe Store",
+  "criacao de site": "Peixe Store",
+  "bots para discord": "DroxBot",
+  "bots discord": "DroxBot",
+  "apis e sistemas": "Copa Ativa",
+  "dashboards": "DroxBot",
+  "sistemas de delivery": "Serra Delivery",
+  "sistema de delivery": "Serra Delivery",
 };
 
 const anchorFor = (title: string) => `/portfolio#projeto-${title.toLowerCase().replace(/\s+/g, "-")}`;
 
 const ServicosPage = () => {
   const { data: portfolio } = usePortfolio(true);
+  const live = usePublicServices();
+  const servicesToShow = live && live.length > 0 ? live : configServices.map(toPublicService);
 
   return (
   <>
@@ -70,13 +79,14 @@ const ServicosPage = () => {
           </div>
 
           <div className="border-t border-border">
-            {services.map((s, i) => {
-              const exampleTitle = serviceExample[s.id];
+            {servicesToShow.map((s, i) => {
+              const Icon = s.icon;
+              const exampleTitle = EXAMPLE_BY_TITLE[normalize(s.title)];
               const example = portfolio.find((p) => p.title === exampleTitle);
 
               return (
                 <motion.article
-                  key={s.id}
+                  key={s.key}
                   initial={{ opacity: 0, y: 12 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
@@ -85,7 +95,7 @@ const ServicosPage = () => {
                 >
                   <div className="flex items-start gap-6 md:gap-8">
                     <div className="w-12 h-12 md:w-14 md:h-14 border border-border bg-card flex items-center justify-center shrink-0">
-                      <s.icon className="w-6 h-6 md:w-7 md:h-7 text-primary" strokeWidth={1.5} aria-hidden="true" />
+                      <Icon className="w-6 h-6 md:w-7 md:h-7 text-primary" strokeWidth={1.5} aria-hidden="true" />
                     </div>
                     <div className="flex-1">
                       <div className="flex flex-col md:flex-row md:items-baseline md:justify-between gap-2 mb-3">
@@ -100,15 +110,17 @@ const ServicosPage = () => {
                           </Link>
                         )}
                       </div>
-                      <p className="text-sm text-muted-foreground mb-5">{s.short}</p>
-                      <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-2.5">
-                        {s.benefits.map((b) => (
-                          <li key={b} className="flex items-start gap-2.5 text-sm text-foreground/80">
-                            <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                            <span>{b}</span>
-                          </li>
-                        ))}
-                      </ul>
+                      <p className="text-sm text-muted-foreground mb-5 max-w-[55ch]">{s.short}</p>
+                      {s.benefits.length > 0 && (
+                        <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-2.5">
+                          {s.benefits.map((b) => (
+                            <li key={b} className="flex items-start gap-2.5 text-sm text-foreground/80">
+                              <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                              <span>{b}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
                     </div>
                   </div>
                 </motion.article>

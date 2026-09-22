@@ -1,4 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
+
+type ActivityRow = Database["public"]["Tables"]["activity_log"]["Row"];
 
 export type ActivityEntry = {
   id: string;
@@ -37,7 +40,7 @@ export const fetchActivity = async (limit = 10): Promise<ActivityEntry[]> => {
     .select("*")
     .order("created_at", { ascending: false })
     .limit(limit);
-  return ((data as any[]) ?? []).map((r) => ({
+  return ((data as ActivityRow[]) ?? []).map((r) => ({
     id: r.id,
     actor: r.actor ?? "",
     action: r.action,

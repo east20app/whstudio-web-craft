@@ -201,87 +201,32 @@ export const plans: Plan[] = [
 // =============== PORTFÓLIO ===============
 export type ProjectStatus = "online" | "demo" | "em-desenvolvimento" | "privado";
 
-export type PortfolioProject = {
-  title: string;
-  category: string;
-  desc: string;
-  url?: string;
-  status: ProjectStatus;
-  tech: string[];
-  color: string;
-};
-
-export const portfolio: PortfolioProject[] = [
-  {
-    title: "Serra Delivery",
-    category: "Sistema de delivery",
-    desc: "Plataforma completa de delivery com cardápio digital, painel administrativo e mapa em tempo real para acompanhar entregadores.",
-    status: "em-desenvolvimento",
-    tech: ["React", "Node.js", "PostgreSQL", "Mapbox"],
-    color: "from-orange-500 to-red-600",
-  },
-  {
-    title: "DroxBot",
-    category: "Bot Discord + Painel",
-    desc: "Bot avançado para Discord com painel web próprio: moderação, tickets, economia, ranking e configuração visual.",
-    status: "online",
-    tech: ["Node.js", "Discord.js", "React", "MongoDB"],
-    color: "from-violet-500 to-purple-700",
-  },
-  {
-    title: "Peixe Store",
-    category: "Loja digital",
-    desc: "Loja virtual completa com catálogo, carrinho, checkout e gestão de pedidos.",
-    url: "https://peixestore.shop/",
-    status: "online",
-    tech: ["React", "Tailwind", "Stripe"],
-    color: "from-violet-600 to-fuchsia-600",
-  },
-  {
-    title: "Copa Ativa",
-    category: "Eventos esportivos",
-    desc: "Plataforma para gestão de campeonatos, inscrições, tabelas, resultados e ranking de equipes.",
-    status: "online",
-    tech: ["Next.js", "TypeScript", "PostgreSQL"],
-    color: "from-emerald-500 to-teal-700",
-  },
-];
-
+/** Rótulos de status em estilo editorial: mono, com cor contida para distinção. */
 export const statusLabels: Record<ProjectStatus, { label: string; className: string }> = {
   online: {
     label: "Online",
-    className: "bg-background/80 border-emerald-500/30 text-emerald-600 dark:text-emerald-300",
+    className: "border-border text-emerald-600 dark:text-emerald-400",
   },
   demo: {
     label: "Demonstração",
-    className: "bg-background/80 border-violet-500/30 text-violet-600 dark:text-violet-300",
+    className: "border-border text-accent-2 dark:text-accent-2",
   },
   "em-desenvolvimento": {
     label: "Em desenvolvimento",
-    className: "bg-background/80 border-yellow-500/30 text-yellow-600 dark:text-yellow-300",
+    className: "border-border text-warning dark:text-warning",
   },
   privado: {
     label: "Projeto privado",
-    className: "bg-background/80 border-zinc-500/30 text-zinc-500 dark:text-zinc-300",
+    className: "border-border text-muted-foreground",
   },
 };
 
 // =============== NAVEGAÇÃO ===============
 export const navLinks = [
-  { label: "Início", href: "/" },
-  { label: "whAI", href: "/#whai" },
   { label: "Serviços", href: "/servicos" },
-  { label: "Planos", href: "/planos" },
   { label: "Portfólio", href: "/portfolio" },
+  { label: "Planos", href: "/planos" },
   { label: "Contato", href: "/contato" },
-];
-
-// =============== PROVA SOCIAL ===============
-export const stats = [
-  { label: "Clientes atendidos", value: "50+" },
-  { label: "Projetos entregues", value: "70+" },
-  { label: "Uptime médio", value: "99.9%" },
-  { label: "Suporte", value: "WhatsApp" },
 ];
 
 export const testimonials = [

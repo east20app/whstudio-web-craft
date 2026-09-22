@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -110,6 +108,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 6rem;
 }
 
 @layer base {
@@ -121,6 +120,7 @@ html {
     font-family: 'Inter', system-ui, sans-serif;
     font-feature-settings: "ss01", "cv11";
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
   h1, h2 {
     font-family: 'Instrument Serif', Georgia, serif;
@@ -140,6 +140,18 @@ html {
   .font-mono, code, pre {
     font-family: 'JetBrains Mono', ui-monospace, monospace;
   }
+  ::selection {
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+  }
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+}
+
+@layer utilities {
+  /* ---- Tipografia técnica ---- */
   .eyebrow {
     font-family: 'JetBrains Mono', ui-monospace, monospace;
     font-weight: 500;
@@ -148,21 +160,31 @@ html {
     font-size: 0.7rem;
     color: hsl(var(--muted-foreground));
   }
-}
 
-@layer utilities {
-  /* Palavra destacada em tom secundário — sem gradiente. */
-  .text-gradient {
+  .num-label {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    font-size: 0.72rem;
     color: hsl(var(--muted-foreground));
   }
-  .text-accent-blue {
-    color: hsl(var(--primary));
-  }
-  .text-accent-cyan {
-    color: hsl(var(--accent-2));
+
+  .display-huge {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    line-height: 1.02;
   }
 
-  /* Bloco claro com hairline — sem sombra, sem blur. */
+  .h1-hero {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    line-height: 1.02;
+    font-size: clamp(2.6rem, 6.6vw, 5.75rem);
+  }
+
+  /* ---- Superfícies: papel quente + hairline, sem sombra ---- */
   .card-premium,
   .card-dark {
     background: hsl(var(--card));
@@ -176,17 +198,12 @@ html {
     border-color: hsl(var(--primary) / 0.5);
   }
 
-  .display-huge {
-    font-family: 'Instrument Serif', Georgia, serif;
-    font-weight: 400;
-    letter-spacing: -0.01em;
-    line-height: 1.02;
+  .hairline {
+    height: 1px;
+    background: hsl(var(--border));
   }
 
-  /*
-   * O logo é branco + azul (feito p/ fundo escuro). No tema claro, invertemos
-   * (branco vira tinta) e giramos o matiz p/ o azul continuar azul.
-   */
+  /* --- Logo: branco + azul p/ fundo escuro; no claro inverto. --- */
   .logo-invert {
     filter: invert(1) hue-rotate(180deg);
   }
@@ -194,50 +211,46 @@ html {
     filter: none;
   }
 
-  .h1-hero {
-    font-family: 'Instrument Serif', Georgia, serif;
-    font-weight: 400;
-    letter-spacing: -0.01em;
-    line-height: 1.02;
-    font-size: clamp(2.75rem, 7vw, 5.75rem);
-  }
-
-  .rule {
-    height: 1px;
-    background: hsl(var(--border));
-  }
-
-  /* Pílula editorial: papel com hairline, sem brilho. */
-  .pill-eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.3rem 0.7rem;
-    border-radius: 999px;
-    border: 1px solid hsl(var(--border));
-    background: hsl(var(--card));
-    color: hsl(var(--muted-foreground));
-    font-family: 'JetBrains Mono', ui-monospace, monospace;
-    font-size: 0.68rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-  }
-  .pill-eyebrow .pill-dot {
-    width: 5px;
-    height: 5px;
-    border-radius: 999px;
-    background: hsl(var(--primary));
-  }
-
-  /* Grid sutil — mantido discretíssimo. */
-  .bg-grid {
+  /* Grid técnico sutil — existe apenas no hero e em peças escolhidas. */
+  .bg-grid-faint {
     background-image:
-      linear-gradient(hsl(var(--foreground) / 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, hsl(var(--foreground) / 0.03) 1px, transparent 1px);
-    background-size: 44px 44px;
+      linear-gradient(hsl(var(--foreground) / 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--foreground) / 0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
     background-position: -1px -1px;
-    mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black, transparent 75%);
-    -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black, transparent 75%);
+    mask-image: radial-gradient(ellipse 75% 65% at 50% 30%, black, transparent 78%);
+    -webkit-mask-image: radial-gradient(ellipse 75% 65% at 50% 30%, black, transparent 78%);
+  }
+
+  /* Label de campo (formulário editorial, mono). */
+  .field-label {
+    display: block;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 0.66rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: hsl(var(--muted-foreground));
+  }
+
+  /* Recorte de origem da mensagem — pequeno chanfro, quase reto. */
+  .bubble-notch {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 8px 50%);
+  }
+}
+
+/* Acessibilidade: respeita prefers-reduced-motion em tudo que for CSS. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 

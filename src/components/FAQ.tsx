@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import {
   Accordion,
   AccordionContent,
@@ -38,27 +37,21 @@ const FAQ = () => (
     <div className="container">
       <div className="grid lg:grid-cols-12 gap-10">
         <div className="lg:col-span-4">
-          <p className="eyebrow mb-4">Perguntas</p>
+          <p className="eyebrow mb-5">Perguntas</p>
           <h2 className="display-huge text-4xl md:text-6xl">
             Antes de <em>você perguntar.</em>
           </h2>
-          <p className="text-muted-foreground text-sm mt-5 max-w-sm leading-relaxed">
-            As dúvidas que mais chegam na central de atendimento — respondidas aqui pra você não
-            perder tempo.
+          <p className="text-muted-foreground text-sm mt-6 max-w-sm leading-relaxed">
+            As dúvidas que mais chegam por aqui, respondidas de forma direta —
+            pra você não perder tempo.
           </p>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4 }}
-          className="lg:col-span-8"
-        >
+        <div className="lg:col-span-8">
           <Accordion type="single" collapsible className="w-full border-t border-border">
             {faqs.map((f, i) => (
               <AccordionItem key={f.q} value={`faq-${i}`} className="border-b border-border">
-                <AccordionTrigger className="py-5 font-display text-xl md:text-2xl text-left hover:no-underline">
+                <AccordionTrigger className="py-5 font-display text-xl md:text-2xl text-left text-foreground hover:no-underline">
                   {f.q}
                 </AccordionTrigger>
                 <AccordionContent className="text-sm text-muted-foreground leading-relaxed">
@@ -67,7 +60,7 @@ const FAQ = () => (
               </AccordionItem>
             ))}
           </Accordion>
-        </motion.div>
+        </div>
       </div>
     </div>
   </section>

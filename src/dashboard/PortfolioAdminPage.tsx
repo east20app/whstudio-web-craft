@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Plus, Pencil, Trash2, Eye, EyeOff, ExternalLink } from "lucide-react";
+import { useRef, useState } from "react";
+import { Plus, Pencil, Trash2, Eye, EyeOff, ExternalLink, Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -24,21 +24,14 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 import { usePortfolio, type PortfolioItem } from "@/hooks/usePortfolio";
 import { statusLabels, type ProjectStatus } from "@/config/site";
 import { logActivity } from "@/lib/activity";
 import EmptyState from "./components/EmptyState";
 
 const statusOptions: ProjectStatus[] = ["online", "demo", "em-desenvolvimento", "privado"];
-const colorOptions = [
-  "from-blue-500 to-indigo-700",
-  "from-orange-500 to-red-600",
-  "from-violet-500 to-purple-700",
-  "from-violet-600 to-fuchsia-600",
-  "from-emerald-500 to-teal-700",
-  "from-cyan-500 to-blue-700",
-  "from-zinc-600 to-zinc-900",
-];
+const ALLOWED_EXT = ["jpg", "jpeg", "png", "webp", "avif"];
 
 type Draft = {
   title: string;
@@ -47,7 +40,8 @@ type Draft = {
   url: string;
   status: ProjectStatus;
   tech: string;
-  color: string;
+  coverUrl: string;
+  removeCover: boolean;
   published: boolean;
   sortOrder: number;
 };
@@ -59,7 +53,8 @@ const emptyDraft: Draft = {
   url: "",
   status: "online",
   tech: "",
-  color: colorOptions[0],
+  coverUrl: "",
+  removeCover: false,
   published: true,
   sortOrder: 0,
 };
@@ -70,6 +65,8 @@ const PortfolioAdminPage = () => {
   const [editing, setEditing] = useState<PortfolioItem | null>(null);
   const [draft, setDraft] = useState<Draft>(emptyDraft);
   const [toDelete, setToDelete] = useState<PortfolioItem | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const openNew = () => {
     setEditing(null);
@@ -86,11 +83,57 @@ const PortfolioAdminPage = () => {
       url: p.url ?? "",
       status: p.status,
       tech: p.tech.join(", "),
-      color: p.color,
+      coverUrl: p.coverUrl ?? "",
+      removeCover: false,
       published: p.published,
       sortOrder: p.sortOrder,
     });
     setOpen(true);
+  };
+
+  const uploadCover = async (file: File) => {
+    const ext = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
+    const safeExt = ALLOWED_EXT.includes(ext) ? ext : "jpg";
+    const path = `${crypto.randomUUID()}.${safeExt}`;
+    const { error } = await supabase.storage
+      .from("portfolio-covers")
+      .upload(path, file, { cacheControl: "31536000", upsert: false, contentType: file.type });
+    if (error) return null;
+    const { data: pub } = supabase.storage.from("portfolio-covers").getPublicUrl(path);
+    return pub.publicUrl;
+  };
+
+  const removeOldCover = async (coverUrl?: string) => {
+    if (!coverUrl) return;
+    const marker = "/portfolio-covers/";
+    const idx = coverUrl.indexOf(marker);
+    if (idx === -1) return;
+    const path = coverUrl.slice(idx + marker.length).split("?")[0];
+    if (!path) return;
+    await supabase.storage.from("portfolio-covers").remove([path]);
+  };
+
+  const onFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    setUploading(true);
+    try {
+      const url = await uploadCover(file);
+      if (!url) {
+        toast.error("Não foi possível enviar a capa.");
+        return;
+      }
+      setDraft((d) => ({ ...d, coverUrl: url, removeCover: false }));
+      toast.success("Capa enviada.");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const removeCover = () => {
+    removeOldCover(draft.coverUrl);
+    setDraft((d) => ({ ...d, coverUrl: "", removeCover: true }));
   };
 
   const save = async () => {
@@ -98,6 +141,8 @@ const PortfolioAdminPage = () => {
       toast.error("Informe o nome do projeto.");
       return;
     }
+    if (draft.removeCover) await removeOldCover(editing?.coverUrl ?? draft.coverUrl);
+
     const payload = {
       title: draft.title.trim(),
       category: draft.category.trim(),
@@ -108,7 +153,7 @@ const PortfolioAdminPage = () => {
         .split(",")
         .map((t) => t.trim())
         .filter(Boolean),
-      color: draft.color,
+      coverUrl: draft.removeCover ? "" : (draft.coverUrl.trim() || undefined),
       published: draft.published,
       sortOrder: Number(draft.sortOrder) || 0,
     };
@@ -133,6 +178,7 @@ const PortfolioAdminPage = () => {
 
   const confirmDelete = async () => {
     if (!toDelete) return;
+    removeOldCover(toDelete.coverUrl);
     const ok = await removeProject(toDelete.id);
     if (!ok) {
       toast.error("Não foi possível excluir.");
@@ -168,7 +214,7 @@ const PortfolioAdminPage = () => {
           <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">Sys / Portfólio</p>
           <h2 className="text-2xl md:text-3xl font-bold tracking-tight mt-2">Portfólio</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            O que estiver publicado aqui aparece na página /portfolio do site.
+            O que estiver publicado aparece na página /portfolio do site. Projetos com capa ficam mais fortes.
           </p>
         </div>
         <Button onClick={openNew}>
@@ -181,12 +227,21 @@ const PortfolioAdminPage = () => {
       ) : data.length === 0 ? (
         <EmptyState title="Nenhum projeto" description="Adicione o primeiro projeto do portfólio." />
       ) : (
-        <div className="border border-border rounded-xl divide-y divide-border overflow-hidden bg-card/30">
+        <div className="border border-border divide-y divide-border overflow-hidden bg-card/30">
           {data.map((p, i) => (
             <div key={p.id} className="px-5 py-4 flex flex-wrap items-start gap-4">
-              <span className="font-mono text-[10px] text-muted-foreground/50 tabular-nums pt-1">
-                {String(i + 1).padStart(2, "0")}
-              </span>
+              {p.coverUrl ? (
+                <img
+                  src={p.coverUrl}
+                  alt=""
+                  className="w-24 h-16 object-cover border border-border hidden sm:block"
+                  loading="lazy"
+                />
+              ) : (
+                <span className="w-24 h-16 border border-border bg-secondary items-center justify-center font-display text-2xl hidden sm:flex" aria-hidden="true">
+                  {p.title.slice(0, 2).toUpperCase()}
+                </span>
+              )}
               <div className="min-w-[220px] flex-1">
                 <div className="flex items-center gap-2 flex-wrap">
                   <p className="font-medium">{p.title}</p>
@@ -256,6 +311,50 @@ const PortfolioAdminPage = () => {
           </DialogHeader>
 
           <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-1">
+            {/* Capa */}
+            <div className="space-y-2">
+              <span className="field-label">Capa do projeto</span>
+              {draft.coverUrl ? (
+                <div className="relative border border-border overflow-hidden">
+                  <img src={draft.coverUrl} alt="Prévia da capa" className="w-full aspect-[4/3] object-cover object-top" />
+                  <button
+                    type="button"
+                    onClick={removeCover}
+                    className="absolute top-2 right-2 w-8 h-8 border border-border bg-background/90 hover:bg-background flex items-center justify-center"
+                    aria-label="Remover capa"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => fileRef.current?.click()}
+                  disabled={uploading}
+                  className="w-full aspect-[4/3] border border-dashed border-border bg-card flex flex-col items-center justify-center gap-2 text-muted-foreground hover:border-primary/50 hover:text-foreground transition-colors"
+                >
+                  {uploading ? (
+                    <span className="text-xs">Enviando…</span>
+                  ) : (
+                    <>
+                      <Upload className="w-5 h-5" />
+                      <span className="text-xs">JPG, PNG, WEBP ou AVIF</span>
+                    </>
+                  )}
+                </button>
+              )}
+              <input
+                ref={fileRef}
+                type="file"
+                accept={ALLOWED_EXT.map((e) => `.${e}`).join(",")}
+                onChange={onFile}
+                className="hidden"
+              />
+              <p className="text-xs text-muted-foreground">
+                Sem capa, o site mostra um monograma + “Projeto privado”. Subir uma imagem deixa o case completo.
+              </p>
+            </div>
+
             <div className="space-y-2">
               <Label htmlFor="p-title">Nome</Label>
               <Input id="p-title" value={draft.title} onChange={(e) => setDraft({ ...draft, title: e.target.value })} />
@@ -301,7 +400,7 @@ const PortfolioAdminPage = () => {
                 <Label htmlFor="p-status">Status</Label>
                 <select
                   id="p-status"
-                  className="w-full h-10 px-3 rounded-md bg-background border border-input text-sm"
+                  className="w-full h-10 px-3 bg-background border border-input text-sm"
                   value={draft.status}
                   onChange={(e) => setDraft({ ...draft, status: e.target.value as ProjectStatus })}
                 >
@@ -322,23 +421,7 @@ const PortfolioAdminPage = () => {
                 />
               </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="p-color">Cor do card</Label>
-              <select
-                id="p-color"
-                className="w-full h-10 px-3 rounded-md bg-background border border-input text-sm"
-                value={draft.color}
-                onChange={(e) => setDraft({ ...draft, color: e.target.value })}
-              >
-                {colorOptions.map((c) => (
-                  <option key={c} value={c}>
-                    {c.replace("from-", "").replace(" to-", " → ")}
-                  </option>
-                ))}
-              </select>
-              <div className={`h-8 rounded-md bg-gradient-to-br ${draft.color}`} aria-hidden="true" />
-            </div>
-            <div className="flex items-center justify-between border border-border rounded-md px-4 py-3">
+            <div className="flex items-center justify-between border border-border px-4 py-3">
               <div>
                 <p className="text-sm font-medium">Publicado no site</p>
                 <p className="text-xs text-muted-foreground">Desmarque para esconder sem excluir.</p>
@@ -355,7 +438,9 @@ const PortfolioAdminPage = () => {
             <Button variant="ghost" onClick={() => setOpen(false)}>
               Cancelar
             </Button>
-            <Button onClick={save}>Salvar</Button>
+            <Button onClick={save} disabled={uploading}>
+              Salvar
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

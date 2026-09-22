@@ -19,7 +19,7 @@ const stageLabel = {
 };
 
 const Panel = ({ title, href, children }: { title: string; href: string; children: React.ReactNode }) => (
-  <section className="border border-border rounded-xl overflow-hidden bg-card/30">
+  <section className="border border-border overflow-hidden bg-card/30">
     <header className="flex items-center justify-between px-5 h-12 border-b border-border">
       <h3 className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">{title}</h3>
       <Link to={href} className="font-mono text-[10px] uppercase tracking-[0.14em] text-primary hover:underline">
@@ -57,7 +57,7 @@ const Overview = () => {
         </div>
         <Link
           to="/dashboard/configuracoes"
-          className={`inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.16em] px-3 py-2 rounded-full border ${
+          className={`inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.16em] px-3 py-2 border ${
             settings.acceptingProjects
               ? "border-emerald-400/30 text-emerald-400"
               : "border-warning/30 text-warning"
@@ -125,7 +125,7 @@ const Overview = () => {
         </Panel>
       </div>
 
-      <section className="border border-border rounded-xl overflow-hidden bg-card/30">
+      <section className="border border-border overflow-hidden bg-card/30">
         <header className="flex items-center justify-between px-5 h-12 border-b border-border">
           <h3 className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
             Atividade recente

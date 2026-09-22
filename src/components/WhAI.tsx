@@ -63,11 +63,11 @@ const uid = () => Math.random().toString(36).slice(2, 9);
 
 const Typing = () => (
   <div className="flex justify-start" aria-hidden="true">
-    <div className="bg-foreground/[0.05] border border-border rounded-2xl rounded-bl-md px-4 py-3 flex items-center gap-1.5">
+    <div className="bg-foreground/[0.05] border border-border rounded-none px-4 py-3 flex items-center gap-1.5">
       {[0, 1, 2].map((i) => (
         <motion.span
           key={i}
-          className="h-1.5 w-1.5 rounded-full bg-muted-foreground"
+          className="h-1.5 w-1.5 rounded-none bg-muted-foreground"
           animate={{ opacity: [0.25, 1, 0.25], y: [0, -2, 0] }}
           transition={{ duration: 0.9, repeat: Infinity, delay: i * 0.15 }}
         />
@@ -243,10 +243,10 @@ const WhAI = () => {
                   className={`flex ${m.from === "user" ? "justify-end" : "justify-start"}`}
                 >
                   <div
-                    className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
+                    className={`max-w-[85%] rounded-none px-4 py-2.5 text-sm leading-relaxed ${
                       m.from === "user"
-                        ? "bg-primary text-primary-foreground rounded-br-md"
-                        : "bg-foreground/[0.05] border border-border rounded-bl-md"
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-foreground/[0.05] border border-border"
                     }`}
                   >
                     <p className="whitespace-pre-wrap break-words">{m.body}</p>

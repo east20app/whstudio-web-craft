@@ -1,11 +1,12 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
-import WhAI from "@/components/WhAI";
+import Portfolio from "@/components/Portfolio";
 import Services from "@/components/Services";
+import WhAI from "@/components/WhAI";
 import HowItWorks from "@/components/HowItWorks";
-import Testimonials from "@/components/Testimonials";
-import Plans from "@/components/Plans";
 import Differentials from "@/components/Differentials";
+import Plans from "@/components/Plans";
+import Testimonials from "@/components/Testimonials";
 import FAQ, { faqJsonLd } from "@/components/FAQ";
 import About from "@/components/About";
 import CTAFinal from "@/components/CTAFinal";
@@ -17,12 +18,13 @@ const Index = () => (
     <Seo {...pageSeo.home} jsonLd={faqJsonLd} />
     <Header />
     <Hero />
-    <WhAI />
+    <Portfolio />
     <Services />
+    <WhAI />
     <HowItWorks />
-    <Testimonials />
-    <Plans />
     <Differentials />
+    <Plans />
+    <Testimonials />
     <FAQ />
     <About />
     <CTAFinal />

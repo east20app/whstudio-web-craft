@@ -37,7 +37,7 @@ const SettingsPage = () => {
         <h2 className="text-2xl md:text-3xl font-bold tracking-tight mt-2">Configurações</h2>
       </header>
 
-      <section className="border border-border rounded-xl bg-card/40 px-5 md:px-6">
+      <section className="border border-border bg-card/40 px-5 md:px-6">
         <div className="pt-5 flex items-center gap-2">
           <Wrench className="w-3.5 h-3.5 text-primary" aria-hidden="true" />
           <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">Manutenção</p>
@@ -77,7 +77,7 @@ const SettingsPage = () => {
         </Field>
       </section>
 
-      <section className="border border-border rounded-xl bg-card/40 px-5 md:px-6">
+      <section className="border border-border bg-card/40 px-5 md:px-6">
         <div className="pt-5">
           <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">Site</p>
         </div>

@@ -49,7 +49,7 @@ const MessagesPage = () => {
                   <div className="flex items-center gap-2 flex-wrap">
                     <p className="font-semibold">{m.name}</p>
                     {!m.read && (
-                      <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-primary/15 text-primary border border-primary/30">
+                      <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 border bg-primary/15 text-primary border-primary/30">
                         Nova
                       </span>
                     )}

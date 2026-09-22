@@ -139,7 +139,7 @@ const TicketsPage = () => {
             messages.map((m) => (
               <div key={m.id} className={`flex ${m.sender === "admin" ? "justify-end" : "justify-start"}`}>
                 <div
-                  className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
+                  className={`max-w-[80%] rounded-none px-4 py-3 text-sm leading-relaxed ${
                     m.sender === "admin"
                       ? "bg-primary text-primary-foreground rounded-br-md"
                       : "bg-card border border-border rounded-bl-md"
@@ -187,7 +187,7 @@ const TicketsPage = () => {
         <h2 className="text-2xl md:text-3xl font-bold tracking-tight mt-2">
           Tickets{" "}
           {unread > 0 && (
-            <span className="align-middle ml-1 font-mono text-xs px-2 py-0.5 rounded-full bg-primary/15 text-primary border border-primary/30">
+            <span className="align-middle ml-1 font-mono text-xs px-2 py-0.5 border bg-primary/15 text-primary border-primary/30">
               {unread} novo{unread > 1 ? "s" : ""}
             </span>
           )}
@@ -212,7 +212,7 @@ const TicketsPage = () => {
           description="Quando alguém solicitar orçamento pelo site, a conversa aparece aqui."
         />
       ) : (
-        <div className="border border-border rounded-xl divide-y divide-border overflow-hidden">
+        <div className="border border-border divide-y divide-border overflow-hidden">
           {filtered.map((t) => (
             <button
               key={t.id}
@@ -224,7 +224,7 @@ const TicketsPage = () => {
                 <div className="flex items-center gap-2">
                   <p className="text-sm font-semibold truncate">{t.name || "Sem nome"}</p>
                   {t.adminUnread > 0 && t.status !== "fechado" && (
-                    <span className="font-mono text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-primary/15 text-primary border border-primary/30">
+                    <span className="font-mono text-[9px] uppercase tracking-wider px-1.5 py-0.5 border bg-primary/15 text-primary border-primary/30">
                       novo
                     </span>
                   )}

@@ -1,13 +1,11 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Mail, MessageCircle, Send } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { z } from "zod";
 import { toast } from "sonner";
-import { siteConfig, whatsappLink } from "@/config/site";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { useOrcamentoAction } from "@/components/tickets/TicketChat";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -45,6 +43,7 @@ const Contact = () => {
   const [data, setData] = useState<FormData>(initialState);
   const [errors, setErrors] = useState<FormErrors>({});
   const { requestQuote } = useOrcamentoAction();
+  const settings = useSiteSettings();
 
   const update = (field: keyof FormData, value: string) => {
     setData((d) => ({ ...d, [field]: value }));
@@ -66,10 +65,12 @@ const Contact = () => {
       return;
     }
 
-    const contactLine = result.data.phone?.trim() ? `\n\nWhatsApp/Telefone: ${result.data.phone.trim()}` : "";
-    const fullMessage = (result.data.project
-      ? `[${result.data.project}] ${result.data.message}`
-      : result.data.message) + contactLine;
+    const contactLine = result.data.phone?.trim()
+      ? `\n\nWhatsApp/Telefone: ${result.data.phone.trim()}`
+      : "";
+    const fullMessage =
+      (result.data.project ? `[${result.data.project}] ${result.data.message}` : result.data.message) +
+      contactLine;
 
     const { error } = await supabase.from("messages").insert({
       name: result.data.name,
@@ -91,98 +92,132 @@ const Contact = () => {
   };
 
   return (
-    <section id="contato" className="py-24 bg-secondary">
+    <section id="contato" className="border-t border-border py-24 md:py-32">
       <div className="container">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <span className="text-sm font-medium text-primary uppercase tracking-widest">Fale comigo</span>
-          <h2 className="text-3xl md:text-4xl font-bold mt-2">Bora trocar uma ideia sobre o seu projeto</h2>
-          <p className="text-muted-foreground mt-4 max-w-xl mx-auto">
-            Preencha o formulário ou chama no WhatsApp. Eu respondo em até 24 horas úteis — e geralmente é bem antes.
-          </p>
-        </motion.div>
+        <div className="grid lg:grid-cols-12 gap-x-12 gap-y-12">
+          <div className="lg:col-span-5">
+            <p className="eyebrow mb-5">Contato</p>
+            <h2 className="display-huge text-4xl md:text-5xl leading-[1.08]">
+              Me conta o que <em>precisa existir.</em>
+            </h2>
+            <p className="mt-6 text-muted-foreground leading-relaxed max-w-md">
+              Preenche o formulário ou chama no WhatsApp. Eu respondo em até 24
+              horas úteis — e geralmente é bem antes.
+            </p>
 
-        <div className="grid lg:grid-cols-2 gap-10 max-w-5xl mx-auto">
-          <motion.form
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="space-y-5 card-dark p-7"
+            <dl className="mt-10 border-t border-border">
+              <div className="flex items-baseline justify-between gap-4 border-b border-border py-4">
+                <dt className="num-label shrink-0">WhatsApp</dt>
+                <dd className="text-right">
+                  <a
+                    href={settings.buildWhatsappLink()}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-mono text-sm text-foreground hover:text-primary transition-colors"
+                  >
+                    {settings.whatsappFull} <ArrowUpRight className="inline w-3.5 h-3.5" />
+                  </a>
+                </dd>
+              </div>
+              <div className="flex items-baseline justify-between gap-4 border-b border-border py-4">
+                <dt className="num-label shrink-0">E-mail</dt>
+                <dd className="text-right">
+                  <a
+                    href={`mailto:${settings.email}`}
+                    className="font-mono text-sm text-foreground hover:text-primary transition-colors"
+                  >
+                    {settings.email}
+                  </a>
+                </dd>
+              </div>
+              <div className="flex items-baseline justify-between gap-4 py-4">
+                <dt className="num-label shrink-0">Resposta</dt>
+                <dd className="font-mono text-sm">Em até 24 h úteis</dd>
+              </div>
+            </dl>
+          </div>
+
+          <form
+            className="lg:col-span-7 lg:col-start-7 space-y-6"
             onSubmit={onSubmit}
             noValidate
           >
-            <div className="space-y-2">
-              <Label htmlFor="name">Nome</Label>
-              <Input
-                id="name"
-                placeholder="Seu nome completo"
-                value={data.name}
-                onChange={(e) => update("name", e.target.value)}
-                aria-invalid={!!errors.name}
-                aria-describedby={errors.name ? "name-error" : undefined}
-                maxLength={100}
-              />
-              {errors.name && (
-                <p id="name-error" className="text-xs text-destructive">{errors.name}</p>
-              )}
+            <div className="grid sm:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label htmlFor="name" className="field-label">
+                  Nome
+                </label>
+                <Input
+                  id="name"
+                  placeholder="Seu nome completo"
+                  value={data.name}
+                  onChange={(e) => update("name", e.target.value)}
+                  aria-invalid={!!errors.name}
+                  aria-describedby={errors.name ? "name-error" : undefined}
+                  maxLength={100}
+                />
+                {errors.name && <p id="name-error" className="text-xs text-destructive">{errors.name}</p>}
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="email" className="field-label">
+                  E-mail
+                </label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="seu@email.com"
+                  value={data.email}
+                  onChange={(e) => update("email", e.target.value)}
+                  aria-invalid={!!errors.email}
+                  aria-describedby={errors.email ? "email-error" : undefined}
+                  maxLength={255}
+                />
+                {errors.email && <p id="email-error" className="text-xs text-destructive">{errors.email}</p>}
+              </div>
+            </div>
+
+            <div className="grid sm:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label htmlFor="phone" className="field-label">
+                  WhatsApp / Telefone — opcional
+                </label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  inputMode="tel"
+                  placeholder="(84) 98876-6134"
+                  value={data.phone}
+                  onChange={(e) => update("phone", e.target.value)}
+                  aria-invalid={!!errors.phone}
+                  aria-describedby={errors.phone ? "phone-error" : undefined}
+                  maxLength={20}
+                />
+                {errors.phone && <p id="phone-error" className="text-xs text-destructive">{errors.phone}</p>}
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="project" className="field-label">
+                  Tipo de projeto — opcional
+                </label>
+                <Input
+                  id="project"
+                  placeholder="Ex.: site, bot Discord, sistema..."
+                  value={data.project}
+                  onChange={(e) => update("project", e.target.value)}
+                  maxLength={100}
+                />
+              </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email">E-mail</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="seu@email.com"
-                value={data.email}
-                onChange={(e) => update("email", e.target.value)}
-                aria-invalid={!!errors.email}
-                aria-describedby={errors.email ? "email-error" : undefined}
-                maxLength={255}
-              />
-              {errors.email && (
-                <p id="email-error" className="text-xs text-destructive">{errors.email}</p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="phone">WhatsApp / Telefone (opcional)</Label>
-              <Input
-                id="phone"
-                type="tel"
-                inputMode="tel"
-                placeholder="(84) 98876-6134"
-                value={data.phone}
-                onChange={(e) => update("phone", e.target.value)}
-                aria-invalid={!!errors.phone}
-                aria-describedby={errors.phone ? "phone-error" : undefined}
-                maxLength={20}
-              />
-              {errors.phone && (
-                <p id="phone-error" className="text-xs text-destructive">{errors.phone}</p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="project">Tipo de projeto (opcional)</Label>
-              <Input
-                id="project"
-                placeholder="Ex.: site, bot Discord, sistema..."
-                value={data.project}
-                onChange={(e) => update("project", e.target.value)}
-                maxLength={100}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="message">Mensagem</Label>
+              <label htmlFor="message" className="field-label">
+                Mensagem
+              </label>
               <Textarea
                 id="message"
                 placeholder="Conte um pouco sobre o que você precisa..."
-                className="min-h-[120px]"
+                className="min-h-[130px]"
                 value={data.message}
                 onChange={(e) => update("message", e.target.value)}
                 aria-invalid={!!errors.message}
@@ -194,69 +229,15 @@ const Contact = () => {
               )}
             </div>
 
-            <Button type="submit" size="lg" className="w-full">
-              <Send className="w-4 h-4 mr-2" aria-hidden="true" /> Enviar e abrir atendimento
+            <Button type="submit" className="h-12 rounded-none px-7">
+              Enviar e abrir atendimento
+              <ArrowUpRight className="w-4 h-4 ml-1.5" />
             </Button>
-            <p className="text-xs text-muted-foreground text-center">
-              Resposta em até 24 horas úteis — acompanhe pela central de atendimento.
+            <p className="text-xs text-muted-foreground">
+              Ao enviar, você abre uma conversa na central de atendimento — pode
+              continuar de onde paramos.
             </p>
-          </motion.form>
-
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="space-y-6"
-          >
-            <div>
-              <h3 className="text-xl font-semibold mb-3">Prefere falar direto?</h3>
-              <p className="text-muted-foreground text-sm">
-                Estamos disponíveis pelo WhatsApp e por e-mail para tirar dúvidas e enviar
-                orçamentos personalizados.
-              </p>
-            </div>
-
-            <div className="space-y-3">
-              <Button variant="outline" className="w-full justify-start gap-3 h-16" asChild>
-                <a
-                  href={whatsappLink()}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Abrir conversa no WhatsApp"
-                >
-                  <span className="w-10 h-10 rounded-lg bg-[#25D366]/15 border border-[#25D366]/30 flex items-center justify-center">
-                    <MessageCircle className="w-5 h-5 text-[#25D366]" />
-                  </span>
-                  <div className="text-left">
-                    <p className="text-sm font-semibold">WhatsApp</p>
-                    <p className="text-xs text-muted-foreground">{siteConfig.whatsapp.display}</p>
-                  </div>
-                </a>
-              </Button>
-
-              <Button variant="outline" className="w-full justify-start gap-3 h-16" asChild>
-                <a href={`mailto:${siteConfig.email}`} aria-label="Enviar e-mail">
-                  <span className="w-10 h-10 rounded-lg bg-primary/15 border border-primary/30 flex items-center justify-center">
-                    <Mail className="w-5 h-5 text-primary" />
-                  </span>
-                  <div className="text-left">
-                    <p className="text-sm font-semibold">E-mail</p>
-                    <p className="text-xs text-muted-foreground">{siteConfig.email}</p>
-                  </div>
-                </a>
-              </Button>
-            </div>
-
-            <div className="card-dark p-5">
-              <p className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">
-                Tempo de resposta
-              </p>
-              <p className="text-sm text-muted-foreground">
-                Respondemos em até <span className="text-foreground font-semibold">24 horas úteis</span>.
-                Para projetos urgentes, fale pelo WhatsApp.
-              </p>
-            </div>
-          </motion.div>
+          </form>
         </div>
       </div>
     </section>

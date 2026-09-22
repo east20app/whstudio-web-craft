@@ -69,7 +69,7 @@ const DashboardLayout = () => {
               <span className="font-mono text-[10px] text-muted-foreground/50 tabular-nums">{it.code}</span>
               <span className="font-medium">{it.label}</span>
               {"badge" in it && it.badge === "tickets" && unread > 0 && (
-                <span className="ml-auto font-mono text-[9px] px-1.5 py-0.5 rounded-full bg-primary/15 text-primary border border-primary/30 tabular-nums">
+                <span className="ml-auto font-mono text-[9px] px-1.5 py-0.5 border bg-primary/15 text-primary border-primary/30 tabular-nums">
                   {unread}
                 </span>
               )}
@@ -102,7 +102,7 @@ const DashboardLayout = () => {
               Painel interno
             </p>
             {settings.maintenanceMode && (
-              <span className="hidden sm:inline-flex items-center gap-2 rounded-full border border-yellow-600/40 bg-yellow-500/10 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-yellow-700">
+              <span className="hidden sm:inline-flex items-center gap-2 border border-yellow-600/40 bg-yellow-500/10 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-yellow-700">
                 <span className="h-1.5 w-1.5 rounded-full bg-yellow-600" aria-hidden="true" />
                 Site em manutenção para visitantes
               </span>

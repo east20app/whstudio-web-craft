@@ -279,7 +279,7 @@ export const TicketChatProvider = ({ children }: { children: React.ReactNode }) 
                       className={`flex ${m.sender === "cliente" ? "justify-end" : "justify-start"}`}
                     >
                       <div
-                        className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
+                        className={`max-w-[85%] px-4 py-2.5 text-sm leading-relaxed ${
                           m.sender === "cliente"
                             ? "bg-primary text-primary-foreground rounded-br-md"
                             : "bg-foreground/[0.05] border border-border rounded-bl-md"

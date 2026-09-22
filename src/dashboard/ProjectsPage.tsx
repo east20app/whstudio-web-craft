@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Search, Trash2, Plus, CheckCircle2, Send, Copy } from "lucide-react";
+import { Search, Trash2, Plus, CheckCircle2, Send, Copy, Pencil } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -55,11 +55,12 @@ const tone = (s: ProjectStage) =>
   s === "planejamento" ? "gray" : s === "desenvolvimento" ? "blue" : s === "revisao" ? "yellow" : "green";
 
 const ProjectsPage = () => {
-  const { data: projects, loading, addProject, updateProjectStage, removeProject } = useProjects();
+  const { data: projects, loading, addProject, updateProject, updateProjectStage, removeProject } = useProjects();
   const { data: feedbacks, releaseFeedback } = useFeedbacks();
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<ProjectStage | "all">("all");
   const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState<string | null>(null);
   const [form, setForm] = useState({
     name: "",
     client: "",
@@ -78,14 +79,28 @@ const ProjectsPage = () => {
     [projects, search, filter]
   );
 
-  const add = async () => {
+  const openAdd = () => {
+    setEditing(null);
+    setForm({ name: "", client: "", type: "", deadline: "", stage: "planejamento" });
+    setOpen(true);
+  };
+
+  const openEdit = (p: (typeof projects)[number]) => {
+    setEditing(p.id);
+    setForm({ name: p.name, client: p.client, type: p.type ?? "", deadline: p.deadline ?? "", stage: p.stage });
+    setOpen(true);
+  };
+
+  const save = async () => {
     if (!form.name || !form.client) return toast.error("Preencha nome e cliente");
-    const ok = await addProject(form);
+    const ok = editing
+      ? await updateProject(editing, form)
+      : await addProject(form);
     if (ok) {
       setForm({ name: "", client: "", type: "", deadline: "", stage: "planejamento" });
       setOpen(false);
-      toast.success("Projeto criado");
-    } else toast.error("Erro ao criar projeto");
+      toast.success(editing ? "Projeto atualizado" : "Projeto criado");
+    } else toast.error("Erro ao salvar projeto");
   };
 
   const updateStage = async (id: string, stage: ProjectStage) => {
@@ -133,16 +148,18 @@ const ProjectsPage = () => {
           <h2 className="text-2xl md:text-3xl font-bold">Projetos</h2>
           <p className="text-muted-foreground text-sm mt-1">Acompanhe o andamento de cada projeto.</p>
         </div>
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog open={open} onOpenChange={(o) => { setOpen(o); if (!o) setEditing(null); }}>
           <DialogTrigger asChild>
-            <Button>
+            <Button onClick={openAdd}>
               <Plus className="w-4 h-4 mr-1" /> Novo projeto
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Novo projeto</DialogTitle>
-              <DialogDescription className="sr-only">Cadastre um novo projeto.</DialogDescription>
+              <DialogTitle>{editing ? "Editar projeto" : "Novo projeto"}</DialogTitle>
+              <DialogDescription className="sr-only">
+                {editing ? "Atualize o projeto." : "Cadastre um novo projeto."}
+              </DialogDescription>
             </DialogHeader>
             <div className="space-y-3">
               <div className="space-y-1.5">
@@ -193,7 +210,7 @@ const ProjectsPage = () => {
               <Button variant="outline" onClick={() => setOpen(false)}>
                 Cancelar
               </Button>
-              <Button onClick={add}>Criar projeto</Button>
+              <Button onClick={save}>{editing ? "Salvar" : "Criar projeto"}</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -273,6 +290,9 @@ const ProjectsPage = () => {
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-1 flex-wrap">
+                      <Button size="icon" variant="ghost" onClick={() => openEdit(p)} aria-label="Editar projeto">
+                        <Pencil className="w-4 h-4" />
+                      </Button>
                       {(() => {
                         const fb = feedbackForProject(p.id);
                         if (p.stage !== "entregue") {
@@ -306,11 +326,17 @@ const ProjectsPage = () => {
                             : fb.status === "published"
                             ? "Publicado"
                             : "Oculto";
-                        const toneFb =
-                          fb.status === "released" ? "yellow" : fb.status === "received" ? "blue" : fb.status === "published" ? "green" : "gray";
+                        const toneFb: "yellow" | "blue" | "green" | "gray" =
+                          fb.status === "released"
+                            ? "yellow"
+                            : fb.status === "received"
+                            ? "blue"
+                            : fb.status === "published"
+                            ? "green"
+                            : "gray";
                         return (
                           <>
-                            <StatusPill tone={toneFb as any}>{label}</StatusPill>
+                            <StatusPill tone={toneFb}>{label}</StatusPill>
                             {fb.status === "released" && (
                               <Button size="icon" variant="ghost" onClick={() => copyLink(fb.token)} title="Copiar link">
                                 <Copy className="w-4 h-4" />

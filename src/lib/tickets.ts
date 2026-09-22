@@ -1,4 +1,8 @@
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
+
+type TicketRow = Database["public"]["Tables"]["tickets"]["Row"];
+type TicketMessageRow = Database["public"]["Tables"]["ticket_messages"]["Row"];
 
 export type TicketStatus = "aberto" | "em-andamento" | "respondido" | "fechado";
 export type TicketSender = "cliente" | "admin";
@@ -68,7 +72,7 @@ export const createTicket = async (input: {
 export const fetchTicket = async (token: string): Promise<PublicTicket | null> => {
   const { data, error } = await supabase.rpc("get_ticket_by_token", { _token: token });
   if (error || !data) return null;
-  const row = (Array.isArray(data) ? data[0] : data) as any;
+  const row = (Array.isArray(data) ? data[0] : data) as TicketRow;
   if (!row) return null;
   return {
     id: row.id,
@@ -84,7 +88,7 @@ export const fetchTicket = async (token: string): Promise<PublicTicket | null> =
 export const fetchTicketMessages = async (token: string): Promise<TicketMessage[]> => {
   const { data, error } = await supabase.rpc("get_ticket_messages", { _token: token });
   if (error || !data) return [];
-  return (data as any[]).map((r) => ({
+  return (data as TicketMessageRow[]).map((r) => ({
     id: r.id,
     sender: r.sender as TicketSender,
     body: r.body,

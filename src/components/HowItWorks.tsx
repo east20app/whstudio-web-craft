@@ -3,52 +3,63 @@ import { motion } from "framer-motion";
 const steps = [
   {
     n: "01",
-    title: "Você manda mensagem",
-    desc: "Chama no WhatsApp, manda áudio, print, link. No mesmo dia te respondo com escopo e preço fechado, sem enrolação.",
+    title: "Você explica.",
+    desc: "Chama no WhatsApp e conta o que precisa existir — do jeito que vier à cabeça: áudio, print, link.",
   },
   {
     n: "02",
-    title: "Eu codo e te mostro andando",
-    desc: "Programo e te mando preview a cada parte importante. Se quiser mudar algo, muda — ainda dá tempo.",
+    title: "Eu construo.",
+    desc: "Escrevo o código do zero e te mostro funcionando etapa por etapa. Mudou de ideia no caminho? Muda.",
   },
   {
     n: "03",
-    title: "No ar e de plantão",
-    desc: "Publico, configuro domínio, te ensino a mexer. Se aparecer algo no primeiro mês, não cobro de novo.",
+    title: "Você acompanha.",
+    desc: "Preview em cada etapa importante. Você vê o projeto nascendo — sem surpresa no dia da entrega.",
+  },
+  {
+    n: "04",
+    title: "Vai para produção.",
+    desc: "Publico, configuro domínio, te treino pra mexer sozinho e fico de plantão no período de suporte.",
   },
 ];
 
 const HowItWorks = () => (
-  <section className="py-24 md:py-32 border-t border-border">
+  <section id="processo" className="py-24 md:py-32 border-t border-border">
     <div className="container">
-      <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-16">
-        <div>
-          <p className="eyebrow mb-4">Processo</p>
-          <h2 className="display-huge text-5xl md:text-7xl max-w-2xl">
-            Três passos. <em>Sem ata de reunião.</em>
+      <div className="grid lg:grid-cols-12 gap-8 items-end mb-16">
+        <div className="lg:col-span-8">
+          <p className="eyebrow mb-5">Processo</p>
+          <h2 className="display-huge text-5xl md:text-7xl max-w-3xl">
+            Quatro etapas. <em>Sem ata de reunião.</em>
           </h2>
         </div>
-        <p className="text-muted-foreground max-w-sm md:pb-2">
-          Curto, direto e com você acompanhando cada etapa do projeto.
+        <p className="lg:col-span-4 text-sm md:text-base text-muted-foreground leading-relaxed max-w-md">
+          Curto, direto e com você acompanhando cada etapa. Cada passo pode ocupar
+          o tempo que precisar — o que não muda é a conversa de uma pessoa só.
         </p>
       </div>
 
-      <div className="border-t border-border grid md:grid-cols-3">
+      <ol className="grid md:grid-cols-2 lg:grid-cols-4 gap-y-10 md:gap-y-0 border-t border-border md:divide-x md:divide-border">
         {steps.map((s, i) => (
-          <motion.div
+          <motion.li
             key={s.n}
-            initial={{ opacity: 0, y: 12 }}
+            initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4, delay: i * 0.06 }}
-            className="py-8 md:py-10 md:pr-8 md:border-l md:first:border-l-0"
+            viewport={{ once: true, margin: "-8%" }}
+            transition={{ duration: 0.4, delay: i * 0.05 }}
+            className="pt-8 lg:pt-10 lg:pr-8"
           >
-            <p className="font-display text-6xl md:text-7xl leading-none text-foreground/15">{s.n}</p>
-            <h3 className="mt-6 text-xl font-semibold">{s.title}</h3>
-            <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
-          </motion.div>
+            <div className="flex items-baseline gap-3">
+              <span className="font-display text-6xl md:text-7xl leading-none text-foreground/15">
+                {s.n}
+              </span>
+              <span className="num-label hidden sm:inline">Etapa {s.n}</span>
+            </div>
+            <h3 className="font-display mt-5 text-2xl md:text-3xl leading-tight">{s.title}</h3>
+            <p className="mt-3 text-sm text-muted-foreground leading-relaxed max-w-xs">{s.desc}</p>
+          </motion.li>
         ))}
-      </div>
+      </ol>
     </div>
   </section>
 );

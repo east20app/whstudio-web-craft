@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
 import type {
   Budget,
   BudgetStatus,
@@ -14,10 +15,18 @@ import type {
   FeedbackStatus,
 } from "./types";
 
+type SettingsRow = Database["public"]["Tables"]["settings"]["Row"];
+type BudgetsRow = Database["public"]["Tables"]["budgets"]["Row"];
+type ClientsRow = Database["public"]["Tables"]["clients"]["Row"];
+type ProjectsRow = Database["public"]["Tables"]["projects"]["Row"];
+type ServicesRow = Database["public"]["Tables"]["services"]["Row"];
+type MessagesRow = Database["public"]["Tables"]["messages"]["Row"];
+type FeedbacksRow = Database["public"]["Tables"]["feedbacks"]["Row"];
+
 // =====================================================================
 // Helpers de mapeamento (DB row -> tipo do app)
 // =====================================================================
-const mapSettings = (r: any): AdminSettings => ({
+const mapSettings = (r: SettingsRow): AdminSettings => ({
   id: r.id,
   siteName: r.site_name,
   whatsapp: r.whatsapp,
@@ -31,7 +40,7 @@ const mapSettings = (r: any): AdminSettings => ({
   maintenanceEta: r.maintenance_eta ?? "",
 });
 
-const mapProject = (r: any): Project => ({
+const mapProject = (r: ProjectsRow): Project => ({
   id: r.id,
   name: r.name,
   client: r.client ?? "",
@@ -54,7 +63,7 @@ function useTable<TRow, TItem>(
 
   const refresh = useCallback(async () => {
     const { data, error } = await supabase
-      .from(table as any)
+      .from(table as never)
       .select("*")
       .order(orderColumn, { ascending });
     if (!error && data) setData((data as TRow[]).map(mapper));
@@ -72,7 +81,7 @@ function useTable<TRow, TItem>(
 // BUDGETS
 // =====================================================================
 export const useBudgets = () => {
-  const t = useTable<any, Budget>(
+  const t = useTable<BudgetsRow, Budget>(
     "budgets",
     (r) => ({
       id: r.id,
@@ -116,10 +125,10 @@ export const useBudgets = () => {
 // CLIENTS
 // =====================================================================
 export const useClients = () => {
-  const t = useTable<any, Client>("clients", (r) => ({
+  const t = useTable<ClientsRow, Client>("clients", (r) => ({
     id: r.id,
     name: r.name,
-    whatsapp: r.whatsapp ?? "",
+    whatsapp: r.whatsapp,
     discord: r.discord ?? "",
     service: r.service ?? "",
     status: r.status as ClientStatus,
@@ -130,20 +139,25 @@ export const useClients = () => {
     if (!error) await t.refresh();
     return !error;
   };
+  const updateClient = async (id: string, patch: Partial<Client>) => {
+    const { error } = await supabase.from("clients").update(patch).eq("id", id);
+    if (!error) await t.refresh();
+    return !error;
+  };
   const removeClient = async (id: string) => {
     const { error } = await supabase.from("clients").delete().eq("id", id);
     if (!error) await t.refresh();
     return !error;
   };
 
-  return { ...t, addClient, removeClient };
+  return { ...t, addClient, updateClient, removeClient };
 };
 
 // =====================================================================
 // PROJECTS
 // =====================================================================
 export const useProjects = () => {
-  const t = useTable<any, Project>("projects", mapProject);
+  const t = useTable<ProjectsRow, Project>("projects", mapProject);
 
   const addProject = async (p: Omit<Project, "id">) => {
     const { error } = await supabase.from("projects").insert({
@@ -153,6 +167,11 @@ export const useProjects = () => {
       deadline: p.deadline || null,
       stage: p.stage,
     });
+    if (!error) await t.refresh();
+    return !error;
+  };
+  const updateProject = async (id: string, patch: Partial<Project>) => {
+    const { error } = await supabase.from("projects").update(patch).eq("id", id);
     if (!error) await t.refresh();
     return !error;
   };
@@ -167,14 +186,14 @@ export const useProjects = () => {
     return !error;
   };
 
-  return { ...t, addProject, updateProjectStage, removeProject };
+  return { ...t, addProject, updateProject, updateProjectStage, removeProject };
 };
 
 // =====================================================================
 // SERVICES
 // =====================================================================
 export const useAdminServices = () => {
-  const t = useTable<any, AdminService>("services", (r) => ({
+  const t = useTable<ServicesRow, AdminService>("services", (r) => ({
     id: r.id,
     name: r.name,
     description: r.description ?? "",
@@ -193,7 +212,7 @@ export const useAdminServices = () => {
     return !error;
   };
   const updateService = async (id: string, patch: Partial<AdminService>) => {
-    const upd: any = {};
+    const upd: Partial<{ name: string; description: string; active: boolean }> = {};
     if (patch.name !== undefined) upd.name = patch.name;
     if (patch.description !== undefined) upd.description = patch.description;
     if (patch.active !== undefined) upd.active = patch.active;
@@ -214,7 +233,7 @@ export const useAdminServices = () => {
 // MESSAGES
 // =====================================================================
 export const useMessages = () => {
-  const t = useTable<any, ContactMessage>("messages", (r) => ({
+  const t = useTable<MessagesRow, ContactMessage>("messages", (r) => ({
     id: r.id,
     name: r.name,
     email: r.email,
@@ -289,7 +308,7 @@ export const useSettings = () => {
 // =====================================================================
 // FEEDBACKS
 // =====================================================================
-const mapFeedback = (r: any): Feedback => ({
+const mapFeedback = (r: FeedbacksRow): Feedback => ({
   id: r.id,
   token: r.token,
   projectId: r.project_id,
@@ -304,7 +323,7 @@ const mapFeedback = (r: any): Feedback => ({
 });
 
 export const useFeedbacks = () => {
-  const t = useTable<any, Feedback>("feedbacks", mapFeedback);
+  const t = useTable<FeedbacksRow, Feedback>("feedbacks", mapFeedback);
 
   const releaseFeedback = async (project: { id: string; name: string; client: string }) => {
     const { error } = await supabase.from("feedbacks").insert({

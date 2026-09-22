@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
+
+type SettingsRow = Database["public"]["Tables"]["settings"]["Row"];
 
 type Availability = {
   accepting: boolean;
@@ -14,9 +17,9 @@ export const useAvailability = (): Availability => {
   useEffect(() => {
     let alive = true;
     supabase
-      .rpc("get_public_settings" as any)
+      .rpc("get_public_settings")
       .maybeSingle()
-      .then(({ data }: any) => {
+      .then(({ data }: { data: SettingsRow | null }) => {
         if (!alive) return;
         setState({
           accepting: data?.accepting_projects ?? true,

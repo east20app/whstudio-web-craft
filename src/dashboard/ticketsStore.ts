@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { TicketStatus, TicketSender } from "@/lib/tickets";
+import type { Database } from "@/integrations/supabase/types";
+
+type TicketRow = Database["public"]["Tables"]["tickets"]["Row"];
+type TicketMessageRow = Database["public"]["Tables"]["ticket_messages"]["Row"];
 
 export type AdminTicket = {
   id: string;
@@ -29,7 +33,7 @@ export type AdminTicketMessage = {
 let channelSeq = 0;
 const channelName = (base: string) => `${base}-${Date.now().toString(36)}-${channelSeq++}`;
 
-const mapTicket = (r: any): AdminTicket => ({
+const mapTicket = (r: TicketRow): AdminTicket => ({
   id: r.id,
   name: r.name ?? "",
   email: r.email ?? "",
@@ -51,7 +55,7 @@ export const useTickets = () => {
       .select("*")
       .order("last_message_at", { ascending: false });
     if (error) console.error("useTickets.refresh", error);
-    if (data) setTickets((data as any[]).map(mapTicket));
+    if (data) setTickets((data as TicketRow[]).map(mapTicket));
     setLoading(false);
   }, []);
 
@@ -128,7 +132,7 @@ export const useTicketMessages = (ticketId: string | null) => {
       .order("created_at", { ascending: true });
     if (error) console.error("useTicketMessages.refresh", error);
     setMessages(
-      ((data as any[]) ?? []).map((r) => ({
+      ((data as TicketMessageRow[]) ?? []).map((r) => ({
         id: r.id,
         ticketId: r.ticket_id,
         sender: r.sender as TicketSender,
