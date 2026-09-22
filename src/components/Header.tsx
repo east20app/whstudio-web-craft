@@ -28,7 +28,13 @@ const Header = () => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-md border-b border-border">
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled
+          ? "border-b border-border bg-background/88 shadow-[0_18px_50px_hsl(var(--foreground)/0.08)] backdrop-blur-xl"
+          : "bg-background/58 backdrop-blur-md"
+      }`}
+    >
       <div
         className={`transition-all duration-300 ${scrolled ? "h-14" : "h-16 md:h-[4.5rem]"}`}
       >
@@ -36,7 +42,7 @@ const Header = () => {
         <div className="container h-full flex items-center justify-between">
           <Link
             to="/"
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 rounded-full border border-white/10 bg-[#050816] p-1 shadow-[0_14px_40px_hsl(var(--foreground)/0.12)]"
             onClick={() => setOpen(false)}
             aria-label="WH Studio — página inicial"
           >
@@ -47,11 +53,11 @@ const Header = () => {
               height={36}
               loading="eager"
               decoding="async"
-              className="logo-invert h-8 w-auto md:h-9 object-contain"
+              className="h-11 w-11 rounded-full object-contain md:h-12 md:w-12"
             />
           </Link>
 
-          <nav className="hidden lg:flex items-center gap-6" aria-label="Navegação principal">
+          <nav className="hidden lg:flex items-center gap-1 premium-pill px-2 py-1.5" aria-label="Navegação principal">
             {navLinks.map((l) => {
               const active =
                 l.href === "/" ? location.pathname === "/" : location.pathname.startsWith(l.href);
@@ -60,33 +66,36 @@ const Header = () => {
                   key={l.href}
                   to={l.href}
                   aria-current={active ? "page" : undefined}
-                  className={`font-mono text-[11px] uppercase tracking-[0.18em] transition-colors ${
+                  className={`rounded-full px-3 py-2 font-mono text-[11px] uppercase tracking-[0.18em] transition-colors ${
                     active
-                      ? "text-primary"
-                      : "text-muted-foreground hover:text-foreground"
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                   }`}
                 >
                   {l.label}
                 </Link>
               );
             })}
+          </nav>
+
+          <div className="hidden lg:flex items-center gap-3">
             <ThemeToggle />
             <Button
               onClick={() => {
                 setOpen(false);
                 requestQuote({ subject: "Projeto novo", prefill: "Quero iniciar um projeto. " });
               }}
-              className="h-9 rounded-none px-4 font-mono text-[11px] uppercase tracking-[0.14em]"
+              className="h-10 rounded-full px-5 font-mono text-[11px] uppercase tracking-[0.14em] shadow-[0_14px_40px_hsl(var(--primary)/0.25)]"
             >
               Solicitar orçamento
               <ArrowUpRight className="w-4 h-4 ml-1.5" />
             </Button>
-          </nav>
+          </div>
 
           <div className="lg:hidden flex items-center gap-2">
             <ThemeToggle />
             <button
-              className="p-2 -mr-2 text-foreground"
+              className="premium-pill p-2 text-foreground"
               onClick={() => setOpen(!open)}
               aria-label={open ? "Fechar menu" : "Abrir menu"}
               aria-expanded={open}
@@ -103,7 +112,7 @@ const Header = () => {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="lg:hidden overflow-hidden bg-background border-b border-border"
+            className="lg:hidden overflow-hidden border-b border-border bg-background/96 backdrop-blur-xl"
             aria-label="Navegação mobile"
           >
             <div className="container py-4 flex flex-col divide-y divide-border">
@@ -116,15 +125,15 @@ const Header = () => {
                     to={l.href}
                     onClick={() => setOpen(false)}
                     aria-current={active ? "page" : undefined}
-                    className={`px-3 py-3.5 font-mono text-xs uppercase tracking-[0.18em] transition-colors ${
-                      active ? "text-primary" : "text-muted-foreground hover:text-foreground"
+                    className={`rounded-md px-3 py-3.5 font-mono text-xs uppercase tracking-[0.18em] transition-colors ${
+                      active ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                     }`}
                   >
                     {l.label}
                   </Link>
                 );
               })}
-              <Button className="w-full mt-3 rounded-none" onClick={startProject}>
+              <Button className="w-full mt-3 rounded-full" onClick={startProject}>
                 Solicitar orçamento
                 <ArrowUpRight className="w-4 h-4 ml-1.5" />
               </Button>

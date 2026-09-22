@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowUpRight, Globe, Braces, Bot, type LucideIcon } from "lucide-react";
+import { ArrowUpRight, Bot, Braces, Globe, type LucideIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useOrcamentoAction } from "@/components/tickets/TicketChat";
 
@@ -18,7 +18,7 @@ const types: ProjectType[] = [
     icon: Globe,
     value: "Tipo 01",
     title: "Site profissional",
-    desc: "Se o seu público procura você — e acha só o que os outros publicam — a primeira impressão precisa ser sua.",
+    desc: "Para transformar busca, indicação e primeiro contato em uma experiência que passa confiança antes do WhatsApp abrir.",
     includes: ["Institucional", "Landing page", "Loja virtual"],
     href: "/servicos",
     prefill: "Preciso de um site profissional. ",
@@ -27,7 +27,7 @@ const types: ProjectType[] = [
     icon: Braces,
     value: "Tipo 02",
     title: "Sistema sob medida",
-    desc: "Se o negócio roda em planilha, WhatsApp e caderno, chegou a hora de um sistema que faça o trabalho sozinho.",
+    desc: "Para tirar processos de planilhas, mensagens soltas e retrabalho, colocando a operação dentro de um painel claro.",
     includes: ["Painel com login", "Cadastros e pedidos", "Relatórios"],
     href: "/sistemas",
     prefill: "Preciso de um sistema sob medida. ",
@@ -36,37 +36,33 @@ const types: ProjectType[] = [
     icon: Bot,
     value: "Tipo 03",
     title: "Bot + automação",
-    desc: "Se a comunidade ou o processo depende de alguém repetindo tarefa o dia todo, isso param em código.",
+    desc: "Para automatizar tarefas repetidas, atendimento, integrações e rotinas que hoje dependem de alguém fazendo tudo manualmente.",
     includes: ["Bot para Discord", "Automação de processos", "Integrações"],
     href: "/servicos",
     prefill: "Preciso de um bot ou automação. ",
   },
 ];
 
-/**
- * "O que sua empresa precisa?" — três caminhos claros de projeto,
- * cada um com escopo típico e orçamento já preenchido na abertura.
- */
 const TiposDeProjetos = () => {
   const { requestQuote } = useOrcamentoAction();
 
   return (
-    <section id="tipos" className="border-t border-border py-24 md:py-32">
+    <section id="tipos" className="py-24 md:py-32">
       <div className="container">
         <div className="grid lg:grid-cols-12 gap-8 items-end mb-16">
           <div className="lg:col-span-8">
             <p className="eyebrow mb-5">Tipos de projeto</p>
-            <h2 className="display-huge text-5xl md:text-7xl max-w-3xl">
+            <h2 className="display-huge text-5xl md:text-7xl max-w-3xl text-balance">
               O que a sua empresa <em>precisa?</em>
             </h2>
           </div>
           <p className="lg:col-span-4 text-sm md:text-base text-muted-foreground leading-relaxed max-w-md">
-            Escolha o caminho, veja o escopo típico e peça o orçamento com a
-            conversa já começando do ponto certo.
+            Três caminhos claros para sair da ideia vaga e chegar em uma entrega com escopo,
+            prioridade e próximo passo.
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-px bg-border border border-border">
+        <div className="grid lg:grid-cols-3 gap-4">
           {types.map((t, i) => (
             <motion.article
               key={t.value}
@@ -74,11 +70,14 @@ const TiposDeProjetos = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-8%" }}
               transition={{ duration: 0.4, delay: i * 0.06 }}
-              className="bg-card p-8 md:p-10 flex flex-col"
+              className="group premium-shell relative flex min-h-[28rem] flex-col overflow-hidden p-8 md:p-10"
             >
+              <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary via-accent-2 to-primary opacity-70" />
               <div className="flex items-baseline justify-between">
                 <p className="num-label">{t.value}</p>
-                <t.icon className="w-6 h-6 text-primary" strokeWidth={1.5} aria-hidden="true" />
+                <span className="grid h-12 w-12 place-items-center rounded-full bg-secondary text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                  <t.icon className="w-6 h-6" strokeWidth={1.5} aria-hidden="true" />
+                </span>
               </div>
 
               <h3 className="font-display text-3xl md:text-4xl leading-tight mt-8">{t.title}</h3>
@@ -88,7 +87,10 @@ const TiposDeProjetos = () => {
 
               <ul className="mt-8 flex flex-wrap gap-2">
                 {t.includes.map((tag) => (
-                  <li key={tag} className="font-mono text-[10px] uppercase tracking-wider px-2 py-1 border border-border text-muted-foreground">
+                  <li
+                    key={tag}
+                    className="rounded-full border border-border bg-background/70 px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider text-muted-foreground"
+                  >
                     {tag}
                   </li>
                 ))}
@@ -98,14 +100,14 @@ const TiposDeProjetos = () => {
                 <button
                   type="button"
                   onClick={() => requestQuote({ subject: t.title, prefill: t.prefill })}
-                  className="inline-flex items-center justify-between text-sm font-semibold hover:text-primary transition-colors cursor-pointer bg-transparent py-1"
+                  className="inline-flex items-center justify-between rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 cursor-pointer"
                 >
-                  Solicitar orçamento deste tipo
+                  Solicitar orçamento
                   <ArrowUpRight className="w-4 h-4" />
                 </button>
                 <Link
                   to={t.href}
-                  className="inline-flex items-center justify-between text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors"
+                  className="inline-flex items-center justify-between px-1 text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Entender melhor
                   <ArrowUpRight className="w-3.5 h-3.5" />
