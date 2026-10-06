@@ -8,27 +8,27 @@ import {
 const faqs = [
   {
     q: "Quanto tempo leva pra ficar pronto?",
-    a: "Landing page simples costuma sair em até 7 dias. Site completo com painel, até 15 dias. Sistema sob medida depende do escopo — eu te dou o prazo por escrito antes de começar, e ele não muda no meio do caminho.",
+    a: "Landing page simples costuma sair em até 7 dias. Site completo com painel, até 15 dias. Sistema sob medida depende do escopo — o prazo é definido na proposta, conforme as funcionalidades e as etapas aprovadas.",
   },
   {
     q: "Como funciona o pagamento?",
-    a: "Metade pra começar e metade na entrega. Aceito Pix, cartão e boleto. Nada de mensalidade escondida: o que combinamos no orçamento é o valor final.",
+    a: "Metade pra começar e metade na entrega. Aceitamos Pix, cartão e boleto. Nada de mensalidade escondida: o que combinamos no orçamento é o valor final.",
   },
   {
     q: "Depois de pronto, eu consigo editar sozinho?",
-    a: "Sim. Projetos com painel administrativo vêm com login pra você trocar textos, preços, fotos e produtos sem depender de mim. Na entrega eu te mostro tudo funcionando, na prática.",
+    a: "Sim. Projetos com painel administrativo vêm com login pra você trocar textos, preços, fotos e produtos com autonomia. Na entrega, apresentamos o painel e orientamos o uso.",
   },
   {
     q: "E se eu não gostar do resultado?",
-    a: "Você aprova o layout antes de eu programar, e cada plano já vem com revisões inclusas. Se algo saiu diferente do combinado, eu ajusto — não tem custo extra pra corrigir o que era escopo.",
+    a: "Você aprova o layout antes do desenvolvimento e as revisões são combinadas no escopo. Se algo sair diferente do combinado, ajustamos — não tem custo extra pra corrigir o que já fazia parte do projeto.",
   },
   {
     q: "Preciso pagar hospedagem e domínio à parte?",
-    a: "Sim, hospedagem e domínio são cobrados pelos provedores e ficam no seu nome — você é o dono. Eu configuro tudo e te oriento no plano mais barato que aguenta o seu projeto.",
+    a: "Sim, hospedagem e domínio são cobrados pelos provedores e ficam no seu nome — você é o dono. Configuramos a publicação e orientamos a escolha dos serviços conforme o projeto.",
   },
   {
-    q: "Você dá suporte depois da entrega?",
-    a: "Dou. São 15, 30 ou 90 dias de suporte incluídos, dependendo do plano — e o contato é direto comigo, sem abrir chamado em fila de call center.",
+    q: "Vocês oferecem suporte depois da entrega?",
+    a: "Sim. O período e o formato do suporte são combinados de acordo com o escopo do projeto — e o atendimento é feito pela WH Studio, pelos canais definidos na proposta.",
   },
 ];
 

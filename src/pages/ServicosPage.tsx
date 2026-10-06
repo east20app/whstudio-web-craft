@@ -36,7 +36,7 @@ const ServicosPage = () => {
   <>
     <Seo {...pageSeo.servicos} jsonLd={orgJsonLd} />
     <Header />
-    <main className="pt-16">
+    <main id="main-content" tabIndex={-1} className="pt-20">
       <section className="py-20 md:py-28 border-b border-border">
         <div className="container max-w-4xl">
           <motion.p
@@ -52,7 +52,7 @@ const ServicosPage = () => {
             transition={{ delay: 0.05 }}
             className="display-huge text-5xl md:text-7xl"
           >
-            Site, bot, sistema — <em>o que você precisar.</em>
+            Sites e sistemas.<br /><em>Do plano à publicação.</em>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}

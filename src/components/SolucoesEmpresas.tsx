@@ -13,7 +13,7 @@ const scenarios = [
     icon: Store,
     tag: "Comércio e serviços",
     problem: "Seu nome nem aparece quando alguém procura. Sem site, o cliente decide pela concorrência que tem.",
-    solution: "Site que carrega rápido, mostra o serviço e leva pro WhatsApp — de graça no seu domínio.",
+    solution: "Site com seus serviços, carregamento rápido e contato integrado ao WhatsApp, no domínio da sua empresa.",
   },
   {
     icon: ClipboardList,
@@ -42,7 +42,7 @@ const SolucoesEmpresas = () => {
           <div className="lg:col-span-8">
             <p className="eyebrow mb-5">Soluções para empresas</p>
             <h2 className="display-huge text-5xl md:text-7xl max-w-3xl">
-              Pra quem depende <em>dele existir.</em>
+              Soluções para <em>a sua operação.</em>
             </h2>
           </div>
           <p className="lg:col-span-4 text-sm md:text-base text-muted-foreground leading-relaxed max-w-md">

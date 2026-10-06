@@ -62,7 +62,7 @@ export const usePortfolio = (onlyPublished = false) => {
   const refresh = useCallback(async () => {
     // 1) Público: prefere a função protegida (nenhum dado não-publicado vaza).
     if (onlyPublished) {
-      const { data: rpcRows } = await supabase.rpc("get_public_portfolio" as never);
+      const { data: rpcRows } = await supabase.rpc("get_public_portfolio");
       if (Array.isArray(rpcRows)) {
         setData((rpcRows as unknown as PortfolioRow[]).map(mapPorfolioRow));
         setLoading(false);

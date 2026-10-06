@@ -48,7 +48,7 @@ type ClientsPageClient = {
   id: string;
   name: string;
   whatsapp: string | null;
-  discord: string | null;
+  discord?: string | null;
   service: string | null;
   status: ClientStatus;
 };

@@ -30,7 +30,7 @@ type Ctx = {
 
 const TicketChatContext = createContext<Ctx | null>(null);
 
-/** Hook único usado por Serviços, Planos e Contato para pedir orçamento. */
+/** Hook único usado pelas páginas públicas para iniciar um pedido de orçamento. */
 export const useOrcamentoAction = (): Ctx => {
   const ctx = useContext(TicketChatContext);
   if (!ctx) throw new Error("useOrcamentoAction precisa estar dentro de <TicketChatProvider>");
@@ -150,22 +150,22 @@ export const TicketChatProvider = ({ children }: { children: React.ReactNode }) 
       {children}
 
       {/* Ações flutuantes */}
-      <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
+      <div className="fixed bottom-4 right-4 z-50 flex items-center gap-2 sm:bottom-6 sm:right-6 sm:flex-col sm:items-end sm:gap-3">
         <a
           href={whatsappLink()}
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Prefiro falar no WhatsApp"
-          className="flex items-center gap-2 border border-[#25D366]/30 bg-[#25D366]/10 px-4 py-2 text-xs font-medium text-[#25D366] transition-colors hover:bg-[#25D366]/20"
+          className="flex h-12 items-center gap-2 rounded-full border border-[#25D366]/30 bg-background px-4 text-xs font-medium text-[#25D366] transition-colors hover:bg-secondary sm:h-10"
         >
-          <MessageCircle className="w-4 h-4" aria-hidden="true" /> Prefiro WhatsApp
+          <MessageCircle className="w-4 h-4" aria-hidden="true" /><span className="sr-only sm:not-sr-only">Prefiro WhatsApp</span>
         </a>
 
         {!open && (
           <button
             onClick={() => setOpen(true)}
             aria-label="Abrir central de atendimento"
-            className="flex items-center gap-2 bg-primary px-5 h-12 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+            className="flex items-center gap-2 rounded-full bg-primary px-5 h-12 text-sm font-semibold text-primary-foreground shadow-lg transition-colors hover:bg-primary/90"
           >
             <MessageSquare className="w-4 h-4" aria-hidden="true" />
             {ticket ? "Minha conversa" : "Solicitar orçamento"}
@@ -182,7 +182,7 @@ export const TicketChatProvider = ({ children }: { children: React.ReactNode }) 
             transition={{ duration: 0.18 }}
             role="dialog"
             aria-label="Central de atendimento"
-            className="fixed inset-x-0 bottom-0 z-[60] flex h-[92dvh] w-full flex-col overflow-hidden border-t border-border bg-card sm:inset-x-auto sm:right-6 sm:bottom-6 sm:h-auto sm:max-h-[min(70vh,560px)] sm:w-[380px] sm:border"
+            className="fixed inset-x-0 bottom-0 z-[60] flex h-[92dvh] w-full flex-col overflow-hidden rounded-t-2xl border-t border-border bg-card shadow-2xl sm:inset-x-auto sm:right-6 sm:bottom-6 sm:h-auto sm:max-h-[min(70vh,560px)] sm:w-[380px] sm:rounded-2xl sm:border"
           >
             <header className="flex items-start justify-between gap-3 border-b border-border px-5 py-4">
               <div className="min-w-0">
@@ -211,7 +211,7 @@ export const TicketChatProvider = ({ children }: { children: React.ReactNode }) 
               <button
                 onClick={() => setOpen(false)}
                 aria-label="Fechar atendimento"
-                className="p-1 text-muted-foreground hover:text-foreground"
+                className="grid h-11 w-11 shrink-0 place-items-center rounded-full text-muted-foreground hover:bg-secondary hover:text-foreground"
               >
                 <X className="w-4 h-4" aria-hidden="true" />
               </button>

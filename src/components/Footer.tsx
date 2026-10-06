@@ -1,105 +1,29 @@
 import { Link } from "react-router-dom";
-import { MessageCircle, Mail } from "lucide-react";
+import { ArrowUpRight, Mail, MapPin, MessageCircle } from "lucide-react";
 import { navLinks } from "@/config/site";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
-import logo from "@/assets/wh-studio-logo.png";
+import { FooterBackgroundGradient, TextHoverEffect } from "@/components/ui/hover-footer";
 
 const Footer = () => {
   const settings = useSiteSettings();
   const waLink = settings.buildWhatsappLink();
-
   return (
-    <footer className="border-t border-border bg-background">
-      <div className="container py-16">
-        <div className="grid md:grid-cols-12 gap-10">
-          <div className="md:col-span-5">
-            <Link to="/" className="inline-flex items-center" aria-label="WH Studio — página inicial">
-              <img
-                src={logo}
-                alt="WH Studio"
-                width={190}
-                height={44}
-                loading="lazy"
-                decoding="async"
-                className="logo-invert h-10 w-auto object-contain"
-              />
-            </Link>
-            <p className="text-sm text-muted-foreground mt-4 max-w-xs leading-relaxed">
-              {settings.footerText}
-            </p>
-            <div className="flex gap-3 mt-6">
-              <a
-                href={waLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="WhatsApp"
-                className="w-9 h-9 border border-border bg-card flex items-center justify-center hover:border-primary/50 hover:text-primary transition-colors"
-              >
-                <MessageCircle className="w-4 h-4" />
-              </a>
-              <a
-                href={`mailto:${settings.email}`}
-                aria-label="E-mail"
-                className="w-9 h-9 border border-border bg-card flex items-center justify-center hover:border-primary/50 hover:text-primary transition-colors"
-              >
-                <Mail className="w-4 h-4" />
-              </a>
-            </div>
-          </div>
-
-          <div className="md:col-span-3 md:col-start-7">
-            <h4 className="eyebrow mb-4">Navegação</h4>
-            <div className="flex flex-col gap-2">
-              {navLinks.map((l) => (
-                <Link
-                  key={l.href}
-                  to={l.href}
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  {l.label}
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          <div className="md:col-span-3">
-            <h4 className="eyebrow mb-4">Contato</h4>
-            <div className="flex flex-col gap-2">
-              <a
-                href={waLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                WhatsApp {settings.whatsappDisplay}
-              </a>
-              <a
-                href={`mailto:${settings.email}`}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                {settings.email}
-              </a>
-              <Link
-                to="/contato"
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Formulário de contato
-              </Link>
-            </div>
-          </div>
+    <footer className="studio-footer relative isolate overflow-hidden text-white">
+      <FooterBackgroundGradient />
+      <div className="container relative z-10 pt-14 md:pt-20">
+        <div className="mb-14 flex flex-col items-start justify-between gap-6 border-b border-white/15 pb-12 md:flex-row md:items-end">
+          <div><p className="eyebrow !text-white/60">O próximo projeto pode ser o seu.</p><h2 className="mt-4 max-w-2xl text-4xl md:text-6xl">Uma ideia merece<br />sair do papel.</h2></div>
+          <Link to="/orcamento" className="group flex min-h-14 items-center gap-6 rounded-full border border-white/25 px-6 text-sm transition-colors hover:border-[#3ca2fa] hover:bg-white/5">Conte sua ideia <ArrowUpRight className="h-5 w-5 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" aria-hidden="true" /></Link>
         </div>
-
-        <div className="border-t border-border mt-14 pt-6 flex flex-col md:flex-row items-center justify-between gap-2 text-xs text-muted-foreground">
-          <p>
-            {settings.siteName.toUpperCase()} © {new Date().getFullYear()} — Todos os direitos reservados.
-          </p>
-          <p className="font-mono text-[11px] tracking-wide">
-            Feito por <span className="font-medium text-foreground/80">{settings.authorName}</span>
-          </p>
+        <div className="grid gap-10 md:grid-cols-12">
+          <div className="md:col-span-5"><Link to="/" className="studio-brand !text-white" aria-label="WH Studio — página inicial">wh<span className="text-[#3ca2fa]">/</span><span className="studio-brand__suffix">studio</span></Link><p className="mt-5 max-w-xs text-sm leading-relaxed text-white/60">{settings.footerText}</p></div>
+          <nav className="md:col-span-3" aria-label="Navegação do rodapé"><h3 className="mb-5 text-sm">WH Studio</h3><div className="flex flex-col items-start gap-2">{navLinks.map(link => <Link key={link.href} to={link.href} className="inline-flex min-h-8 items-center text-sm text-white/60 transition-colors hover:text-[#3ca2fa]">{link.label}</Link>)}</div></nav>
+          <div className="md:col-span-4"><h3 className="mb-5 text-sm">Uma conversa, sem intermediários.</h3><div className="flex flex-col gap-4 text-sm text-white/60"><a className="flex items-center gap-3 transition-colors hover:text-[#3ca2fa]" href={`mailto:${settings.email}`}><Mail className="h-4 w-4 shrink-0 text-[#3ca2fa]" aria-hidden="true" /><span className="break-all">{settings.email}</span></a><a className="flex items-center gap-3 transition-colors hover:text-[#3ca2fa]" href={waLink} target="_blank" rel="noopener noreferrer"><MessageCircle className="h-4 w-4 text-[#3ca2fa]" aria-hidden="true" />{settings.whatsappDisplay}</a><p className="flex items-center gap-3"><MapPin className="h-4 w-4 text-[#3ca2fa]" aria-hidden="true" />Rio Grande do Norte · para todo o Brasil</p></div></div>
         </div>
+        <Link to="/" className="mt-12 block rounded-lg" aria-label="WH Studio — voltar ao início"><TextHoverEffect text="WH STUDIO" /></Link>
+        <div className="flex flex-wrap justify-between gap-3 border-t border-white/15 py-6 text-xs text-white/50"><p>{settings.siteName} © {new Date().getFullYear()}</p><p>Sites & sistemas feitos pela WH Studio</p><Link className="transition-colors hover:text-white" to="/dashboard/login">Área administrativa ↗</Link></div>
       </div>
     </footer>
   );
 };
-
 export default Footer;

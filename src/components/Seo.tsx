@@ -41,9 +41,9 @@ const Seo = ({ title, description, path, jsonLd }: SeoProps) => {
 /** Textos de SEO das páginas públicas — mesmo tom de voz do site. */
 export const pageSeo = {
   home: {
-    title: "WH Studio — Sites, sistemas e bots feitos do zero",
+    title: "WH Studio — Desenvolvimento de sites e sistemas",
     description:
-      "Site, loja virtual, bot de Discord, sistema e automação sob medida. Código do zero, prazo curto e atendimento direto com quem programa.",
+      "Empresa de desenvolvimento de sites e sistemas. Criamos presença digital, plataformas de gestão, automações e integrações sob medida.",
     path: "/",
   },
   servicos: {
@@ -58,11 +58,11 @@ export const pageSeo = {
       "Sistema web feito para o processo da sua empresa: painel com login, cadastros, relatórios e integrações. Escopo fechado antes de escrever o código.",
     path: "/sistemas",
   },
-  planos: {
-    title: "Planos e prazos — Inicial, Profissional e Premium | WH Studio",
+  orcamento: {
+    title: "Orçamento para site, sistema e automação | WH Studio",
     description:
-      "Compare os planos Inicial, Profissional e Sistema Premium: o que entra, prazo de entrega e tempo de suporte. Orçamento fechado antes de começar.",
-    path: "/planos",
+      "Conte o que seu negócio precisa: criamos sites, sistemas, painéis, automações e integrações sob medida. Escopo e orçamento definidos em conversa.",
+    path: "/orcamento",
   },
   portfolio: {
     title: "Portfólio — Projetos entregues pela WH Studio",
@@ -73,13 +73,13 @@ export const pageSeo = {
   contato: {
     title: "Contato — Peça seu orçamento | WH Studio",
     description:
-      "Conte o que você precisa e receba um orçamento fechado em até 24 horas úteis. Atendimento pela central do site ou pelo WhatsApp.",
+      "Conte o que sua empresa precisa desenvolver. Atendimento pela central do site ou WhatsApp para alinhar escopo, prazo e proposta.",
     path: "/contato",
   },
   sobre: {
     title: "Sobre — Como trabalha a WH Studio",
     description:
-      "Um estúdio, uma pessoa por trás de cada projeto. Conheça os princípios, as etapas de trabalho e os limites honestos da WH Studio.",
+      "Conheça a WH Studio, empresa de desenvolvimento de sites e sistemas. Design, tecnologia e integrações para sua operação.",
     path: "/sobre",
   },
 } as const;

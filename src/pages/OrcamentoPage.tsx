@@ -1,34 +1,34 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import Plans from "@/components/Plans";
-import PlansComparison from "@/components/PlansComparison";
+import ProjectInquiry from "@/components/ProjectInquiry";
 import CTAFinal from "@/components/CTAFinal";
 import Seo, { pageSeo, orgJsonLd } from "@/components/Seo";
 
-const PlanosPage = () => (
+const OrcamentoPage = () => (
   <>
-    <Seo {...pageSeo.planos} jsonLd={orgJsonLd} />
+    <Seo {...pageSeo.orcamento} jsonLd={orgJsonLd} />
     <Header />
-    <main className="pt-16">
+    <main id="main-content" tabIndex={-1} className="pt-20">
       <section className="py-20 md:py-28 border-b border-border">
         <div className="container max-w-4xl">
-          <p className="eyebrow mb-6">Planos e investimento</p>
+          <p className="eyebrow mb-6">Orçamento sob medida</p>
           <h1 className="display-huge text-5xl md:text-7xl">
-            Valor fechado <em>depois de entender o que você precisa.</em>
+            Vamos construir <em>o que seu negócio precisa.</em>
           </h1>
           <p className="text-muted-foreground text-base md:text-lg mt-6 max-w-2xl">
-            Cada plano mostra o que entrega. O preço a gente define no WhatsApp, depois de entender
-            escopo, integrações e prazo. Sem surpresa no final.
+            Sites, sistemas, automações e integrações feitos a partir do seu objetivo. Conte o
+            que precisa funcionar e vamos definir juntos o escopo do projeto.
           </p>
         </div>
       </section>
 
-      <Plans />
-      <PlansComparison />
+      <ProjectInquiry />
       <CTAFinal />
     </main>
     <Footer />
   </>
 );
 
-export default PlanosPage;
+export default OrcamentoPage;
+
+

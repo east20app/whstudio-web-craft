@@ -7,7 +7,7 @@ import Portfolio from "@/components/Portfolio";
 import HowItWorks from "@/components/HowItWorks";
 import SolucoesEmpresas from "@/components/SolucoesEmpresas";
 import WhAI from "@/components/WhAI";
-import Plans from "@/components/Plans";
+import ProjectInquiry from "@/components/ProjectInquiry";
 import Testimonials from "@/components/Testimonials";
 import FAQ, { faqJsonLd } from "@/components/FAQ";
 import About from "@/components/About";
@@ -19,7 +19,7 @@ const Index = () => (
   <>
     <Seo {...pageSeo.home} jsonLd={{ ...faqJsonLd, ...orgJsonLd }} />
     <Header />
-    <main>
+    <main id="main-content" tabIndex={-1}>
       <Hero />
       <ProvaConfianca />
       <Services />
@@ -28,7 +28,7 @@ const Index = () => (
       <HowItWorks />
       <SolucoesEmpresas />
       <WhAI />
-      <Plans />
+      <ProjectInquiry />
       <Testimonials />
       <About />
       <FAQ />

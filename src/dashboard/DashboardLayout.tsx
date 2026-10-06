@@ -33,13 +33,13 @@ const DashboardLayout = () => {
   };
 
   return (
-    <div className="min-h-screen flex w-full bg-background">
+    <div className="dashboard-shell min-h-screen flex w-full bg-background">
       <aside
         className={`fixed lg:sticky top-0 inset-y-0 left-0 z-40 w-[248px] h-screen bg-card border-r border-border flex flex-col transition-transform lg:translate-x-0 ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="h-14 flex items-center justify-between px-5 border-b border-border">
+        <div className="h-20 flex items-center justify-between px-5 border-b border-border">
           <div className="flex items-baseline gap-2">
             <span className="font-mono text-[13px] font-semibold tracking-[0.14em] uppercase">
               {settings.siteName}
@@ -59,10 +59,10 @@ const DashboardLayout = () => {
               end={it.end}
               onClick={() => setOpen(false)}
               className={({ isActive }) =>
-                `relative flex items-center gap-3 pl-5 pr-4 py-2.5 text-[13px] transition-colors ${
+                `relative mx-3 flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] transition-[background-color,color] duration-200 ${
                   isActive
-                    ? "text-foreground bg-foreground/[0.04] before:absolute before:left-0 before:top-0 before:h-full before:w-[2px] before:bg-primary before:content-['']"
-                    : "text-muted-foreground hover:text-foreground hover:bg-foreground/[0.02]"
+                    ? "text-primary bg-primary/[0.08] before:absolute before:left-0 before:top-2 before:h-[calc(100%-1rem)] before:w-[2px] before:rounded-full before:bg-primary before:content-['']"
+                    : "text-muted-foreground hover:text-foreground hover:bg-secondary/70"
                 }`
               }
             >
@@ -93,13 +93,13 @@ const DashboardLayout = () => {
       )}
 
       <div className="flex-1 flex flex-col min-w-0">
-        <header className="h-14 sticky top-0 z-20 bg-background/85 backdrop-blur-md border-b border-border flex items-center justify-between px-4 md:px-8">
+        <header className="h-20 sticky top-0 z-20 bg-background/85 backdrop-blur-xl border-b border-border/80 flex items-center justify-between px-4 md:px-8 shadow-[0_6px_24px_hsl(var(--foreground)/0.025)]">
           <div className="flex items-center gap-3">
             <button className="lg:hidden p-2 -ml-2 text-foreground" onClick={() => setOpen(true)} aria-label="Abrir menu">
               <Menu className="w-5 h-5" />
             </button>
             <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-              Painel interno
+              WH Studio / Gestão
             </p>
             {settings.maintenanceMode && (
               <span className="hidden sm:inline-flex items-center gap-2 border border-yellow-600/40 bg-yellow-500/10 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-yellow-700">

@@ -53,7 +53,7 @@ const SistemasPage = () => {
     <>
       <Seo {...pageSeo.sistemas} jsonLd={orgJsonLd} />
       <Header />
-      <main className="pt-16">
+      <main id="main-content" tabIndex={-1} className="pt-20">
         <section className="py-20 md:py-28 border-b border-border">
           <div className="container max-w-4xl">
             <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="eyebrow mb-6">
@@ -208,10 +208,10 @@ const SistemasPage = () => {
                 <ArrowUpRight className="w-5 h-5 ml-2" />
               </Button>
               <Link
-                to="/planos"
+                to="/orcamento"
                 className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground transition-colors"
               >
-                Ver o plano Sistema Premium
+                Ver opções de projeto
                 <ArrowUpRight className="w-4 h-4" />
               </Link>
             </div>

@@ -83,7 +83,7 @@ const FeedbackPublicPage = () => {
   return (
     <>
       <Header />
-      <main className="min-h-screen pt-28 pb-20 px-4 bg-background">
+      <main id="main-content" tabIndex={-1} className="min-h-screen pt-36 pb-20 px-4 bg-background">
         <div className="max-w-xl mx-auto">
           {state.kind === "loading" && (
             <div className="card-dark p-8 text-center text-sm text-muted-foreground">

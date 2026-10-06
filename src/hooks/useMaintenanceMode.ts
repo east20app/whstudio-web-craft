@@ -31,7 +31,7 @@ export const useMaintenanceMode = (): MaintenanceState => {
       supabase
         .rpc("get_public_settings")
         .maybeSingle()
-        .then(({ data }: { data: SettingsRow | null }) => {
+        .then(({ data }) => {
           if (alive) setState(mapRow(data));
         });
 

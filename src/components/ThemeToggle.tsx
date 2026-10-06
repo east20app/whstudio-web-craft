@@ -9,7 +9,7 @@ const ThemeToggle = ({ className = "" }: { className?: string }) => {
   useEffect(() => setMounted(true), []);
 
   if (!mounted) {
-    return <span className={`w-9 h-9 border border-border bg-card ${className}`} aria-hidden="true" />;
+    return <span className={`w-11 h-11 rounded-full border border-border bg-card ${className}`} aria-hidden="true" />;
   }
 
   const dark = resolvedTheme === "dark";
@@ -20,7 +20,7 @@ const ThemeToggle = ({ className = "" }: { className?: string }) => {
       onClick={() => setTheme(dark ? "light" : "dark")}
       aria-label={dark ? "Mudar para o tema claro" : "Mudar para o tema escuro"}
       title={dark ? "Tema claro" : "Tema escuro"}
-      className={`w-9 h-9 inline-flex items-center justify-center border border-border bg-card text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors ${className}`}
+      className={`w-11 h-11 rounded-full inline-flex items-center justify-center border border-border bg-card text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors ${className}`}
     >
       {dark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
     </button>

@@ -72,7 +72,7 @@ const TiposDeProjetos = () => {
               transition={{ duration: 0.4, delay: i * 0.06 }}
               className="group premium-shell relative flex min-h-[28rem] flex-col overflow-hidden p-8 md:p-10"
             >
-              <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary via-accent-2 to-primary opacity-70" />
+              <div className="absolute inset-x-0 top-0 h-px bg-primary/40" />
               <div className="flex items-baseline justify-between">
                 <p className="num-label">{t.value}</p>
                 <span className="grid h-12 w-12 place-items-center rounded-full bg-secondary text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">

@@ -29,7 +29,7 @@ const Status = ({ status }: { status: ProjectStatus }) => (
 const BrowserFrame = ({ p, aspect }: { p: PortfolioItem; aspect: string }) => {
   const urlShown = (displayOf(p.url) ?? p.category.toLowerCase()) || "projeto";
   return (
-    <div className="flex h-full flex-col border border-border bg-card">
+    <div className="flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card">
       <div className="flex items-center gap-2 border-b border-border px-3.5 py-2.5">
         {[0, 1, 2].map((i) => (
           <span key={i} className="h-2 w-2 rounded-full bg-muted-foreground/30" aria-hidden="true" />
@@ -45,6 +45,8 @@ const BrowserFrame = ({ p, aspect }: { p: PortfolioItem; aspect: string }) => {
             alt={`Preview do projeto ${p.title}`}
             loading="lazy"
             decoding="async"
+            width={1600}
+            height={1000}
             className="h-full w-full object-cover object-top"
           />
         ) : (
@@ -55,7 +57,7 @@ const BrowserFrame = ({ p, aspect }: { p: PortfolioItem; aspect: string }) => {
             >
               {initialsOf(p.title)}
             </span>
-            <span className="num-label">Projeto privado</span>
+            <span className="num-label">{p.status === "privado" ? "Projeto privado" : "Conheça o projeto abaixo"}</span>
           </div>
         )}
       </div>
@@ -116,12 +118,12 @@ const Portfolio = () => {
           <div className="lg:col-span-8">
             <p className="eyebrow mb-5">Portfólio</p>
             <h2 className="display-huge text-5xl md:text-6xl max-w-2xl">
-              Projetos com <em>história pra contar.</em>
+              Projetos que <em>saíram do papel.</em>
             </h2>
           </div>
           <p className="lg:col-span-4 text-sm md:text-base text-muted-foreground leading-relaxed max-w-md">
-            Cada projeto nasce do escopo de um cliente — não de um template.
-            E cada um foi escrito por uma pessoa só, do briefing ao deploy.
+            Sites e sistemas desenvolvidos para necessidades reais de cada negócio.
+            Design e desenvolvimento acompanhados do planejamento à publicação.
           </p>
         </div>
 

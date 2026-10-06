@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, ArrowUpRight, Check, RotateCcw } from "lucide-react";
-import { services, plans, type Service, type Plan } from "@/config/site";
+import { Send, ArrowUpRight, RotateCcw } from "lucide-react";
+import { services, type Service } from "@/config/site";
 import { useOrcamentoAction } from "@/components/tickets/TicketChat";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -17,7 +17,6 @@ type Briefing = {
   prazo: string | null;
   conteudo: string | null;
   orcamento: string | null;
-  plan: Plan | null;
   descricao: string;
 };
 
@@ -91,13 +90,6 @@ const detectConteudo = (text: string): string => {
   return "Sim";
 };
 
-const pickPlan = (service: Service | null, prazo: string): Plan => {
-  const custom = ["apis-sistemas", "dashboards", "delivery"];
-  if (service && custom.includes(service.id)) return plans.find((p) => p.id === "premium")!;
-  if (prazo === "Essa semana") return plans.find((p) => p.id === "inicial")!;
-  return plans.find((p) => p.id === "profissional")!;
-};
-
 const uid = () => Math.random().toString(36).slice(2, 9);
 
 const Typing = () => (
@@ -149,14 +141,14 @@ const WhAI = () => {
     prazo: null,
     conteudo: null,
     orcamento: null,
-    plan: null,
     descricao: "",
   });
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const timers = useRef<number[]>([]);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ block: "nearest" });
+    const container = messagesContainerRef.current;
+    if (container) container.scrollTop = container.scrollHeight;
   }, [messages, typing, quick]);
 
   useEffect(() => () => timers.current.forEach((t) => window.clearTimeout(t)), []);
@@ -220,7 +212,7 @@ const WhAI = () => {
 
     if (stage === "prazo") {
       const prazo = detectPrazo(text);
-      setBriefing((b) => ({ ...b, prazo, plan: pickPlan(b.service, prazo) }));
+      setBriefing((b) => ({ ...b, prazo }));
       setStage("conteudo");
       pushAI(`Prazo: ${prazo.toLowerCase()}. Você já tem conteúdo pronto — textos, logo, referências?`);
       return;
@@ -241,7 +233,7 @@ const WhAI = () => {
       setQuick([]);
       setStage("done");
       pushAI(
-        "Pronto. Montei o briefing aqui do lado com o plano que encaixa melhor. Se estiver certo, manda pra gente — respondo eu mesmo.",
+        "Pronto. Organizei o que você contou em um briefing. Se estiver certo, envie pra gente conversar sobre o escopo e o orçamento do seu projeto.",
         900,
       );
       return;
@@ -272,7 +264,7 @@ const WhAI = () => {
     setStage("servico");
     setClarifyCount(0);
     setQuick([]);
-    setBriefing({ service: null, empresa: null, funcionalidades: null, prazo: null, conteudo: null, orcamento: null, plan: null, descricao: "" });
+    setBriefing({ service: null, empresa: null, funcionalidades: null, prazo: null, conteudo: null, orcamento: null, descricao: "" });
   };
 
   const filled = [briefing.service, briefing.empresa, briefing.funcionalidades, briefing.prazo, briefing.conteudo, briefing.orcamento].filter(Boolean).length;
@@ -289,10 +281,6 @@ const WhAI = () => {
     briefing.prazo ? `Prazo desejado: ${briefing.prazo}` : null,
     briefing.conteudo ? `Conteúdo pronto (textos, logo, referências): ${briefing.conteudo}` : null,
     briefing.orcamento ? `Faixa de investimento: ${briefing.orcamento}` : null,
-    briefing.plan
-      ? `Plano recomendado: ${briefing.plan.name} — ${briefing.plan.deliveryTime}, ${briefing.plan.support}`
-      : null,
-    briefing.plan ? `Inclui: ${briefing.plan.features.join("; ")}` : null,
     "",
     "Quero validar esse escopo e receber um orçamento.",
   ]
@@ -326,6 +314,7 @@ const WhAI = () => {
             </header>
 
             <div
+              ref={messagesContainerRef}
               className="flex-1 overflow-y-auto max-h-[22rem] md:max-h-[26rem] px-4 py-4 space-y-3"
               aria-live="polite"
               aria-label="Conversa com a whAI"
@@ -364,7 +353,6 @@ const WhAI = () => {
                 </motion.div>
               )}
               <AnimatePresence>{typing && <Typing />}</AnimatePresence>
-              <div ref={bottomRef} />
             </div>
 
             {stage === "done" ? (
@@ -487,33 +475,6 @@ const WhAI = () => {
                 </Field>
               )}
 
-              {briefing.plan && (
-                <Field>
-                  <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground mb-1">
-                    Plano recomendado
-                  </p>
-                  <p className="font-display text-2xl">{briefing.plan.name}</p>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {briefing.plan.deliveryTime} · {briefing.plan.support}
-                  </p>
-                </Field>
-              )}
-
-              {briefing.plan && (
-                <Field>
-                  <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground mb-2">
-                    Incluso
-                  </p>
-                  <ul className="space-y-2">
-                    {briefing.plan.features.map((f) => (
-                      <li key={f} className="flex items-start gap-2 text-sm text-muted-foreground">
-                        <Check className="w-4 h-4 mt-0.5 text-primary shrink-0" strokeWidth={2} aria-hidden="true" />
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
-                </Field>
-              )}
             </div>
 
             {stage === "done" && (

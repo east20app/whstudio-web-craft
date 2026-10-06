@@ -3,9 +3,9 @@
 export const siteConfig = {
   name: "WH Studio",
   shortName: "WH",
-  slogan: "Desenvolvimento web feito por gente que atende WhatsApp",
+  slogan: "Desenvolvimento de sites e sistemas para empresas",
   description:
-    "WH Studio — sites, bots para Discord, sistemas personalizados e automações. Código do zero, atendimento direto. Solicite seu orçamento.",
+    "WH Studio — empresa de desenvolvimento de sites, sistemas personalizados e automações. Design, integração e suporte conforme seu projeto.",
   url: "https://whstudio.site",
   email: "contato@whstudio.com.br",
   whatsapp: {
@@ -23,8 +23,6 @@ export const siteConfig = {
     generic: "Olá, vim pelo site e quero solicitar um orçamento.",
     service: (service: string) =>
       `Olá, vim pelo site da WH Studio. Tenho interesse no serviço: ${service}. Pode me enviar um orçamento?`,
-    plan: (plan: string) =>
-      `Olá, vim pelo site da WH Studio. Tenho interesse no plano ${plan}. Pode me enviar mais detalhes?`,
     contactForm: (data: { name?: string; email?: string; project?: string; message?: string }) =>
       `Olá, vim pelo site da WH Studio.\n\nNome: ${data.name}\nE-mail: ${data.email}${
         data.project ? `\nProjeto: ${data.project}` : ""
@@ -64,7 +62,7 @@ export const services: Service[] = [
     id: "criacao-sites",
     icon: Globe,
     title: "Criação de Sites",
-    short: "Site institucional, landing page ou loja virtual. Rápido pra carregar, fácil pra você editar e bonito no celular — que é onde o seu cliente vai abrir.",
+    short: "Sites institucionais, landing pages e lojas virtuais com design responsivo, conteúdo organizado e canais de contato integrados.",
     benefits: [
       "Design responsivo feito do zero",
       "Otimizado pra aparecer no Google",
@@ -76,7 +74,7 @@ export const services: Service[] = [
     id: "bots-discord",
     icon: Bot,
     title: "Bots para Discord",
-    short: "Bot de Discord do jeito que o seu servidor precisa: moderação automática, sistema de tickets, economia, ranks, painel web pra administrar. Você manda o que quer, eu programo.",
+    short: "Bot de Discord do jeito que o seu servidor precisa: moderação automática, sistema de tickets, economia, ranks, painel web pra administrar. Configuramos os recursos conforme as necessidades da sua comunidade.",
     benefits: [
       "Moderação automática configurada",
       "Sistema de tickets com painel",
@@ -88,7 +86,7 @@ export const services: Service[] = [
     id: "apis-sistemas",
     icon: Settings,
     title: "APIs e Sistemas",
-    short: "Sistema web e API pra coisas que você ainda controla na planilha: cadastro, pedidos, financeiro, controle interno. Pensado pra um time pequeno usar sem treinamento.",
+    short: "Sistemas web e APIs para cadastros, pedidos, financeiro e controle interno. Funcionalidades definidas a partir dos processos da sua empresa.",
     benefits: [
       "Banco de dados próprio e seguro",
       "Login com permissões por cargo",
@@ -100,7 +98,7 @@ export const services: Service[] = [
     id: "automacao",
     icon: Zap,
     title: "Automação",
-    short: "Aquela tarefa repetitiva que come 2h do seu dia? Conecto WhatsApp, planilhas, e-mail, sistema interno e CRM pra rodar sozinho enquanto você atende cliente.",
+    short: "Integrações entre WhatsApp, planilhas, e-mail, sistemas e CRM para automatizar tarefas e manter informações sincronizadas.",
     benefits: [
       "Notificações automáticas no WhatsApp",
       "Integração com APIs que você já usa",
@@ -112,7 +110,7 @@ export const services: Service[] = [
     id: "dashboards",
     icon: LayoutDashboard,
     title: "Dashboards",
-    short: "Painel administrativo com login, permissões, gráficos e relatório de verdade. Tudo o que importa do seu negócio numa tela só — sem precisar abrir 4 sistemas.",
+    short: "Painéis administrativos com login, permissões, indicadores e relatórios para acompanhar a operação da empresa.",
     benefits: [
       "Métricas e gráficos em tempo real",
       "Controle de quem vê o quê",
@@ -124,77 +122,13 @@ export const services: Service[] = [
     id: "delivery",
     icon: ShoppingCart,
     title: "Sistemas de Delivery",
-    short: "Cardápio online com pedido pelo WhatsApp ou pagamento direto. Foi feito pensando em hamburgueria, açaí, pizzaria e mercadinho de bairro — sem mensalidade de iFood.",
+    short: "Cardápio digital, pedidos, pagamentos e gestão de entregas para restaurantes e comércios, com recursos definidos para cada operação.",
     benefits: [
       "Cardápio digital bonito no celular",
       "Pedido direto no WhatsApp ou pagamento",
       "Frete calculado por bairro",
       "Painel pra você aceitar e acompanhar",
     ],
-  },
-];
-
-// =============== PLANOS (sem preços fixos) ===============
-export type Plan = {
-  id: string;
-  name: string;
-  tagline: string;
-  deliveryTime: string;
-  support: string;
-  features: string[];
-  popular?: boolean;
-  ctaLabel: string;
-};
-
-export const plans: Plan[] = [
-  {
-    id: "inicial",
-    name: "Inicial",
-    tagline: "Pra quem precisa estar no ar essa semana.",
-    deliveryTime: "Entrega em até 7 dias",
-    support: "15 dias de suporte",
-    features: [
-      "Landing page ou site simples (até 3 páginas)",
-      "Design responsivo",
-      "WhatsApp integrado",
-      "SEO básico configurado",
-      "1 revisão inclusa",
-    ],
-    ctaLabel: "Solicitar orçamento",
-  },
-  {
-    id: "profissional",
-    name: "Profissional",
-    tagline: "Pra empresa que já tem cliente e precisa parecer empresa.",
-    deliveryTime: "Entrega em até 15 dias",
-    support: "30 dias de suporte",
-    popular: true,
-    features: [
-      "Site completo com várias páginas",
-      "Painel administrativo simples",
-      "Formulários funcionais",
-      "Integração com pagamentos",
-      "SEO avançado e Analytics",
-      "3 revisões inclusas",
-    ],
-    ctaLabel: "Solicitar orçamento",
-  },
-  {
-    id: "premium",
-    name: "Sistema Premium",
-    tagline: "Pra quem vai rodar o negócio dentro do sistema.",
-    deliveryTime: "Prazo sob consulta",
-    support: "90 dias de suporte avançado",
-    features: [
-      "Sistema sob medida do zero",
-      "Dashboard administrativo completo",
-      "API própria para integrações",
-      "Login e controle de usuários",
-      "Banco de dados dedicado",
-      "Integração com bot Discord",
-      "Suporte prioritário",
-    ],
-    ctaLabel: "Falar sobre meu projeto",
   },
 ];
 
@@ -227,7 +161,7 @@ export const navLinks = [
   { label: "Serviços", href: "/servicos" },
   { label: "Sistemas", href: "/sistemas" },
   { label: "Portfólio", href: "/portfolio" },
-  { label: "Planos", href: "/planos" },
+  { label: "Orçamento", href: "/orcamento" },
   { label: "Sobre", href: "/sobre" },
   { label: "Contato", href: "/contato" },
 ];

@@ -19,7 +19,7 @@ const stageLabel = {
 };
 
 const Panel = ({ title, href, children }: { title: string; href: string; children: React.ReactNode }) => (
-  <section className="border border-border overflow-hidden bg-card/30">
+  <section className="overflow-hidden rounded-2xl border border-border/80 bg-card/80 shadow-[0_12px_36px_hsl(var(--foreground)/0.035)]">
     <header className="flex items-center justify-between px-5 h-12 border-b border-border">
       <h3 className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">{title}</h3>
       <Link to={href} className="font-mono text-[10px] uppercase tracking-[0.14em] text-primary hover:underline">
@@ -68,7 +68,7 @@ const Overview = () => {
         </Link>
       </header>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 border-y border-border divide-x divide-border">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <StatCard label="Orçamentos" value={budgets.length} trend={`${newBudgets} novos`} />
         <StatCard label="Clientes ativos" value={activeClients} trend={`${clients.length} no total`} />
         <StatCard label="Em andamento" value={ongoing} trend={`${delivered} entregues`} />
@@ -125,7 +125,7 @@ const Overview = () => {
         </Panel>
       </div>
 
-      <section className="border border-border overflow-hidden bg-card/30">
+      <section className="overflow-hidden rounded-2xl border border-border/80 bg-card/80 shadow-[0_12px_36px_hsl(var(--foreground)/0.035)]">
         <header className="flex items-center justify-between px-5 h-12 border-b border-border">
           <h3 className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
             Atividade recente

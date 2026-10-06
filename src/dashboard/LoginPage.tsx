@@ -1,5 +1,5 @@
 import { useState, FormEvent, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -46,11 +46,12 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-background">
+    <main className="min-h-screen flex flex-col items-center justify-center gap-8 px-4 py-12 bg-background">
+      <Link to="/" className="studio-brand" aria-label="WH Studio — página inicial">wh<span className="text-primary">/</span><span className="studio-brand__suffix">studio</span></Link>
       <form onSubmit={onSubmit} className="w-full max-w-md card-dark p-8">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 border border-primary/30 bg-primary/10 flex items-center justify-center">
-            <Lock className="w-5 h-5 text-primary" />
+          <div className="w-12 h-12 rounded-full border border-primary/30 bg-primary/10 flex items-center justify-center">
+            <Lock className="w-5 h-5 text-primary" aria-hidden="true" />
           </div>
           <div>
             <h1 className="font-display text-2xl">Acesse o painel</h1>
@@ -63,6 +64,8 @@ const LoginPage = () => {
             <Label htmlFor="email">E-mail</Label>
             <Input
               id="email"
+              name="email"
+              spellCheck={false}
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -75,6 +78,7 @@ const LoginPage = () => {
             <Label htmlFor="password">Senha</Label>
             <Input
               id="password"
+              name="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -90,7 +94,8 @@ const LoginPage = () => {
           {submitting ? "Aguarde…" : "Entrar no painel"}
         </Button>
       </form>
-    </div>
+      <Link to="/" className="text-sm text-muted-foreground transition-colors hover:text-primary">← Voltar para o site</Link>
+    </main>
   );
 };
 

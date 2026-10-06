@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Loader2 } from "lucide-react";
 import { z } from "zod";
 import { toast } from "sonner";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
@@ -42,6 +42,7 @@ const initialState: FormData = { name: "", email: "", phone: "", project: "", me
 const Contact = () => {
   const [data, setData] = useState<FormData>(initialState);
   const [errors, setErrors] = useState<FormErrors>({});
+  const [sending, setSending] = useState(false);
   const { requestQuote } = useOrcamentoAction();
   const settings = useSiteSettings();
 
@@ -52,6 +53,7 @@ const Contact = () => {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (sending) return;
     const result = contactSchema.safeParse(data);
 
     if (!result.success) {
@@ -61,6 +63,7 @@ const Contact = () => {
         fieldErrors[key] = issue.message;
       });
       setErrors(fieldErrors);
+      document.getElementById(result.error.issues[0].path[0] as string)?.focus();
       toast.error("Verifique os campos do formulário.");
       return;
     }
@@ -72,23 +75,25 @@ const Contact = () => {
       (result.data.project ? `[${result.data.project}] ${result.data.message}` : result.data.message) +
       contactLine;
 
-    const { error } = await supabase.from("messages").insert({
-      name: result.data.name,
-      email: result.data.email,
-      message: fullMessage,
-    });
-
-    if (error) {
-      toast.error("Não foi possível enviar agora. Tente novamente.");
-      return;
+    setSending(true);
+    try {
+      const { error } = await supabase.from("messages").insert({
+        name: result.data.name,
+        email: result.data.email,
+        message: fullMessage,
+      });
+      if (error) throw error;
+      requestQuote({
+        subject: result.data.project?.trim() ? result.data.project : "Assunto geral",
+        prefill: fullMessage,
+      });
+      toast.success("Mensagem registrada! Continue a conversa na central de atendimento.");
+      setData(initialState);
+    } catch {
+      toast.error("Não foi possível enviar agora. Tente novamente ou entre em contato pelo WhatsApp.");
+    } finally {
+      setSending(false);
     }
-
-    requestQuote({
-      subject: result.data.project?.trim() ? result.data.project : "Assunto geral",
-      prefill: fullMessage,
-    });
-    toast.success("Mensagem registrada! Continue a conversa na central de atendimento.");
-    setData(initialState);
   };
 
   return (
@@ -98,11 +103,10 @@ const Contact = () => {
           <div className="lg:col-span-5">
             <p className="eyebrow mb-5">Contato</p>
             <h2 className="display-huge text-4xl md:text-5xl leading-[1.08]">
-              Me conta o que <em>precisa existir.</em>
+              Conte o que sua empresa <em>precisa desenvolver.</em>
             </h2>
             <p className="mt-6 text-muted-foreground leading-relaxed max-w-md">
-              Preenche o formulário ou chama no WhatsApp. Eu respondo em até 24
-              horas úteis — e geralmente é bem antes.
+              Preencha o formulário ou converse pelo WhatsApp. Vamos entender sua necessidade e preparar os próximos passos.
             </p>
 
             <dl className="mt-10 border-t border-border">
@@ -149,6 +153,8 @@ const Contact = () => {
                 </label>
                 <Input
                   id="name"
+                  name="name"
+                  autoComplete="name"
                   placeholder="Seu nome completo"
                   value={data.name}
                   onChange={(e) => update("name", e.target.value)}
@@ -165,6 +171,9 @@ const Contact = () => {
                 </label>
                 <Input
                   id="email"
+                  name="email"
+                  autoComplete="email"
+                  spellCheck={false}
                   type="email"
                   placeholder="seu@email.com"
                   value={data.email}
@@ -184,6 +193,8 @@ const Contact = () => {
                 </label>
                 <Input
                   id="phone"
+                  name="phone"
+                  autoComplete="tel"
                   type="tel"
                   inputMode="tel"
                   placeholder="(84) 98876-6134"
@@ -202,6 +213,7 @@ const Contact = () => {
                 </label>
                 <Input
                   id="project"
+                  name="project"
                   placeholder="Ex.: site, bot Discord, sistema..."
                   value={data.project}
                   onChange={(e) => update("project", e.target.value)}
@@ -216,6 +228,7 @@ const Contact = () => {
               </label>
               <Textarea
                 id="message"
+                name="message"
                 placeholder="Conte um pouco sobre o que você precisa..."
                 className="min-h-[130px]"
                 value={data.message}
@@ -229,9 +242,9 @@ const Contact = () => {
               )}
             </div>
 
-            <Button type="submit" className="h-12 rounded-none px-7">
-              Enviar e abrir atendimento
-              <ArrowUpRight className="w-4 h-4 ml-1.5" />
+            <Button type="submit" className="h-12 px-7" disabled={sending} aria-busy={sending}>
+              {sending ? "Enviando…" : "Enviar e abrir atendimento"}
+              {sending ? <Loader2 className="ml-1.5 h-4 w-4 animate-spin" aria-hidden="true" /> : <ArrowUpRight className="ml-1.5 h-4 w-4" aria-hidden="true" />}
             </Button>
             <p className="text-xs text-muted-foreground">
               Ao enviar, você abre uma conversa na central de atendimento — pode

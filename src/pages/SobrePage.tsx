@@ -8,12 +8,12 @@ import Seo, { pageSeo, orgJsonLd } from "@/components/Seo";
 
 const principles = [
   {
-    title: "Um dono pra cada projeto",
-    desc: "O compromisso, o prazo e a qualidade são de uma pessoa só. Quando você fala comigo, fala com quem fez.",
+    title: "Responsabilidade em cada etapa",
+    desc: "Escopo, responsáveis e pontos de acompanhamento definidos para sua empresa saber como o projeto avança.",
   },
   {
     title: "Código do zero, sempre",
-    desc: "Sem tema comprado, sem framework de portfólio. Se a tela existe, é porque o seu projeto precisou dela.",
+    desc: "Interfaces e funcionalidades escolhidas de acordo com os objetivos e processos do seu negócio.",
   },
   {
     title: "Escopo antes do código",
@@ -25,11 +25,11 @@ const principles = [
   },
 ];
 
-const notOurJob = [
-  "Promessas de 'primeira página do Google em 30 dias'",
-  "Cliente fantasma — quem paga, acompanha",
-  "Mensalidade pra te liberar do próprio site",
-  "Trabalho com terceiros sem você saber",
+const commitments = [
+  "Objetivos, entregas e prazos definidos na proposta",
+  "Validação do layout e acompanhamento do desenvolvimento",
+  "Domínio e acessos organizados para sua empresa",
+  "Custos de serviços externos apresentados com transparência",
 ];
 
 const AboutPage = () => {
@@ -39,7 +39,7 @@ const AboutPage = () => {
     <>
       <Seo {...pageSeo.sobre} jsonLd={orgJsonLd} />
       <Header />
-      <main className="pt-16">
+      <main id="main-content" tabIndex={-1} className="pt-20">
         <section className="py-20 md:py-28 border-b border-border">
           <div className="container max-w-4xl">
             <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="eyebrow mb-6">
@@ -51,7 +51,7 @@ const AboutPage = () => {
               transition={{ delay: 0.05 }}
               className="display-huge text-5xl md:text-7xl"
             >
-              Um estúdio. Uma pessoa por trás <em>de cada projeto.</em>
+              Uma empresa. Tecnologia a serviço <em>do seu negócio.</em>
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -59,9 +59,7 @@ const AboutPage = () => {
               transition={{ delay: 0.1 }}
               className="text-muted-foreground text-base md:text-lg mt-6 max-w-2xl leading-relaxed"
             >
-              A WH Studio começou em 2023, no Rio Grande do Norte, fundada por {authorName}
-              — desenvolvedor de site, sistema e bot — de um incômodo simples: agência
-              grande demora, freelancer sumido atrasa, e quem paga a conta é o cliente.
+              A WH Studio é uma empresa de desenvolvimento de sites e sistemas no Rio Grande do Norte, fundada por {authorName}. Trabalhamos com presença digital, plataformas de gestão e integrações para empresas de diferentes setores.
             </motion.p>
           </div>
         </section>
@@ -121,18 +119,17 @@ const AboutPage = () => {
         <section className="py-24 md:py-32 border-b border-border" aria-labelledby="limites">
           <div className="container grid lg:grid-cols-12 gap-x-12 gap-y-10">
             <div className="lg:col-span-5">
-              <p className="eyebrow mb-5">Limites honestos</p>
+              <p className="eyebrow mb-5">Compromissos com sua empresa</p>
               <h2 id="limites" className="display-huge text-5xl md:text-6xl">
-                O que a gente <em>não faz.</em>
+                Uma parceria <em>bem definida.</em>
               </h2>
               <p className="mt-6 text-muted-foreground leading-relaxed max-w-md">
-                Saber o que não fazer evita reunião perdida — e cliente na mão
-                errada. Prefiro dizer não na primeira conversa do que arrastar.
+                Alinhamos expectativas antes de iniciar. Sua empresa sabe o que está contratando, como acompanha o projeto e o que acontece depois da entrega.
               </p>
             </div>
             <div className="lg:col-span-7">
               <ul className="border-t border-border">
-                {notOurJob.map((item, i) => (
+                {commitments.map((item, i) => (
                   <li key={item} className="flex gap-6 border-b border-border py-5 text-sm md:text-base leading-relaxed">
                     <span className="num-label pt-0.5 w-8 shrink-0 tabular-nums">
                       {String(i + 1).padStart(2, "0")}
@@ -166,9 +163,7 @@ const AboutPage = () => {
               transition={{ duration: 0.5 }}
               className="font-display text-2xl md:text-[2.6rem] leading-snug mt-10 max-w-2xl"
             >
-              Por aqui, o atendimento, a arquitetura e o código passam pela mesma
-              pessoa. Sem repasse, sem ruído — e com o servidor aberto quando você
-              quiser ver o progresso.
+              Na WH Studio, cada projeto reúne planejamento, design e desenvolvimento. Sua empresa acompanha as entregas com versões de teste e validações antes da publicação.
             </motion.p>
           </div>
         </section>

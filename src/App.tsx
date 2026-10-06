@@ -10,7 +10,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Index from "./pages/Index.tsx";
 import ServicosPage from "./pages/ServicosPage.tsx";
 import SistemasPage from "./pages/SistemasPage.tsx";
-import PlanosPage from "./pages/PlanosPage.tsx";
+import OrcamentoPage from "./pages/OrcamentoPage.tsx";
 import PortfolioPage from "./pages/PortfolioPage.tsx";
 import ContatoPage from "./pages/ContatoPage.tsx";
 import SobrePage from "./pages/SobrePage.tsx";
@@ -46,7 +46,7 @@ const PageLoader = () => (
 );
 
 const App = () => (
-  <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+  <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
@@ -66,7 +66,8 @@ const App = () => (
                 <Route path="/" element={<Index />} />
                 <Route path="/servicos" element={<ServicosPage />} />
                 <Route path="/sistemas" element={<SistemasPage />} />
-                <Route path="/planos" element={<PlanosPage />} />
+                <Route path="/orcamento" element={<OrcamentoPage />} />
+                <Route path="/planos" element={<Navigate to="/orcamento" replace />} />
                 <Route path="/portfolio" element={<PortfolioPage />} />
                 <Route path="/contato" element={<ContatoPage />} />
                 <Route path="/sobre" element={<SobrePage />} />

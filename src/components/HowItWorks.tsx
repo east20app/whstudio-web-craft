@@ -8,8 +8,8 @@ const steps = [
   },
   {
     n: "02",
-    title: "Eu construo.",
-    desc: "Escrevo o código do zero e te mostro funcionando etapa por etapa. Mudou de ideia no caminho? Muda.",
+    title: "Desenvolvemos.",
+    desc: "Desenvolvemos a solução e apresentamos versões de teste. Ajustes são alinhados com o escopo aprovado.",
   },
   {
     n: "03",
@@ -19,7 +19,7 @@ const steps = [
   {
     n: "04",
     title: "Vai para produção.",
-    desc: "Publico, configuro domínio, te treino pra mexer sozinho e fico de plantão no período de suporte.",
+    desc: "Publicamos, configuramos o domínio e orientamos sua empresa no uso da solução, com o suporte contratado.",
   },
 ];
 
@@ -30,12 +30,12 @@ const HowItWorks = () => (
         <div className="lg:col-span-8">
           <p className="eyebrow mb-5">Processo</p>
           <h2 className="display-huge text-5xl md:text-7xl max-w-3xl">
-            Quatro etapas. <em>Sem ata de reunião.</em>
+            Do planejamento <em>à entrega.</em>
           </h2>
         </div>
         <p className="lg:col-span-4 text-sm md:text-base text-muted-foreground leading-relaxed max-w-md">
           Curto, direto e com você acompanhando cada etapa. Cada passo pode ocupar
-          o tempo que precisar — o que não muda é a conversa de uma pessoa só.
+          o tempo necessário, com escopo, validações e responsabilidades definidos.
         </p>
       </div>
 

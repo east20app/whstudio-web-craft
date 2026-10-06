@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowUpRight, CheckCircle2 } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { usePublicServices, toPublicService } from "@/hooks/usePublicServices";
 import { services as configServices } from "@/config/site";
 import { useOrcamentoAction } from "@/components/tickets/TicketChat";
@@ -8,70 +8,23 @@ const Services = () => {
   const live = usePublicServices();
   const list = live && live.length > 0 ? live : configServices.map(toPublicService);
   const { requestQuote } = useOrcamentoAction();
-
   return (
-    <section id="servicos" className="section-premium py-24 md:py-32">
+    <section id="servicos" className="section-premium py-20 md:py-28">
       <div className="container relative">
-        <div className="grid lg:grid-cols-12 gap-8 items-end mb-16">
-          <div className="lg:col-span-8">
-            <p className="eyebrow mb-5">Serviços</p>
-            <h2 className="display-huge text-5xl md:text-6xl max-w-2xl text-balance">
-              O que eu <em>construo.</em>
-            </h2>
-          </div>
-          <p className="lg:col-span-4 text-sm md:text-base text-muted-foreground leading-relaxed max-w-md">
-            Cada entrega combina estratégia, interface e código sob medida para a empresa parecer
-            mais confiável, vender melhor e operar com menos improviso.
-          </p>
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {list.map((s, i) => (
-            <motion.article
-              key={s.key}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-8%" }}
-              transition={{ duration: 0.4, delay: i * 0.04 }}
-              className="group premium-shell flex min-h-[22rem] flex-col p-6 transition-all duration-300 hover:-translate-y-1 hover:border-primary/45 hover:shadow-[0_28px_90px_hsl(var(--primary)/0.14)] md:p-7"
-            >
-              <div className="flex items-start justify-between gap-4">
-                <p className="num-label group-hover:text-primary transition-colors">
-                  {String(i + 1).padStart(2, "0")} / Serviço
-                </p>
-                <span className="grid h-10 w-10 place-items-center rounded-full bg-primary/10 text-primary">
-                  <CheckCircle2 className="h-5 w-5" />
-                </span>
-              </div>
-
-              <h3 className="mt-8 font-display text-3xl leading-tight transition-colors group-hover:text-primary md:text-4xl">
-                {s.title}
-              </h3>
-              <p className="mt-4 flex-1 text-sm leading-relaxed text-muted-foreground transition-colors group-hover:text-foreground/80 md:text-base">
-                {s.desc}
-              </p>
-
-              <div className="mt-8 border-t border-border pt-5">
-                <button
-                  type="button"
-                  onClick={() =>
-                    requestQuote({
-                      subject: `Serviço: ${s.title}`,
-                      prefill: `Quero um orçamento para: ${s.title}. `,
-                    })
-                  }
-                  className="inline-flex w-full items-center justify-between gap-3 bg-transparent font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-foreground cursor-pointer"
-                >
-                  Solicitar orçamento
-                  <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                </button>
-              </div>
-            </motion.article>
-          ))}
+        <div className="mb-14 grid items-end gap-8 lg:grid-cols-12"><div className="lg:col-span-8"><p className="eyebrow mb-5">01 / O que desenvolvemos</p><h2 className="display-huge max-w-3xl text-4xl md:text-6xl">Seu negócio.<br /><em>Nossas soluções.</em></h2></div><p className="max-w-sm text-sm leading-relaxed text-muted-foreground lg:col-span-4">Da presença digital à operação da empresa. Design, desenvolvimento e integração em um só lugar.</p></div>
+        <div className="border-t border-border">
+          {list.map((service, index) => {
+            const Icon = service.icon;
+            return <motion.article key={service.key} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.35 }} className="service-row group grid items-start gap-5 border-b border-border py-7 md:grid-cols-12 md:items-center md:gap-8 md:py-9">
+              <span className="num-label md:col-span-1">{String(index + 1).padStart(2, "0")}</span>
+              <div className="flex items-center gap-4 md:col-span-4"><Icon className="h-6 w-6 shrink-0 text-primary" strokeWidth={1.5} aria-hidden="true" /><h3 className="text-2xl font-medium tracking-tight md:text-3xl">{service.title}</h3></div>
+              <p className="max-w-lg text-sm leading-relaxed text-muted-foreground md:col-span-5">{service.desc}</p>
+              <button type="button" onClick={() => requestQuote({ subject: `Serviço: ${service.title}`, prefill: `Quero um orçamento para: ${service.title}. ` })} className="service-row__action flex min-h-12 items-center gap-3 text-sm text-primary md:col-span-2 md:justify-self-end" aria-label={`Solicitar orçamento para ${service.title}`}><span className="md:sr-only">Solicitar orçamento</span><ArrowUpRight className="h-6 w-6" aria-hidden="true" /></button>
+            </motion.article>;
+          })}
         </div>
       </div>
     </section>
   );
 };
-
 export default Services;

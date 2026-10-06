@@ -34,7 +34,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   whatsappFull: "+55 (84) 98876-6134",
   discord: "https://discord.gg/whstudio",
   email: "contato@whstudio.com.br",
-  footerText: "Sites, sistemas e bots feitos do zero.",
+  footerText: "Desenvolvimento de sites, sistemas e integrações para empresas.",
   authorName: "Walmry Netto",
   acceptingProjects: true,
   availabilityNote: "Aceitando novos projetos.",
@@ -47,8 +47,7 @@ let cache: Promise<SettingsRow | null> | null = null;
 
 function fetchSettings(): Promise<SettingsRow | null> {
   if (!cache) {
-    cache = supabase
-      .rpc("get_public_settings")
+    cache = Promise.resolve(supabase.rpc("get_public_settings"))
       .then(({ data, error }) => {
         if (error) {
           console.warn("[useSiteSettings] get_public_settings indisponível:", error.message);
