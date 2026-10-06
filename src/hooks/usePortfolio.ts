@@ -5,6 +5,7 @@ import type { ProjectStatus } from "@/config/site";
 
 type PortfolioRow = Database["public"]["Tables"]["portfolio_projects"]["Row"] & {
   cover_url?: string | null;
+  featured?: boolean | null;
 };
 
 export type PortfolioItem = {

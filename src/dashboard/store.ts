@@ -228,7 +228,10 @@ export const useAdminServices = () => {
     if (patch.active !== undefined) upd.active = patch.active;
     if (patch.icon !== undefined) upd.icon = patch.icon;
     if (patch.sortOrder !== undefined) upd.sort_order = patch.sortOrder;
-    const { error } = await supabase.from("services").update(upd).eq("id", id);
+    const { error } = await supabase
+      .from("services")
+      .update(upd as Database["public"]["Tables"]["services"]["Update"])
+      .eq("id", id);
     if (!error) await t.refresh();
     return !error;
   };
