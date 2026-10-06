@@ -211,7 +211,7 @@ export const useAdminServices = () => {
       active: s.active,
       icon: s.icon ?? "",
       sort_order: s.sortOrder ?? 0,
-    });
+    } as Database["public"]["Tables"]["services"]["Insert"]);
     if (!error) await t.refresh();
     return !error;
   };
