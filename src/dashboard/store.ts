@@ -199,8 +199,8 @@ export const useAdminServices = () => {
     description: r.description ?? "",
     price: r.price ?? "Sob consulta",
     active: r.active,
-    icon: r.icon ?? "",
-    sortOrder: r.sort_order ?? 0,
+    icon: (r as ServicesRow & { icon?: string | null }).icon ?? "",
+    sortOrder: (r as ServicesRow & { sort_order?: number | null }).sort_order ?? 0,
   }), "sort_order", true);
 
   const addService = async (s: Omit<AdminService, "id">) => {
@@ -211,7 +211,7 @@ export const useAdminServices = () => {
       active: s.active,
       icon: s.icon ?? "",
       sort_order: s.sortOrder ?? 0,
-    });
+    } as Database["public"]["Tables"]["services"]["Insert"]);
     if (!error) await t.refresh();
     return !error;
   };
@@ -228,7 +228,10 @@ export const useAdminServices = () => {
     if (patch.active !== undefined) upd.active = patch.active;
     if (patch.icon !== undefined) upd.icon = patch.icon;
     if (patch.sortOrder !== undefined) upd.sort_order = patch.sortOrder;
-    const { error } = await supabase.from("services").update(upd).eq("id", id);
+    const { error } = await supabase
+      .from("services")
+      .update(upd as Database["public"]["Tables"]["services"]["Update"])
+      .eq("id", id);
     if (!error) await t.refresh();
     return !error;
   };

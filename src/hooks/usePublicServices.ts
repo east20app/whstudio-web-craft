@@ -47,7 +47,11 @@ let cache: Promise<PublicService[] | null> | null = null;
 
 function fetchServices(): Promise<PublicService[] | null> {
   if (!cache) {
-    cache = Promise.resolve(supabase.rpc("get_public_services"))
+    const rpc = supabase.rpc.bind(supabase) as (fn: string) => Promise<{
+      data: unknown;
+      error: { message: string } | null;
+    }>;
+    cache = rpc("get_public_services")
       .then(({ data, error }) => {
         if (error) {
           console.warn("[usePublicServices] get_public_services indisponível:", error.message);

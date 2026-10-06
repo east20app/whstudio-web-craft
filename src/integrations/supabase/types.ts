@@ -181,8 +181,6 @@ export type Database = {
       }
       portfolio_projects: {
         Row: {
-          cover_url: string | null
-          featured: boolean
           category: string
           color: string
           created_at: string
@@ -197,8 +195,6 @@ export type Database = {
           url: string | null
         }
         Insert: {
-          cover_url?: string | null
-          featured?: boolean
           category?: string
           color?: string
           created_at?: string
@@ -213,8 +209,6 @@ export type Database = {
           url?: string | null
         }
         Update: {
-          cover_url?: string | null
-          featured?: boolean
           category?: string
           color?: string
           created_at?: string
@@ -262,8 +256,6 @@ export type Database = {
       }
       services: {
         Row: {
-          icon: string
-          sort_order: number
           active: boolean
           created_at: string
           description: string
@@ -272,8 +264,6 @@ export type Database = {
           price: string
         }
         Insert: {
-          icon?: string
-          sort_order?: number
           active?: boolean
           created_at?: string
           description?: string
@@ -282,8 +272,6 @@ export type Database = {
           price?: string
         }
         Update: {
-          icon?: string
-          sort_order?: number
           active?: boolean
           created_at?: string
           description?: string
@@ -708,33 +696,6 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      get_public_services: {
-        Args: never
-        Returns: {
-          id: string
-          name: string
-          description: string
-          price: string
-          icon: string
-          sort_order: number
-        }[]
-      }
-      get_public_portfolio: {
-        Args: never
-        Returns: {
-          id: string
-          title: string
-          category: string
-          description: string
-          url: string | null
-          status: string
-          tech: string[]
-          cover_url: string | null
-          published: boolean
-          sort_order: number
-          featured: boolean
-        }[]
-      }
       create_ticket: {
         Args: {
           _email: string

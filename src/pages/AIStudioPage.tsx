@@ -13,6 +13,7 @@ import {
   X,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable/index";
 import {
   builderDb,
   builderRequest,
@@ -158,6 +159,22 @@ export default function AIStudioPage() {
         error instanceof Error ? error.message : "Não foi possível entrar.",
       );
     } finally {
+      setAuthBusy(false);
+    }
+  }
+  async function signInWithGoogle() {
+    setAuthBusy(true);
+    setNotice("");
+    const result = await lovable.auth.signInWithOAuth("google", {
+      redirect_uri: `${location.origin}/ai`,
+    });
+    if (result.error) {
+      setNotice(result.error.message || "Não foi possível entrar com o Google.");
+      setAuthBusy(false);
+      return;
+    }
+    if (!result.redirected) {
+      setLogin(false);
       setAuthBusy(false);
     }
   }
@@ -558,6 +575,30 @@ export default function AIStudioPage() {
             <p className="my-4 text-sm text-slate-400">
               Projetos e versões ficam vinculados à sua conta.
             </p>
+            {!recovery && (
+              <>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="mb-5 w-full"
+                  disabled={authBusy}
+                  onClick={signInWithGoogle}
+                >
+                  <svg viewBox="0 0 24 24" className="mr-2 h-4 w-4" aria-hidden="true">
+                    <path
+                      fill="currentColor"
+                      d="M21.35 11.1h-9.17v2.73h6.51c-.33 3.81-3.5 5.44-6.5 5.44C8.36 19.27 5 16.25 5 12c0-4.1 3.2-7.27 7.2-7.27 3.09 0 4.9 1.97 4.9 1.97L19 4.72S16.56 2 12.1 2C6.42 2 2.03 6.8 2.03 12c0 5.05 4.13 10 10.22 10 5.35 0 9.25-3.67 9.25-9.09 0-1.15-.15-1.81-.15-1.81Z"
+                    />
+                  </svg>
+                  Continuar com Google
+                </Button>
+                <div className="mb-5 flex items-center gap-3 text-xs text-slate-500">
+                  <span className="h-px flex-1 bg-white/10" />
+                  ou com e-mail
+                  <span className="h-px flex-1 bg-white/10" />
+                </div>
+              </>
+            )}
             {!recovery && (
               <label className="mb-4 block text-sm">
                 E-mail
