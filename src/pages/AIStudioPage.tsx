@@ -13,6 +13,7 @@ import {
   X,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable/index";
 import {
   builderDb,
   builderRequest,
@@ -158,6 +159,22 @@ export default function AIStudioPage() {
         error instanceof Error ? error.message : "Não foi possível entrar.",
       );
     } finally {
+      setAuthBusy(false);
+    }
+  }
+  async function signInWithGoogle() {
+    setAuthBusy(true);
+    setNotice("");
+    const result = await lovable.auth.signInWithOAuth("google", {
+      redirect_uri: `${location.origin}/ai`,
+    });
+    if (result.error) {
+      setNotice(result.error.message || "Não foi possível entrar com o Google.");
+      setAuthBusy(false);
+      return;
+    }
+    if (!result.redirected) {
+      setLogin(false);
       setAuthBusy(false);
     }
   }
