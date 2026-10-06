@@ -6,7 +6,7 @@ Rota `/ai`. Conta de cliente Supabase, projetos privados por RLS, geração real
 
 1. Aplicar `supabase/migrations/20261006090000_builder.sql` no projeto correto. Revisar as permissões: cliente só lê saldo, pedidos e gerações; funções financeiras só `service_role`.
 2. Publicar as funções `wh-builder` e `wh-builder-webhook` com Supabase CLI ou dashboard. `verify_jwt=false` é intencional: builder valida o token com `auth.getUser`, webhook valida assinatura Stripe.
-3. Configurar segredos **no servidor**, nunca VITE nem Git: `OPENAI_API_KEY`, `OPENAI_MODEL` (modelo compatível com Responses + structured outputs), `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `WH_AI_APP_URL` (origem exata, sem barra final; ex.: `https://whstudio.site`). Supabase injeta URL, anon e service role na Edge Function. Para desenvolvimento usar `http://127.0.0.1:5173` como origem.
+3. Configurar segredos **no servidor**, nunca VITE nem Git: para Google AI Studio usar `WH_AI_PROVIDER=gemini`, `GEMINI_API_KEY` e `GEMINI_MODEL` (ID de modelo disponível na sua conta com suporte a generateContent e structured outputs). Para OpenAI usar `WH_AI_PROVIDER=openai`, `OPENAI_API_KEY` e `OPENAI_MODEL`. Também configurar `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `WH_AI_APP_URL` (origem exata, sem barra final; ex.: `https://whstudio.site`). Supabase injeta URL, anon e service role na Edge Function. Para desenvolvimento usar `http://127.0.0.1:5173` como origem. Sem `WH_AI_PROVIDER`, a presença de `GEMINI_API_KEY` seleciona Gemini; caso contrário usa OpenAI. Não há troca automática de provedor em falhas.
 4. Na Stripe cadastrar webhook para `checkout.session.completed` e `checkout.session.async_payment_succeeded` apontando para `/functions/v1/wh-builder-webhook`. Usar inicialmente modo de teste. Saldo só é creditado por evento assinado e valor/moeda conferidos, nunca pelo retorno do navegador.
 5. Habilitar email/senha no Supabase Auth e URLs de redirecionamento `<origem>/ai`; configurar SMTP, confirmação e recuperação de senha.
 6. Testar de ponta a ponta com usuário de teste: cadastro, confirmação, Checkout teste, saldo, geração, edição, erro com reembolso, histórico após recarregar, download e isolamento entre usuários. Repetir webhook: saldo deve aumentar apenas uma vez. Antes de produção revisar limites/custos, termos e política de dados.
@@ -16,6 +16,12 @@ Preço inicial configurado na tabela: **R$10 por 5 créditos**, uma versão por 
 Falhas devolvem o crédito uma vez. ID repetido reaproveita a geração e não repete chamada. Um usuário só pode ter uma geração pendente. Interrupções do processo são reconciliadas na próxima tentativa após 15 minutos. Não devolver manualmente antes de conferir o status.
 
 Prévia: Sandpack compila React/TypeScript em iframe externo, separado da origem da aplicação. Os arquivos enviados ao bundler CodeSandbox não devem conter segredos. Não inserir dados sensíveis no prompt: prompt e código são armazenados na conta e enviados ao provedor para geração. Código e migrações exigem revisão antes de produção.
+
+## Ativar Google AI Studio / Gemini
+
+Criar a chave em https://aistudio.google.com/apikey. No dashboard Supabase, abrir Edge Functions → Secrets e cadastrar `WH_AI_PROVIDER` com valor `gemini`, `GEMINI_API_KEY` com a chave e `GEMINI_MODEL` com o ID exato do modelo escolhido no AI Studio. Não cadastrar a chave como variável `VITE_*`, não enviá-la no chat e não commitar `.env` com segredos. Republicar `wh-builder` e testar uma geração. Configuração de cobrança e limites do Gemini deve ser feita na conta Google correspondente. As chamadas de IA usam o servidor, e modelo/provedor/tokens ficam no histórico de geração. A checagem local usa respostas simuladas e não confirma a chave ou o acesso ao modelo.
+
+O envio de arquivos para Google segue os termos e políticas do provedor. Documentação da saída estruturada: https://ai.google.dev/gemini-api/docs/generate-content/structured-output.
 
 ## Backend dos sistemas gerados
 

@@ -1,6 +1,7 @@
 import { createClient } from "npm:@supabase/supabase-js@2.105.1";
 import Stripe from "npm:stripe@18.5.0";
 import { validateArtifact } from "../_shared/artifact.ts";
+import { generateProject, modelConfig } from "../_shared/model.ts";
 
 const env = (key: string) => Deno.env.get(key) || "";
 const db = createClient(env("SUPABASE_URL"), env("SUPABASE_SERVICE_ROLE_KEY"));
@@ -108,7 +109,8 @@ Deno.serve(async (req: Request) => {
       );
       return respond({ url: session.url });
     }
-    if (!env("OPENAI_API_KEY") || !env("OPENAI_MODEL"))
+    const config = modelConfig(env);
+    if (!config)
       return respond(
         { error: "A geração real ainda precisa ser ativada pela WH Studio" },
         503,
@@ -145,7 +147,7 @@ Deno.serve(async (req: Request) => {
     // Claim once, including simultaneous retries with the same ID.
     const { data: claim, error: claimError } = await db
       .from("builder_generations")
-      .update({ model: env("OPENAI_MODEL") })
+      .update({ model: `${config.provider}/${config.model}` })
       .eq("id", job.id)
       .eq("status", "pending")
       .is("model", null)
@@ -164,54 +166,17 @@ Deno.serve(async (req: Request) => {
       .order("created_at", { ascending: false })
       .limit(1)
       .maybeSingle();
-    const response = await fetch("https://api.openai.com/v1/responses", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${env("OPENAI_API_KEY")}`,
-        "Content-Type": "application/json",
-      },
-      signal: AbortSignal.timeout(110000),
-      body: JSON.stringify({
-        model: env("OPENAI_MODEL"),
-        store: false,
-        max_output_tokens: 24000,
-        text: {
-          format: {
-            type: "json_schema",
-            name: "project",
-            strict: true,
-            schema,
-          },
-        },
-        input: [
-          { role: "system", content: instructions },
-          {
-            role: "user",
-            content: JSON.stringify({
-              kind: project.kind,
-              request: body.prompt,
-              previous: previous?.artifact || null,
-            }),
-          },
-        ],
+    const result = await generateProject(
+      config,
+      instructions,
+      JSON.stringify({
+        kind: project.kind,
+        request: body.prompt,
+        previous: previous?.artifact || null,
       }),
-    });
-    if (!response.ok)
-      throw new Error(
-        "O provedor de IA não concluiu a geração. Tente novamente.",
-      );
-    const result = await response.json();
-    if (result.status !== "completed")
-      throw new Error("A geração ficou incompleta. O crédito será devolvido.");
-    const output = result.output
-      .flatMap(
-        (item: { content?: { type: string; text?: string }[] }) =>
-          item.content || [],
-      )
-      .filter((part: { type: string }) => part.type === "output_text")
-      .map((part: { text: string }) => part.text)
-      .join("");
-    const artifact = validateArtifact(JSON.parse(output));
+      schema,
+    );
+    const artifact = validateArtifact(result.artifact);
     if (
       project.kind === "system" &&
       !artifact.files.some((file) =>
@@ -226,13 +191,14 @@ Deno.serve(async (req: Request) => {
       result: artifact,
       failure: null,
       used_model: result.model,
-      used_tokens: result.usage?.total_tokens || 0,
+      used_tokens: result.tokens,
     });
     if (saveError) throw new Error("Não foi possível salvar a geração.");
     return respond({ generation: { ...job, status: "complete", artifact } });
   } catch (error) {
-    const message = checkout ? "Não foi possível abrir o checkout. A WH Studio precisa verificar a configuração de pagamento." :
-      error instanceof Error
+    const message = checkout
+      ? "Não foi possível abrir o checkout. A WH Studio precisa verificar a configuração de pagamento."
+      : error instanceof Error
         ? error.message
         : "Não foi possível concluir o pedido";
     if (reserved)
