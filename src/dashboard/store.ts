@@ -199,8 +199,8 @@ export const useAdminServices = () => {
     description: r.description ?? "",
     price: r.price ?? "Sob consulta",
     active: r.active,
-    icon: r.icon ?? "",
-    sortOrder: r.sort_order ?? 0,
+    icon: (r as ServicesRow & { icon?: string | null }).icon ?? "",
+    sortOrder: (r as ServicesRow & { sort_order?: number | null }).sort_order ?? 0,
   }), "sort_order", true);
 
   const addService = async (s: Omit<AdminService, "id">) => {
