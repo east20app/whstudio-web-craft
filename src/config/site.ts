@@ -157,6 +157,7 @@ export const statusLabels: Record<ProjectStatus, { label: string; className: str
 
 // =============== NAVEGAÇÃO ===============
 export const navLinks = [
+  { label: "WH Studio AI", href: "/ai" },
   { label: "Início", href: "/" },
   { label: "Serviços", href: "/servicos" },
   { label: "Sistemas", href: "/sistemas" },

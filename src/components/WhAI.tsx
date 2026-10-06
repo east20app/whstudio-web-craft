@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send, ArrowUpRight, RotateCcw } from "lucide-react";
 import { services, type Service } from "@/config/site";
@@ -302,6 +303,9 @@ const WhAI = () => {
             vai se montando em tempo real.
           </p>
         </div>
+        <Link to="/ai" className="mb-8 inline-flex items-center gap-3 border border-primary/40 px-5 py-4 text-primary hover:bg-primary/10">
+          Criar meu site ou sistema com WH Studio AI <ArrowUpRight className="h-4 w-4" />
+        </Link>
 
         <div className="grid md:grid-cols-2 gap-px bg-border border border-border">
           {/* Chat */}

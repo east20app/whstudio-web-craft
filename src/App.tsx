@@ -22,6 +22,7 @@ import { TicketChatProvider } from "./components/tickets/TicketChat";
 // Dashboard e páginas pesadas só carregam quando a rota abre —
 // mantém o bundle do site público enxuto.
 const DashboardLayout = lazy(() => import("./dashboard/DashboardLayout"));
+const AIStudioPage = lazy(() => import("./pages/AIStudioPage"));
 const RequireAuth = lazy(() =>
   import("./dashboard/RequireAuth").then((m) => ({ default: m.RequireAuth }))
 );
@@ -54,6 +55,8 @@ const App = () => (
         <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <MotionConfig reducedMotion="user">
             <Routes>
+              <Route path="/ai" element={<Suspense fallback={<PageLoader />}><AIStudioPage /></Suspense>} />
+              <Route path="/ai/projetos/:id" element={<Suspense fallback={<PageLoader />}><AIStudioPage /></Suspense>} />
               <Route
                 element={
                   <MaintenanceGate>
