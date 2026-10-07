@@ -77,6 +77,125 @@ export type Database = {
         }
         Relationships: []
       }
+      builder_generations: {
+        Row: {
+          artifact: Json | null
+          created_at: string
+          error: string | null
+          id: string
+          model: string | null
+          project_id: string
+          prompt: string
+          status: string
+          tokens: number | null
+          user_id: string
+        }
+        Insert: {
+          artifact?: Json | null
+          created_at?: string
+          error?: string | null
+          id: string
+          model?: string | null
+          project_id: string
+          prompt: string
+          status?: string
+          tokens?: number | null
+          user_id: string
+        }
+        Update: {
+          artifact?: Json | null
+          created_at?: string
+          error?: string | null
+          id?: string
+          model?: string | null
+          project_id?: string
+          prompt?: string
+          status?: string
+          tokens?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "builder_generations_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "builder_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      builder_orders: {
+        Row: {
+          amount: number
+          created_at: string
+          credits: number
+          id: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          credits: number
+          id?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          credits?: number
+          id?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      builder_projects: {
+        Row: {
+          backend_key: string | null
+          backend_url: string | null
+          created_at: string
+          id: string
+          kind: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          backend_key?: string | null
+          backend_url?: string | null
+          created_at?: string
+          id?: string
+          kind: string
+          title?: string
+          user_id: string
+        }
+        Update: {
+          backend_key?: string | null
+          backend_url?: string | null
+          created_at?: string
+          id?: string
+          kind?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      builder_wallets: {
+        Row: {
+          balance: number
+          user_id: string
+        }
+        Insert: {
+          balance?: number
+          user_id: string
+        }
+        Update: {
+          balance?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       clients: {
         Row: {
           created_at: string
@@ -708,6 +827,24 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      builder_finish: {
+        Args: {
+          failure: string
+          gid: string
+          result: Json
+          used_model: string
+          used_tokens: number
+        }
+        Returns: undefined
+      }
+      builder_pay: {
+        Args: { oid: string; paid_amount: number; paid_currency: string }
+        Returns: undefined
+      }
+      builder_reserve: {
+        Args: { brief: string; gid: string; pid: string; uid: string }
+        Returns: Json
+      }
       create_ticket: {
         Args: {
           _email: string
