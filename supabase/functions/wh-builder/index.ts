@@ -5,12 +5,17 @@ import { generateProject, modelConfig } from "../_shared/model.ts";
 
 const env = (key: string) => Deno.env.get(key) || "";
 const db = createClient(env("SUPABASE_URL"), env("SUPABASE_SERVICE_ROLE_KEY"));
-const origin = env("WH_AI_APP_URL");
-const headers = {
-  "Access-Control-Allow-Origin": origin,
-  "Access-Control-Allow-Headers":
-    "authorization, apikey, content-type, x-client-info",
-  "Content-Type": "application/json",
+const allowed = (o: string) =>
+  [env("WH_AI_APP_URL"), "https://whstudio.site", "https://www.whstudio.site", "https://whstudio-web-craft.lovable.app"].includes(o) ||
+  /^https:\/\/[a-z0-9-]+\.lovable\.app$/.test(o) ||
+  /^https:\/\/[a-z0-9-]+\.lovableproject\.com$/.test(o) ||
+  /^http:\/\/localhost:\d+$/.test(o);
+let origin = "";
+let headers: Record<string, string> = {};
+const PACKAGES: Record<string, { credits: number; amount: number; name: string }> = {
+  inicial: { credits: 5, amount: 1000, name: "Inicial" },
+  criador: { credits: 15, amount: 2500, name: "Criador" },
+  pro: { credits: 40, amount: 5900, name: "Pro" },
 };
 const respond = (data: unknown, status = 200) =>
   new Response(JSON.stringify(data), { status, headers });
@@ -37,10 +42,17 @@ const instructions = `Você é o engenheiro full-stack da WH Studio AI. Crie um 
 Para sistemas que precisam persistência, autenticação ou dados compartilhados: use Supabase REAL. Importe supabase e backendConfigured de src/lib/supabase.ts (módulo fornecido pela plataforma, exporta cliente ou null), trate null mostrando como conectar o backend, NUNCA substitua o backend por dados falsos/localStorage. Gere supabase/migrations/001_initial.sql com tabelas, índices, RLS habilitada, policies por auth.uid(), FKs de auth.users e permissões mínimas. Faça login/cadastro/recuperação pelo supabase.auth, tratamento de loading/erro, logout e rotas protegidas quando exigido. CRUD pela API Supabase com validação. Edge Functions para integrações privilegiadas devem ser arquivos separados, com autenticação verificada no servidor; nunca inclua service_role em frontend. Inclua instruções claras de aplicar SQL, configurar auth e deploy em README. Liste em backend_requirements só passos e serviços realmente necessários. Sites simples podem dispensar backend, mas formulários de envio nunca devem fingir sucesso. Nada de segredos ou credenciais inventadas, nem pagamentos falsos. Não escreva scripts de instalação npm. Inclua src/lib/supabase.ts como stub exportando null e backendConfigured=false; a plataforma o substituirá por configuração pública do projeto. Em alterações preserve o projeto e entregue a árvore inteira atualizada. Escreva em português, título com até100 caracteres.`;
 
 Deno.serve(async (req: Request) => {
+  const reqOrigin = req.headers.get("origin") || "";
+  origin = allowed(reqOrigin) ? reqOrigin : "";
+  headers = {
+    "Access-Control-Allow-Origin": origin || "null",
+    "Access-Control-Allow-Headers":
+      "authorization, apikey, content-type, x-client-info, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+    "Content-Type": "application/json",
+  };
   if (req.method === "OPTIONS") return new Response(null, { headers });
   if (req.method !== "POST") return respond({ error: "Método inválido" }, 405);
-  if (!origin || req.headers.get("origin") !== origin)
-    return respond({ error: "Origem indisponível" }, 403);
+  if (!origin) return respond({ error: "Origem indisponível" }, 403);
   let reserved: string | null = null;
   let checkout = false;
   try {
@@ -78,9 +90,11 @@ Deno.serve(async (req: Request) => {
           { error: "Limite diário de tentativas de compra atingido" },
           429,
         );
+      const pack = PACKAGES[String(body.package || "inicial")];
+      if (!pack) return respond({ error: "Pacote inválido" }, 400);
       const { data: order, error } = await db
         .from("builder_orders")
-        .insert({ user_id: user.id })
+        .insert({ user_id: user.id, credits: pack.credits, amount: pack.amount })
         .select()
         .single();
       if (error) throw error;
@@ -96,7 +110,7 @@ Deno.serve(async (req: Request) => {
                 currency: "brl",
                 unit_amount: order.amount,
                 product_data: {
-                  name: `WH Studio AI — ${order.credits} créditos`,
+                  name: `WH Studio AI — ${pack.name} (${order.credits} créditos)`,
                 },
               },
               quantity: 1,

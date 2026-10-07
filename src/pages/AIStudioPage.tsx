@@ -231,14 +231,15 @@ export default function AIStudioPage() {
       setBusy(false);
     }
   }
-  async function purchase() {
+  async function purchase(pack: string) {
+    if (!pack) return;
     if (!user) {
       setLogin(true);
       return;
     }
     setBusy(true);
     try {
-      const result = await builderRequest({ action: "checkout" });
+      const result = await builderRequest({ action: "checkout", package: pack });
       if (result.url && new URL(result.url).hostname === "checkout.stripe.com")
         location.assign(result.url);
       else throw new Error("Checkout indisponível.");
@@ -261,9 +262,18 @@ export default function AIStudioPage() {
         </Link>
         <div className="flex flex-wrap items-center gap-3 text-sm">
           <span className="text-slate-400">{balance} créditos</span>
-          <Button variant="outline" onClick={purchase} disabled={busy}>
-            Comprar créditos
-          </Button>
+          <select
+            aria-label="Comprar créditos"
+            className="h-10 rounded-md border border-white/15 bg-transparent px-3 text-sm"
+            value=""
+            disabled={busy}
+            onChange={(e) => purchase(e.target.value)}
+          >
+            <option value="" className="bg-[#0b0d12]">Comprar créditos</option>
+            <option value="inicial" className="bg-[#0b0d12]">Inicial · 5 créditos · R$ 10</option>
+            <option value="criador" className="bg-[#0b0d12]">Criador · 15 créditos · R$ 25</option>
+            <option value="pro" className="bg-[#0b0d12]">Pro · 40 créditos · R$ 59</option>
+          </select>
           <Button
             variant="ghost"
             onClick={() => (user ? supabase.auth.signOut() : setLogin(true))}
