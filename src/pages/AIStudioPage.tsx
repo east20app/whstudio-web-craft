@@ -49,6 +49,7 @@ export default function AIStudioPage() {
     [mobile, setMobile] = useState(false),
     [code, setCode] = useState(false);
   const [backend, setBackend] = useState(false);
+  const [previewError, setPreviewError] = useState<string | null>(null);
   const [login, setLogin] = useState(false),
     [signup, setSignup] = useState(false),
     [email, setEmail] = useState(""),
@@ -178,12 +179,13 @@ export default function AIStudioPage() {
       setAuthBusy(false);
     }
   }
-  async function generate() {
+  async function generate(override?: string) {
+    const text = override ?? prompt;
     if (!user) {
       setLogin(true);
       return;
     }
-    if (prompt.trim().length < 10) {
+    if (text.trim().length < 10) {
       setNotice(
         "Conte um pouco mais sobre seu projeto (mínimo de 10 caracteres).",
       );
@@ -196,7 +198,7 @@ export default function AIStudioPage() {
       if (!projectId) {
         const { data, error } = await builderDb
           .from("builder_projects")
-          .insert({ user_id: user.id, kind, title: prompt.slice(0, 60) })
+          .insert({ user_id: user.id, kind, title: text.slice(0, 60) })
           .select()
           .single();
         if (error)
@@ -207,7 +209,7 @@ export default function AIStudioPage() {
       const response = await builderRequest({
         projectId,
         requestId: crypto.randomUUID(),
-        prompt,
+        prompt: text,
       });
       if (response.generation?.status === "error")
         throw new Error(response.generation.error || "A geração falhou.");
@@ -230,6 +232,40 @@ export default function AIStudioPage() {
     } finally {
       setBusy(false);
     }
+  }
+  async function saveFiles(artifact: NonNullable<Generation["artifact"]>) {
+    if (!id) return;
+    const response = await builderRequest({ action: "save", projectId: id, artifact });
+    if (response.generation) {
+      setVersions((v) => [response.generation!, ...v]);
+      setSelected(response.generation.id);
+    }
+  }
+  function fixWithAI() {
+    if (!previewError) return;
+    if (
+      !window.confirm(
+        `Corrigir com a IA gasta 1 crédito (saldo atual: ${balance}). Se a correção falhar, o crédito volta. Continuar?`,
+      )
+    )
+      return;
+    void generate(
+      `Corrija este erro de compilação/execução da prévia sem mudar o restante do projeto:\n${previewError.slice(0, 3000)}`,
+    );
+  }
+  function hireStudio() {
+    const lines = [
+      "Olá! Quero contratar a WH Studio para continuar este projeto criado na WH Studio AI.",
+      `Projeto: ${activeProject?.title || prompt || "novo projeto"}`,
+      `Tipo: ${activeProject?.kind === "system" ? "Sistema" : "Site"}`,
+      current?.artifact?.summary ? `Resumo: ${current.artifact.summary}` : "",
+      current?.artifact ? `Arquivos: ${current.artifact.files.length}` : "",
+      current?.artifact?.backend_requirements.length
+        ? `Pendências: ${current.artifact.backend_requirements.join("; ")}`
+        : "",
+      id ? `Referência: ${id}` : "",
+    ].filter(Boolean);
+    window.open(whatsappLink(lines.join("\n").slice(0, 1500)), "_blank", "noopener");
   }
   async function purchase(pack: string) {
     if (!pack) return;
@@ -421,7 +457,7 @@ export default function AIStudioPage() {
                 size="icon"
                 aria-label="Gerar projeto"
                 disabled={pending}
-                onClick={generate}
+                onClick={() => void generate()}
               >
                 {pending ? <Loader2 className="animate-spin" /> : <ArrowUp />}
               </Button>
@@ -433,16 +469,12 @@ export default function AIStudioPage() {
             código são enviados ao provedor de IA e salvos na sua conta; evite
             dados sensíveis.
           </p>
-          <a
-            href={whatsappLink(
-              `Olá! Quero contratar a WH Studio para desenvolver meu projeto: ${projects.find((p) => p.id === id)?.title || prompt}. ${current?.artifact?.backend_requirements.join("; ") || ""}`,
-            )}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-5 border-t border-white/10 pt-4 text-sm text-blue-300"
-          >
-            Precisa de um projeto completo? Contrate a WH Studio ↗
-          </a>
+          <Button variant="outline" className="mt-5 w-full" onClick={hireStudio}>
+            Contratar a WH Studio
+          </Button>
+          <p className="mt-2 text-xs text-slate-500">
+            Para projetos personalizados, integrações e suporte. O contexto deste projeto vai junto na mensagem.
+          </p>
         </aside>
         <section className="min-w-0 p-4 lg:p-6">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
@@ -519,13 +551,14 @@ export default function AIStudioPage() {
                   onSaved={() => void refresh()}
                 />
               ) : code ? (
-                <BuilderFiles artifact={current.artifact} />
+                <BuilderFiles artifact={current.artifact} onSave={saveFiles} />
               ) : (
                 <Suspense fallback={<Loader2 className="animate-spin" />}>
                   <BuilderPreview
                     artifact={current.artifact}
                     project={activeProject}
                     mobile={mobile}
+                    onError={setPreviewError}
                   />
                 </Suspense>
               )
@@ -549,6 +582,15 @@ export default function AIStudioPage() {
               </div>
             )}
           </div>
+          {previewError && current && !code && !backend && (
+            <div role="alert" className="mt-4 rounded-xl border border-red-400/30 p-4 text-sm text-red-200">
+              <p className="mb-2 font-medium">A prévia encontrou um erro</p>
+              <pre className="max-h-40 overflow-auto whitespace-pre-wrap font-mono text-xs">{previewError}</pre>
+              <Button size="sm" className="mt-3" disabled={pending} onClick={fixWithAI}>
+                Corrigir com IA (1 crédito)
+              </Button>
+            </div>
+          )}
           {current?.artifact?.backend_requirements.length > 0 && (
             <div className="mt-4 rounded-xl border border-amber-400/20 p-4 text-sm text-amber-200">
               <p className="mb-2 font-medium">Para colocar em produção</p>
