@@ -56,14 +56,14 @@ export async function generateProject(
         ],
       };
   let response!: Response;
-  for (let attempt = 0; attempt < 3; attempt++) {
+  for (let attempt = 0; attempt < 5; attempt++) {
     response = await request(url, {
       method: "POST",
       headers,
       body: JSON.stringify(body),
     });
     if (response.status !== 503 && response.status !== 429) break;
-    if (attempt < 2) await new Promise((r) => setTimeout(r, 2000 * (attempt + 1) + Math.random() * 1000));
+    if (attempt < 4) await new Promise((r) => setTimeout(r, 2000 * (attempt + 1) + Math.random() * 1000));
   }
   // Provider errors can include credential fragments. Never forward raw bodies.
   if (!response.ok) {
