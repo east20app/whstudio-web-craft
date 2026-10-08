@@ -34,9 +34,8 @@ describe("builder model providers", () => {
       expect(String(input)).not.toContain("test-key");
       const body = JSON.parse(options?.body as string);
       expect(body.systemInstruction.parts[0].text).toBe("instructions");
-      expect(body.generationConfig.responseFormat.text.mimeType).toBe(
-        "application/json",
-      );
+      expect(body.generationConfig.responseMimeType).toBe("application/json");
+      expect(body.generationConfig.responseJsonSchema).toBeTruthy();
       return Response.json({
         candidates: [
           {
