@@ -73,6 +73,40 @@ Deno.serve(async (req: Request) => {
     if (raw.length > 40000)
       return respond({ error: "Pedido muito grande" }, 413);
     const body = JSON.parse(raw);
+    if (body.action === "save") {
+      const uuid = /^[0-9a-f-]{36}$/i;
+      if (!uuid.test(body.projectId))
+        return respond({ error: "Projeto inválido" }, 400);
+      const { data: project } = await db
+        .from("builder_projects")
+        .select("id")
+        .eq("id", body.projectId)
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (!project) return respond({ error: "Projeto indisponível" }, 404);
+      let artifact;
+      try {
+        artifact = validateArtifact(body.artifact);
+      } catch (e) {
+        return respond({ error: e instanceof Error ? e.message : "Projeto inválido" }, 400);
+      }
+      const { data: saved, error } = await db
+        .from("builder_generations")
+        .insert({
+          id: crypto.randomUUID(),
+          project_id: project.id,
+          user_id: user.id,
+          prompt: "Edição manual de arquivos",
+          status: "complete",
+          artifact,
+          model: "manual",
+          tokens: 0,
+        })
+        .select()
+        .single();
+      if (error) throw new Error("Não foi possível salvar os arquivos.");
+      return respond({ generation: saved });
+    }
     if (body.action === "checkout") {
       checkout = true;
       if (!env("STRIPE_SECRET_KEY"))
