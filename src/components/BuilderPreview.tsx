@@ -1,15 +1,31 @@
-import { useMemo } from "react";
-import { SandpackProvider, SandpackPreview } from "@codesandbox/sandpack-react";
+import { useEffect, useMemo } from "react";
+import {
+  SandpackProvider,
+  SandpackPreview,
+  useSandpack,
+} from "@codesandbox/sandpack-react";
 import type { Artifact, Project } from "@/lib/builder";
 import { backendModule } from "@/lib/builder";
+
+function ErrorWatcher({ onError }: { onError?: (e: string | null) => void }) {
+  const { sandpack } = useSandpack();
+  const message = sandpack.error?.message || null;
+  useEffect(() => {
+    onError?.(message);
+  }, [message, onError]);
+  return null;
+}
+
 export default function BuilderPreview({
   artifact,
   project,
   mobile,
+  onError,
 }: {
   artifact: Artifact;
   project?: Project;
   mobile: boolean;
+  onError?: (error: string | null) => void;
 }) {
   const files = useMemo(() => {
     const result = Object.fromEntries(
@@ -44,6 +60,7 @@ export default function BuilderPreview({
         }}
         options={{ externalResources: [], autorun: true }}
       >
+        <ErrorWatcher onError={onError} />
         <SandpackPreview
           style={{ height: 650 }}
           showOpenInCodeSandbox={false}

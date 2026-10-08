@@ -33,8 +33,9 @@ export async function generateProject(
         systemInstruction: { parts: [{ text: instructions }] },
         contents: [{ role: "user", parts: [{ text: prompt }] }],
         generationConfig: {
-          maxOutputTokens: 24000,
-          responseFormat: { text: { mimeType: "application/json", schema } },
+          maxOutputTokens: 60000,
+          responseMimeType: "application/json",
+          responseJsonSchema: schema,
         },
       }
     : {
@@ -54,19 +55,27 @@ export async function generateProject(
           { role: "user", content: prompt },
         ],
       };
-  const response = await request(url, {
-    method: "POST",
-    headers,
-    signal: AbortSignal.timeout(110000),
-    body: JSON.stringify(body),
-  });
+  let response!: Response;
+  for (let attempt = 0; attempt < 5; attempt++) {
+    response = await request(url, {
+      method: "POST",
+      headers,
+      body: JSON.stringify(body),
+    });
+    if (response.status !== 503 && response.status !== 429) break;
+    if (attempt < 4) await new Promise((r) => setTimeout(r, 2000 * (attempt + 1) + Math.random() * 1000));
+  }
   // Provider errors can include credential fragments. Never forward raw bodies.
-  if (!response.ok)
+  if (!response.ok) {
+    console.error("provider status", response.status);
     throw new Error(
       response.status === 429
         ? "O provedor de IA atingiu seu limite de uso. Tente novamente mais tarde."
-        : "O provedor de IA não concluiu a geração. Verifique a configuração do serviço.",
+        : response.status === 503
+          ? "O Gemini está sobrecarregado agora. Seu crédito foi devolvido; tente de novo em alguns minutos."
+          : "O provedor de IA não concluiu a geração. Verifique a configuração do serviço.",
     );
+  }
   const result = await response.json();
   let output: string;
   let tokens: number;
