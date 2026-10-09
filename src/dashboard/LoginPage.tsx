@@ -17,7 +17,7 @@ const LoginPage = () => {
   const { user, loading } = useAuth();
 
   useEffect(() => {
-    if (!loading && user && (user.email ?? "").toLowerCase() === OWNER_EMAIL) {
+    if (!loading && user && OWNER_EMAILS.includes((user.email ?? "").toLowerCase())) {
       navigate("/dashboard", { replace: true });
     }
   }, [user, loading, navigate]);
@@ -28,7 +28,7 @@ const LoginPage = () => {
       toast.error("Preencha e-mail e senha");
       return;
     }
-    if (email.trim().toLowerCase() !== OWNER_EMAIL) {
+    if (!OWNER_EMAILS.includes(email.trim().toLowerCase())) {
       toast.error("Acesso restrito ao administrador");
       return;
     }
