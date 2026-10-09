@@ -7,7 +7,7 @@ import { signIn, useAuth } from "./store";
 import { toast } from "sonner";
 import { Lock } from "lucide-react";
 
-const OWNER_EMAIL = "whgamersc@gmail.com";
+const OWNER_EMAILS = ["whgamersc@gmail.com", "whstudio@whstudio.site"];
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
