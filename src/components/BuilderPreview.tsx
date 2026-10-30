@@ -62,7 +62,7 @@ export default function BuilderPreview({
       >
         <ErrorWatcher onError={onError} />
         <SandpackPreview
-          style={{ height: 650 }}
+          style={{ height: "min(650px, calc(100dvh - 175px))" }}
           showOpenInCodeSandbox={false}
           showRefreshButton
           showNavigator

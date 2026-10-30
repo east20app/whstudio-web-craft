@@ -3,6 +3,8 @@ import type { User } from "@supabase/supabase-js";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   Code2,
+  Coins,
+  ChevronDown,
   Download,
   Loader2,
   Monitor,
@@ -25,6 +27,14 @@ import BuilderBackend from "@/components/BuilderBackend";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Dialog,
   DialogContent,
@@ -366,31 +376,47 @@ export default function AIStudioPage() {
   }
   return (
     <div className="min-h-screen bg-[#0b0d12] text-slate-100">
-      <header className="sticky top-0 z-40 flex flex-wrap items-center justify-between gap-3 border-b border-white/10 bg-[#0b0d12]/95 px-4 py-3 backdrop-blur-xl sm:px-5 sm:py-4">
-        <Link to="/" className="font-display text-xl font-bold tracking-tight">
-          WH<span className="text-blue-400">.</span>{" "}
-          <span className="text-sm font-normal text-slate-400">
-            STUDIO AI / BETA
+      <header className="sticky top-0 z-40 flex min-h-[68px] flex-wrap items-center justify-between gap-3 border-b border-white/[.08] bg-[#0b0d12]/95 px-4 py-3 backdrop-blur-xl sm:px-5">
+        <div className="flex min-w-0 items-center gap-3">
+          <Link to="/" className="font-display text-xl font-bold tracking-tight">
+            WH<span className="text-blue-400">/</span><span className="text-base font-medium text-slate-300">studio</span>
+          </Link>
+          <span className="h-5 w-px bg-white/10" aria-hidden="true" />
+          <span className="text-sm font-medium text-slate-200">AI Studio</span>
+          <span className="hidden rounded-full border border-blue-400/20 bg-blue-400/[.08] px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider text-blue-200 sm:inline-flex">Beta</span>
+        </div>
+        <div className="flex min-w-0 flex-wrap items-center justify-end gap-2 text-sm sm:gap-3">
+          <span className="rounded-full border border-white/10 bg-white/[.04] px-3 py-2 text-xs text-slate-300" aria-live="polite">
+            {!user ? "Entre para salvar" : walletLoading && !walletAvailable ? "Carregando saldo…" : walletAvailable ? `${balance} créditos` : "Saldo indisponível"}
           </span>
-        </Link>
-        <div className="flex flex-wrap items-center gap-2 text-sm sm:gap-3">
-          <span className="rounded-full border border-blue-400/20 bg-blue-400/10 px-3 py-1.5 text-blue-200" aria-live="polite">
-            {!user ? "Entre para salvar projetos" : walletLoading && !walletAvailable ? "Carregando saldo…" : walletAvailable ? `${balance} créditos` : "Saldo indisponível"}
-          </span>
-          <select
-            aria-label="Comprar créditos"
-            className="h-10 rounded-md border border-white/15 bg-transparent px-3 text-sm"
-            value=""
-            disabled={busy}
-            onChange={(e) => purchase(e.target.value)}
-          >
-            <option value="" className="bg-[#0b0d12]">Comprar créditos</option>
-            <option value="inicial" className="bg-[#0b0d12]">Inicial · 5 créditos · R$ 10</option>
-            <option value="criador" className="bg-[#0b0d12]">Criador · 15 créditos · R$ 25</option>
-            <option value="pro" className="bg-[#0b0d12]">Pro · 40 créditos · R$ 59</option>
-          </select>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" disabled={busy} className="h-10 gap-2 rounded-xl border-white/10 bg-[#11151d] px-3 text-xs text-slate-200 hover:bg-white/[.06] sm:text-sm">
+                <Coins className="h-4 w-4 text-blue-300" aria-hidden="true" />
+                <span>Créditos</span>
+                <ChevronDown className="h-3.5 w-3.5 text-slate-500" aria-hidden="true" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-64 rounded-xl border-white/10 bg-[#11151d] p-2 text-slate-100 shadow-2xl">
+              <DropdownMenuLabel className="px-3 py-2 text-xs font-normal text-slate-400">1 crédito por versão gerada</DropdownMenuLabel>
+              <DropdownMenuSeparator className="bg-white/10" />
+              <DropdownMenuItem className="cursor-pointer rounded-lg px-3 py-3 focus:bg-white/[.07]" onSelect={() => void purchase("inicial")}>
+                <span>Inicial <span className="ml-1 text-xs text-slate-500">5 créditos</span></span>
+                <span className="ml-auto font-medium">R$ 10</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer rounded-lg px-3 py-3 focus:bg-white/[.07]" onSelect={() => void purchase("criador")}>
+                <span>Criador <span className="ml-1 text-xs text-slate-500">15 créditos</span></span>
+                <span className="ml-auto font-medium">R$ 25</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer rounded-lg px-3 py-3 focus:bg-white/[.07]" onSelect={() => void purchase("pro")}>
+                <span>Pro <span className="ml-1 text-xs text-slate-500">40 créditos</span></span>
+                <span className="ml-auto font-medium">R$ 59</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <Button
-            variant="ghost"
+            variant="outline"
+            className="h-10 rounded-xl border-white/10 px-4"
             onClick={() => (user ? supabase.auth.signOut() : setLogin(true))}
           >
             {user ? "Sair" : "Entrar"}
@@ -417,16 +443,21 @@ export default function AIStudioPage() {
           </button>
         </p>
       )}
-      <main className="grid min-h-[calc(100vh-81px)] lg:grid-cols-[370px_1fr]">
-        <aside className="flex min-h-[620px] flex-col border-b border-white/10 p-4 sm:p-5 lg:border-b-0 lg:border-r">
+      <main className="grid min-h-[calc(100dvh-68px)] grid-cols-1 min-[640px]:grid-cols-[minmax(250px,0.38fr)_minmax(0,0.62fr)] lg:grid-cols-[370px_minmax(0,1fr)]">
+        <aside className="flex min-h-[620px] flex-col border-b border-white/[.08] bg-[#0d1017] p-4 sm:p-5 min-[640px]:h-[calc(100dvh-68px)] min-[640px]:min-h-0 min-[640px]:max-h-[calc(100dvh-68px)] min-[640px]:overflow-y-auto lg:border-b-0 lg:border-r">
           <div className="flex items-center justify-between">
-            <h1 className="font-display text-2xl">
-              Da ideia à primeira versão.
-            </h1>
+            <div>
+              <p className="eyebrow mb-2 text-blue-300">Seu espaço de criação</p>
+              <h1 className="font-display text-2xl tracking-tight">
+                O que vamos criar?
+              </h1>
+            </div>
             <Button
               size="icon"
               variant="ghost"
               aria-label="Novo projeto"
+              title="Começar um projeto novo"
+              className="rounded-xl border border-white/10 bg-white/[.03] hover:bg-white/[.08]"
               onClick={() => {
                 navigate("/ai");
                 setSelected("");
@@ -436,16 +467,17 @@ export default function AIStudioPage() {
               <Plus />
             </Button>
           </div>
-          <p className="mt-3 text-sm leading-relaxed text-slate-400">
-            Descreva seu site ou sistema. Veja o resultado, peça mudanças e
-            baixe o código.
+          <p className="mt-3 max-w-sm text-sm leading-relaxed text-slate-400">
+            Conte sua ideia em linguagem natural. A IA cria o app com você; depois, refine o resultado no chat e veja cada mudança na prévia.
           </p>
           {!id && (
-            <div className="my-5 flex gap-2">
+            <div className="my-5 flex gap-2 rounded-xl border border-white/[.08] bg-white/[.025] p-1" role="group" aria-label="Tipo de projeto">
               {(["site", "system"] as const).map((k) => (
                 <Button
                   key={k}
                   variant={kind === k ? "default" : "outline"}
+                  aria-pressed={kind === k}
+                  className="h-9 flex-1 rounded-lg"
                   onClick={() => setKind(k)}
                 >
                   {k === "site" ? "Site" : "Sistema"}
@@ -464,7 +496,7 @@ export default function AIStudioPage() {
                     e.target.value ? `/ai/projetos/${e.target.value}` : "/ai",
                   )
                 }
-                className="mt-2 w-full rounded border border-white/10 bg-[#151923] p-2 text-sm text-white"
+                className="mt-2 h-11 w-full rounded-xl border border-white/10 bg-[#151923] px-3 text-sm text-white outline-none transition-colors hover:border-white/20 focus-visible:ring-2 focus-visible:ring-blue-400"
               >
                 <option value="">Novo projeto</option>
                 {projects.map((p) => (
@@ -516,7 +548,10 @@ export default function AIStudioPage() {
                   );
                 })}
               </>
-            ) : suggestions.map((s) => (
+            ) : (
+              <>
+                <p className="eyebrow px-1">Ideias para começar</p>
+                {suggestions.map((s) => (
                   <button
                     key={s}
                     onClick={() => {
@@ -527,14 +562,29 @@ export default function AIStudioPage() {
                           : "site",
                       );
                     }}
-                    className="block w-full rounded-xl border border-white/10 p-3 text-left text-sm text-slate-300 transition hover:border-blue-400/50"
+                    className="group flex w-full items-center gap-3 rounded-xl border border-white/[.08] bg-white/[.02] p-3 text-left text-sm text-slate-300 transition-colors hover:border-blue-400/40 hover:bg-blue-400/[.04]"
                   >
-                    {s} <span className="text-blue-400">↗</span>
+                    <span className="flex-1">{s}</span>
+                    <Sparkles className="h-4 w-4 shrink-0 text-slate-500 transition-colors group-hover:text-blue-300" aria-hidden="true" />
                   </button>
                 ))}
+              </>
+            )}
           </div>
+          {user && walletAvailable && balance < 1 && (
+            <p role="status" className="mb-3 rounded-lg border border-amber-300/20 bg-amber-300/[.06] p-3 text-xs leading-relaxed text-amber-100">
+              Sem créditos. Escolha um pacote no topo para continuar.
+            </p>
+          )}
+          <details className="mb-3 rounded-xl border border-white/[.08] bg-white/[.02] px-3 py-2 text-xs text-slate-500">
+            <summary className="cursor-pointer select-none text-slate-400">Privacidade e uso de créditos</summary>
+            <p className="mt-2 leading-relaxed">Cada versão usa 1 crédito. Sua descrição e o código gerado são enviados ao provedor de IA e salvos na sua conta; não inclua dados sensíveis.</p>
+          </details>
+          <Button variant="outline" size="sm" className="mb-3 w-full rounded-xl border-white/10 text-slate-300" onClick={hireStudio}>
+            Precisa de ajuda da WH Studio?
+          </Button>
           <form
-            className="mt-5 rounded-xl border border-white/15 bg-white/[.03] p-3"
+            className="sticky bottom-0 z-20 mt-auto rounded-2xl border border-white/10 bg-[#11151d]/95 p-3 shadow-[0_-12px_30px_rgba(0,0,0,.2)] backdrop-blur-xl"
             onSubmit={(event) => {
               event.preventDefault();
               void generate();
@@ -557,7 +607,7 @@ export default function AIStudioPage() {
                   void generate();
                 }
               }}
-              className="min-h-[110px] resize-none border-0 bg-transparent shadow-none focus-visible:ring-0"
+              className="min-h-[96px] resize-y border-0 bg-transparent shadow-none focus-visible:ring-0"
             />
             <div className="flex items-center justify-between text-xs text-slate-500">
               <span>{prompt.length}/6000 · 1 crédito por versão</span>
@@ -571,23 +621,6 @@ export default function AIStudioPage() {
             </div>
             <p className="mt-2 text-right text-[11px] text-slate-500">Atalho: Ctrl + Enter</p>
           </form>
-          {user && walletAvailable && balance < 1 && (
-            <p role="status" className="mt-3 rounded-lg border border-amber-300/20 bg-amber-300/[.06] p-3 text-xs leading-relaxed text-amber-100">
-              Seu saldo está zerado. Escolha um pacote de créditos no topo para gerar uma nova versão.
-            </p>
-          )}
-          <p className="mt-3 text-xs leading-relaxed text-slate-500">
-            Projeto React + TypeScript com arquivos separados. Sistemas podem
-            usar banco e login reais pelo Supabase conectado. Sua descrição e
-            código são enviados ao provedor de IA e salvos na sua conta; evite
-            dados sensíveis.
-          </p>
-          <Button variant="outline" className="mt-5 w-full" onClick={hireStudio}>
-            Contratar a WH Studio
-          </Button>
-          <p className="mt-2 text-xs text-slate-500">
-            Para projetos personalizados, integrações e suporte. O contexto deste projeto vai junto na mensagem.
-          </p>
         </aside>
         <section className="min-w-0 p-4 lg:p-6">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
