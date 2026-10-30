@@ -265,7 +265,12 @@ html {
 }
 
 a[href*="lovable.dev"],
+a[href*="lovable.app"],
 iframe[src*="lovable.dev"],
+iframe[src*="lovable.app"],
+[id*="lovable-badge"],
+[class*="lovable-badge"],
+[data-lovable-badge],
 div[style*="Edit with Lovable"] {
   display: none !important;
 }

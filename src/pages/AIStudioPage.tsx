@@ -1,8 +1,7 @@
-import { lazy, Suspense, useCallback, useEffect, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import type { User } from "@supabase/supabase-js";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
-  ArrowUp,
   Code2,
   Download,
   Loader2,
@@ -26,6 +25,12 @@ import BuilderBackend from "@/components/BuilderBackend";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { whatsappLink } from "@/config/site";
 
 const suggestions = [
@@ -44,6 +49,8 @@ export default function AIStudioPage() {
     [prompt, setPrompt] = useState(""),
     [kind, setKind] = useState<"site" | "system">("site");
   const [balance, setBalance] = useState(0),
+    [walletLoading, setWalletLoading] = useState(true),
+    [walletAvailable, setWalletAvailable] = useState(false),
     [busy, setBusy] = useState(false),
     [notice, setNotice] = useState(""),
     [mobile, setMobile] = useState(false),
@@ -56,36 +63,60 @@ export default function AIStudioPage() {
     [password, setPassword] = useState(""),
     [authBusy, setAuthBusy] = useState(false),
     [recovery, setRecovery] = useState(false);
+  const walletOwner = useRef<string | null>(null);
   const refresh = useCallback(async () => {
-    if (!user) return;
-    const [p, w] = await Promise.all([
-      builderDb
-        .from("builder_projects")
-        .select("*")
-        .order("created_at", { ascending: false }),
-      builderDb
-        .from("builder_wallets")
-        .select("balance")
-        .eq("user_id", user.id)
-        .maybeSingle(),
-    ]);
-    if (p.error) {
-      setNotice(
-        "O serviço ainda precisa da instalação do banco da WH Studio AI.",
-      );
+    if (!user) {
+      walletOwner.current = null;
+      setWalletAvailable(false);
+      setWalletLoading(false);
       return;
     }
-    setProjects(p.data || []);
-    setBalance(w.data?.balance || 0);
-    if (id) {
-      const { data, error } = await builderDb
-        .from("builder_generations")
-        .select("*")
-        .eq("project_id", id)
-        .order("created_at", { ascending: false });
-      if (error) setNotice("Não foi possível carregar as versões.");
-      else setVersions(data || []);
-    } else setVersions([]);
+    const firstLoadForUser = walletOwner.current !== user.id;
+    if (firstLoadForUser) {
+      setWalletAvailable(false);
+      setWalletLoading(true);
+    }
+    try {
+      const [p, w] = await Promise.all([
+        builderDb
+          .from("builder_projects")
+          .select("*")
+          .order("created_at", { ascending: false }),
+        builderDb
+          .from("builder_wallets")
+          .select("balance")
+          .eq("user_id", user.id)
+          .maybeSingle(),
+      ]);
+      if (p.error) {
+        setWalletAvailable(false);
+        setNotice("O serviço ainda precisa da instalação do banco da WH Studio AI.");
+        return;
+      }
+      if (w.error) {
+        setWalletAvailable(false);
+        setNotice("Não foi possível consultar seu saldo de créditos.");
+        return;
+      }
+      setProjects(p.data || []);
+      setBalance(w.data?.balance || 0);
+      walletOwner.current = user.id;
+      setWalletAvailable(true);
+      if (id) {
+        const { data, error } = await builderDb
+          .from("builder_generations")
+          .select("*")
+          .eq("project_id", id)
+          .order("created_at", { ascending: false });
+        if (error) setNotice("Não foi possível carregar as versões.");
+        else setVersions(data || []);
+      } else setVersions([]);
+    } catch {
+      setWalletAvailable(false);
+      setNotice("Não foi possível carregar seus projetos agora. Tente novamente.");
+    } finally {
+      if (firstLoadForUser) setWalletLoading(false);
+    }
   }, [user, id]);
   useEffect(() => {
     supabase.auth
@@ -108,8 +139,16 @@ export default function AIStudioPage() {
       setProjects([]);
       setVersions([]);
       setBalance(0);
+      setWalletAvailable(false);
+      setWalletLoading(false);
     }
   }, [user]);
+  useEffect(() => {
+    setSelected("");
+    setPreviewError(null);
+    setCode(false);
+    setBackend(false);
+  }, [id]);
   useEffect(() => {
     if (!versions.some((v) => v.status === "pending")) return;
     const timer = setInterval(() => void refresh(), 4000);
@@ -166,16 +205,18 @@ export default function AIStudioPage() {
   async function signInWithGoogle() {
     setAuthBusy(true);
     setNotice("");
-    const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: `${location.origin}/ai`,
-    });
-    if (result.error) {
-      setNotice(result.error.message || "Não foi possível entrar com o Google.");
-      setAuthBusy(false);
-      return;
-    }
-    if (!result.redirected) {
-      setLogin(false);
+    try {
+      const result = await lovable.auth.signInWithOAuth("google", {
+        redirect_uri: `${location.origin}/ai`,
+      });
+      if (result.error) {
+        setNotice(result.error.message || "Não foi possível entrar com o Google.");
+      } else if (!result.redirected) {
+        setLogin(false);
+      }
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Não foi possível entrar com o Google.");
+    } finally {
       setAuthBusy(false);
     }
   }
@@ -189,6 +230,14 @@ export default function AIStudioPage() {
       setNotice(
         "Conte um pouco mais sobre seu projeto (mínimo de 10 caracteres).",
       );
+      return;
+    }
+    if (!walletAvailable) {
+      setNotice("Não foi possível consultar seu saldo. Atualize a página e tente novamente.");
+      return;
+    }
+    if (balance < 1) {
+      setNotice("Você está sem créditos. Escolha um pacote no topo para continuar.");
       return;
     }
     setBusy(true);
@@ -219,16 +268,24 @@ export default function AIStudioPage() {
           ...v.filter((x) => x.id !== response.generation!.id),
         ]);
         setSelected(response.generation.id);
+        setPreviewError(null);
       }
       setPrompt("");
-      const { data: wallet } = await builderDb
+      const { data: wallet, error: walletError } = await builderDb
         .from("builder_wallets")
         .select("balance")
         .eq("user_id", user.id)
         .maybeSingle();
-      setBalance(wallet?.balance || 0);
+      if (walletError) {
+        setWalletAvailable(false);
+        setNotice("Versão criada, mas não foi possível atualizar seu saldo. Atualize para conferir.");
+      } else {
+        setBalance(wallet?.balance || 0);
+        setWalletAvailable(true);
+      }
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "A geração falhou.");
+      void refresh();
     } finally {
       setBusy(false);
     }
@@ -236,9 +293,14 @@ export default function AIStudioPage() {
   async function saveFiles(artifact: NonNullable<Generation["artifact"]>) {
     if (!id) return;
     const response = await builderRequest({ action: "save", projectId: id, artifact });
+    if (response.generation?.status === "error") {
+      throw new Error(response.generation.error || "Não foi possível salvar esta versão.");
+    }
+    if (!response.generation) throw new Error("O servidor não confirmou o salvamento.");
     if (response.generation) {
       setVersions((v) => [response.generation!, ...v]);
       setSelected(response.generation.id);
+      setPreviewError(null);
     }
   }
   function fixWithAI() {
@@ -289,15 +351,17 @@ export default function AIStudioPage() {
   }
   return (
     <div className="min-h-screen bg-[#0b0d12] text-slate-100">
-      <header className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 px-5 py-4">
+      <header className="sticky top-0 z-40 flex flex-wrap items-center justify-between gap-3 border-b border-white/10 bg-[#0b0d12]/95 px-4 py-3 backdrop-blur-xl sm:px-5 sm:py-4">
         <Link to="/" className="font-display text-xl font-bold tracking-tight">
           WH<span className="text-blue-400">.</span>{" "}
           <span className="text-sm font-normal text-slate-400">
             STUDIO AI / BETA
           </span>
         </Link>
-        <div className="flex flex-wrap items-center gap-3 text-sm">
-          <span className="text-slate-400">{balance} créditos</span>
+        <div className="flex flex-wrap items-center gap-2 text-sm sm:gap-3">
+          <span className="rounded-full border border-blue-400/20 bg-blue-400/10 px-3 py-1.5 text-blue-200" aria-live="polite">
+            {!user ? "Entre para salvar projetos" : walletLoading && !walletAvailable ? "Carregando saldo…" : walletAvailable ? `${balance} créditos` : "Saldo indisponível"}
+          </span>
           <select
             aria-label="Comprar créditos"
             className="h-10 rounded-md border border-white/15 bg-transparent px-3 text-sm"
@@ -318,7 +382,7 @@ export default function AIStudioPage() {
           </Button>
         </div>
       </header>
-      {notice && (
+      {notice && !login && (
         <div
           role="status"
           className="flex justify-between gap-4 border-b border-blue-500/30 bg-blue-500/10 p-4 text-sm"
@@ -339,7 +403,7 @@ export default function AIStudioPage() {
         </p>
       )}
       <main className="grid min-h-[calc(100vh-81px)] lg:grid-cols-[370px_1fr]">
-        <aside className="flex flex-col border-r border-white/10 p-5">
+        <aside className="flex min-h-[620px] flex-col border-b border-white/10 p-4 sm:p-5 lg:border-b-0 lg:border-r">
           <div className="flex items-center justify-between">
             <h1 className="font-display text-2xl">
               Da ideia à primeira versão.
@@ -396,7 +460,7 @@ export default function AIStudioPage() {
               </select>
             </label>
           )}
-          <div className="max-h-[340px] flex-1 space-y-3 overflow-y-auto py-4">
+          <div className="max-h-[340px] flex-1 space-y-3 overflow-y-auto py-4" aria-label="Histórico e sugestões">
             {versions.length
               ? [...versions].reverse().map((v) => (
                   <div
@@ -413,8 +477,12 @@ export default function AIStudioPage() {
                     </p>
                     {v.status === "complete" && (
                       <button
-                        className="mt-2 text-xs underline"
-                        onClick={() => setSelected(v.id)}
+                        className="mt-2 rounded text-xs text-blue-300 underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
+                        aria-current={selected === v.id ? "true" : undefined}
+                        onClick={() => {
+                          setSelected(v.id);
+                          setPreviewError(null);
+                        }}
                       >
                         Ver esta versão
                       </button>
@@ -438,8 +506,15 @@ export default function AIStudioPage() {
                   </button>
                 ))}
           </div>
-          <div className="mt-5 rounded-xl border border-white/15 bg-white/[.03] p-3">
+          <form
+            className="mt-5 rounded-xl border border-white/15 bg-white/[.03] p-3"
+            onSubmit={(event) => {
+              event.preventDefault();
+              void generate();
+            }}
+          >
             <Textarea
+              id="ai-project-prompt"
               aria-label="Descreva seu projeto"
               placeholder={
                 current
@@ -449,20 +524,31 @@ export default function AIStudioPage() {
               value={prompt}
               maxLength={6000}
               onChange={(e) => setPrompt(e.target.value)}
+              onKeyDown={(event) => {
+                if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
+                  event.preventDefault();
+                  void generate();
+                }
+              }}
               className="min-h-[110px] resize-none border-0 bg-transparent shadow-none focus-visible:ring-0"
             />
             <div className="flex items-center justify-between text-xs text-slate-500">
               <span>{prompt.length}/6000 · 1 crédito por versão</span>
               <Button
-                size="icon"
-                aria-label="Gerar projeto"
-                disabled={pending}
-                onClick={() => void generate()}
+                type="submit"
+                className="min-w-[116px]"
+                disabled={pending || prompt.trim().length < 10 || (Boolean(user) && (!walletAvailable || balance < 1))}
               >
-                {pending ? <Loader2 className="animate-spin" /> : <ArrowUp />}
+                {pending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Criando</> : <><Sparkles className="mr-2 h-4 w-4" />Gerar versão</>}
               </Button>
             </div>
-          </div>
+            <p className="mt-2 text-right text-[11px] text-slate-500">Atalho: Ctrl + Enter</p>
+          </form>
+          {user && walletAvailable && balance < 1 && (
+            <p role="status" className="mt-3 rounded-lg border border-amber-300/20 bg-amber-300/[.06] p-3 text-xs leading-relaxed text-amber-100">
+              Seu saldo está zerado. Escolha um pacote de créditos no topo para gerar uma nova versão.
+            </p>
+          )}
           <p className="mt-3 text-xs leading-relaxed text-slate-500">
             Projeto React + TypeScript com arquivos separados. Sistemas podem
             usar banco e login reais pelo Supabase conectado. Sua descrição e
@@ -482,6 +568,7 @@ export default function AIStudioPage() {
               <Button
                 size="sm"
                 variant={!code && !backend ? "default" : "ghost"}
+                aria-pressed={!code && !backend}
                 onClick={() => {
                   setCode(false);
                   setBackend(false);
@@ -492,6 +579,7 @@ export default function AIStudioPage() {
               <Button
                 size="sm"
                 variant={code ? "default" : "ghost"}
+                aria-pressed={code}
                 onClick={() => {
                   setCode(true);
                   setBackend(false);
@@ -503,6 +591,7 @@ export default function AIStudioPage() {
               <Button
                 size="sm"
                 variant={backend ? "default" : "ghost"}
+                aria-pressed={backend}
                 onClick={() => {
                   setBackend(true);
                   setCode(false);
@@ -516,6 +605,7 @@ export default function AIStudioPage() {
                 size="icon"
                 variant={!mobile ? "secondary" : "ghost"}
                 aria-label="Prévia computador"
+                aria-pressed={!mobile}
                 onClick={() => setMobile(false)}
               >
                 <Monitor size={17} />
@@ -524,6 +614,7 @@ export default function AIStudioPage() {
                 size="icon"
                 variant={mobile ? "secondary" : "ghost"}
                 aria-label="Prévia celular"
+                aria-pressed={mobile}
                 onClick={() => setMobile(true)}
               >
                 <Smartphone size={17} />
@@ -542,7 +633,13 @@ export default function AIStudioPage() {
               </Button>
             </div>
           </div>
-          <div className="grid min-h-[650px] place-items-center overflow-hidden rounded-2xl border border-white/10 bg-[#11151d]">
+          {pending && (
+            <div className="mb-3 flex items-center gap-3 rounded-xl border border-blue-400/20 bg-blue-400/[.07] px-4 py-3 text-sm text-blue-100" role="status">
+              <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+              <span>Preparando sua versão. Você pode acompanhar o progresso no histórico.</span>
+            </div>
+          )}
+          <div className="grid min-h-[420px] place-items-center overflow-hidden rounded-2xl border border-white/10 bg-[#11151d] sm:min-h-[650px]">
             {current?.artifact?.files ? (
               backend ? (
                 <BuilderBackend
@@ -575,10 +672,11 @@ export default function AIStudioPage() {
                   código organizado. Conecte o backend para usar autenticação e
                   dados persistentes.
                 </p>
-                <p className="mt-6 text-xs text-slate-500">
-                  Geração real depende da ativação do serviço. Nenhum resultado
-                  é simulado.
-                </p>
+                  {!user ? (
+                    <Button className="mt-6" onClick={() => setLogin(true)}>Entrar para começar</Button>
+                  ) : !current ? (
+                    <p className="mt-6 text-xs text-slate-500">Escreva sua ideia à esquerda para gerar uma prévia real. Nenhum resultado é simulado.</p>
+                  ) : null}
               </div>
             )}
           </div>
@@ -586,7 +684,7 @@ export default function AIStudioPage() {
             <div role="alert" className="mt-4 rounded-xl border border-red-400/30 p-4 text-sm text-red-200">
               <p className="mb-2 font-medium">A prévia encontrou um erro</p>
               <pre className="max-h-40 overflow-auto whitespace-pre-wrap font-mono text-xs">{previewError}</pre>
-              <Button size="sm" className="mt-3" disabled={pending} onClick={fixWithAI}>
+              <Button size="sm" className="mt-3" disabled={pending || (Boolean(user) && (!walletAvailable || balance < 1))} onClick={fixWithAI}>
                 Corrigir com IA (1 crédito)
               </Button>
             </div>
@@ -604,29 +702,19 @@ export default function AIStudioPage() {
         </section>
       </main>
       {login && (
-        <div className="fixed inset-0 z-[100] grid place-items-center bg-black/80 p-4">
-          <form
-            onSubmit={authenticate}
-            className="relative w-full max-w-md rounded-2xl border border-white/10 bg-[#11151d] p-7"
-          >
-            <button
-              type="button"
-              aria-label="Fechar login"
-              onClick={() => setLogin(false)}
-              className="absolute right-4 top-4"
-            >
-              <X size={18} />
-            </button>
-            <h2 className="font-display text-2xl">
-              {recovery
-                ? "Nova senha"
-                : signup
-                  ? "Sua conta WH Studio AI"
-                  : "Entre para criar"}
-            </h2>
-            <p className="my-4 text-sm text-slate-400">
-              Projetos e versões ficam vinculados à sua conta.
-            </p>
+        <Dialog open={login} onOpenChange={setLogin}>
+          <DialogContent closeLabel="Fechar janela" className="max-h-[90dvh] max-w-md overflow-y-auto border-white/10 bg-[#11151d] p-7 text-slate-100 sm:rounded-2xl">
+            <form onSubmit={authenticate} className="space-y-1">
+              <DialogTitle className="pr-8 font-display text-2xl text-slate-100">
+                {recovery
+                  ? "Nova senha"
+                  : signup
+                    ? "Sua conta WH Studio AI"
+                    : "Entre para criar"}
+              </DialogTitle>
+              <DialogDescription className="my-4 text-sm text-slate-400">
+                Projetos e versões ficam vinculados à sua conta.
+              </DialogDescription>
             {!recovery && (
               <>
                 <Button
@@ -724,8 +812,9 @@ export default function AIStudioPage() {
                 </button>
               </>
             )}
-          </form>
-        </div>
+            </form>
+          </DialogContent>
+        </Dialog>
       )}
     </div>
   );

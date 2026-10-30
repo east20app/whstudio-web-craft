@@ -83,11 +83,14 @@ const Contact = () => {
         message: fullMessage,
       });
       if (error) throw error;
+
       requestQuote({
         subject: result.data.project?.trim() ? result.data.project : "Assunto geral",
         prefill: fullMessage,
+        name: result.data.name,
+        email: result.data.email,
       });
-      toast.success("Mensagem registrada! Continue a conversa na central de atendimento.");
+      toast.success("Mensagem registrada. Seus dados já estão preenchidos no atendimento.");
       setData(initialState);
     } catch {
       toast.error("Não foi possível enviar agora. Tente novamente ou entre em contato pelo WhatsApp.");
@@ -243,12 +246,12 @@ const Contact = () => {
             </div>
 
             <Button type="submit" className="h-12 px-7" disabled={sending} aria-busy={sending}>
-              {sending ? "Enviando…" : "Enviar e abrir atendimento"}
+              {sending ? "Enviando…" : "Enviar e continuar para atendimento"}
               {sending ? <Loader2 className="ml-1.5 h-4 w-4 animate-spin" aria-hidden="true" /> : <ArrowUpRight className="ml-1.5 h-4 w-4" aria-hidden="true" />}
             </Button>
             <p className="text-xs text-muted-foreground">
-              Ao enviar, você abre uma conversa na central de atendimento — pode
-              continuar de onde paramos.
+              Seus dados e mensagem serão levados para a central de atendimento,
+              onde você confirma a abertura da conversa.
             </p>
           </form>
         </div>

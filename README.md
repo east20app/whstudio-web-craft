@@ -1,26 +1,24 @@
-# WH Studio Sites
+# WH Studio
 
-CRIE UM SITE PARA MINHA EMPRESA DE DESEVOLVEMONTO DE SITE PARA EMPRESAS E TIPO PREFEITURA E PARA LOJAS E RESTAURATES E LACHUNETES E TUDO QUE FOR DE SITE EU CRIO ELA SE CHAMA DE WH STUDIO
+Site institucional da WH Studio, com páginas públicas para serviços, sistemas, portfólio, orçamento e contato, além de uma área privada para clientes e equipe.
 
-This project was built with [Lovable](https://lovable.dev).
+## Desenvolvimento local
 
-**Live app**: https://whstudio-web-craft.lovable.app
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/37fa1869-d8ee-4d08-8fdd-0f614a7a53bf).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+Requisitos: Node.js e npm.
 
 ```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
+npm install
 npm run dev
 ```
+
+## Comandos
+
+```sh
+npm run build
+npm run lint
+npm test
+```
+
+## Configuração
+
+As integrações públicas usam as variáveis `VITE_SUPABASE_URL` e `VITE_SUPABASE_PUBLISHABLE_KEY`. Segredos de provedores e pagamentos devem ficar apenas nas configurações das Supabase Edge Functions. Consulte [docs/wh-studio-ai.md](docs/wh-studio-ai.md) para configurar a área WH Studio AI e o backend dos projetos gerados.

@@ -19,7 +19,7 @@ import {
   type TicketMessage,
 } from "@/lib/tickets";
 
-type OpenOptions = { subject?: string; prefill?: string };
+type OpenOptions = { subject?: string; prefill?: string; name?: string; email?: string };
 
 type Ctx = {
   /** Abre a central de atendimento com o assunto já preenchido. */
@@ -97,7 +97,14 @@ export const TicketChatProvider = ({ children }: { children: React.ReactNode }) 
   const subjectRef = useRef<string>("Assunto geral");
 
   const requestQuote = useCallback((options?: OpenOptions) => {
-    if (options?.prefill) setForm((f) => ({ ...f, message: f.message || options.prefill! }));
+    if (options) {
+      setForm((f) => ({
+        ...f,
+        name: options.name ?? f.name,
+        email: options.email ?? f.email,
+        message: options.prefill ?? f.message,
+      }));
+    }
     subjectRef.current = options?.subject ?? subjectRef.current;
     setOpen(true);
   }, []);
