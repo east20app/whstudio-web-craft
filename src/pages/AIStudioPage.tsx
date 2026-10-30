@@ -38,6 +38,13 @@ const suggestions = [
   "Um sistema de tarefas com cadastro, filtros e status",
   "Um painel de estoque com produtos e alertas",
 ];
+const dateLabel = (value: string) =>
+  new Intl.DateTimeFormat("pt-BR", {
+    day: "2-digit",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(value));
 const BuilderPreview = lazy(() => import("@/components/BuilderPreview"));
 export default function AIStudioPage() {
   const { id } = useParams();
@@ -253,16 +260,24 @@ export default function AIStudioPage() {
         if (error)
           throw new Error("O banco da WH Studio AI ainda precisa ser ativado.");
         projectId = data.id;
+        setProjects((items) => [data, ...items.filter((project) => project.id !== data.id)]);
         navigate(`/ai/projetos/${projectId}`);
       }
       const response = await builderRequest({
         projectId,
         requestId: crypto.randomUUID(),
         prompt: text,
+        ...(current ? { baseGenerationId: current.id } : {}),
       });
       if (response.generation?.status === "error")
         throw new Error(response.generation.error || "A geração falhou.");
       if (response.generation) {
+        const generatedTitle = response.generation.artifact?.title;
+        if (generatedTitle) {
+          setProjects((items) => items.map((project) =>
+            project.id === projectId ? { ...project, title: generatedTitle } : project,
+          ));
+        }
         setVersions((v) => [
           response.generation!,
           ...v.filter((x) => x.id !== response.generation!.id),
@@ -461,35 +476,47 @@ export default function AIStudioPage() {
             </label>
           )}
           <div className="max-h-[340px] flex-1 space-y-3 overflow-y-auto py-4" aria-label="Histórico e sugestões">
-            {versions.length
-              ? [...versions].reverse().map((v) => (
-                  <div
-                    className="rounded-xl border border-white/10 p-3 text-sm"
-                    key={v.id}
-                  >
-                    <p className="text-slate-300">{v.prompt}</p>
-                    <p className="mt-2 text-xs text-blue-300">
-                      {v.status === "pending"
-                        ? "Criando…"
-                        : v.status === "error"
-                          ? v.error
-                          : v.artifact?.summary}
-                    </p>
-                    {v.status === "complete" && (
-                      <button
-                        className="mt-2 rounded text-xs text-blue-300 underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
-                        aria-current={selected === v.id ? "true" : undefined}
-                        onClick={() => {
-                          setSelected(v.id);
-                          setPreviewError(null);
-                        }}
-                      >
-                        Ver esta versão
-                      </button>
-                    )}
-                  </div>
-                ))
-              : suggestions.map((s) => (
+            {versions.length ? (
+              <>
+                <p className="eyebrow px-1">Conversa do projeto</p>
+                {[...versions].reverse().map((v) => {
+                  const viewing = current?.id === v.id;
+                  return (
+                    <article
+                      className={`rounded-xl border p-3 text-sm ${viewing ? "border-blue-400/40 bg-blue-400/[.06]" : "border-white/10"}`}
+                      key={v.id}
+                    >
+                      <div className="mb-2 flex items-center justify-between gap-2">
+                        <span className="font-mono text-[10px] uppercase tracking-wider text-slate-500">Você</span>
+                        <time className="text-[10px] text-slate-500" dateTime={v.created_at}>{dateLabel(v.created_at)}</time>
+                      </div>
+                      <p className="break-words text-slate-200">{v.prompt}</p>
+                      <div className="mt-3 flex items-center gap-2 border-t border-white/10 pt-3">
+                        <Sparkles className="h-3.5 w-3.5 shrink-0 text-blue-300" aria-hidden="true" />
+                        <span className="font-mono text-[10px] uppercase tracking-wider text-blue-200">WH Studio AI</span>
+                        <span className={`ml-auto text-[10px] ${v.status === "error" ? "text-red-300" : v.status === "pending" ? "text-amber-200" : "text-emerald-300"}`} role="status">
+                          {v.status === "pending" ? "Criando…" : v.status === "error" ? "Não concluída" : viewing ? "Versão aberta" : "Concluída"}
+                        </span>
+                      </div>
+                      <p className={`mt-2 break-words text-xs leading-relaxed ${v.status === "error" ? "text-red-200" : "text-slate-400"}`}>
+                        {v.status === "pending" ? "A IA está trabalhando nesta versão." : v.status === "error" ? v.error : v.artifact?.summary}
+                      </p>
+                      {v.status === "complete" && !viewing && (
+                        <button
+                          className="mt-2 rounded text-xs text-blue-300 underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
+                          onClick={() => {
+                            setSelected(v.id);
+                            setPreviewError(null);
+                          }}
+                        >
+                          Abrir esta versão
+                        </button>
+                      )}
+                    </article>
+                  );
+                })}
+              </>
+            ) : suggestions.map((s) => (
                   <button
                     key={s}
                     onClick={() => {

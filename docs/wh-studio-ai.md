@@ -1,6 +1,8 @@
 # WH Studio AI — primeira versão
 
-Rota `/ai`. Conta de cliente Supabase, projetos privados por RLS, geração real pela API Responses, alterações a partir da última versão, histórico, prévia React compilada pelo Sandpack e download ZIP do projeto Vite + React + TypeScript com múltiplos arquivos. Sistemas podem incluir autenticação, CRUD e PostgreSQL pelo Supabase, com migrações SQL e Edge Functions geradas. Não há provisionamento automático de banco, aplicação automática de SQL nem publicação automática. Não prometer equivalência completa com Lovable/v0.
+Rota `/ai`. Conta de cliente Supabase, projetos privados por RLS, geração real por OpenAI ou Gemini, alterações conversacionais a partir da versão aberta, histórico, prévia React compilada pelo Sandpack, edição manual de arquivos versionada e download ZIP do projeto Vite + React + TypeScript. Sistemas podem incluir autenticação, CRUD e PostgreSQL pelo Supabase, com migrações SQL e Edge Functions geradas.
+
+A experiência cobre o ciclo de criação, revisão e exportação. Ela não provisiona bancos, aplica SQL, conecta repositórios GitHub nem publica em hospedagem automaticamente. Essas ações exigem integração e credenciais próprias do cliente; o código gerado e as migrações ainda precisam de revisão antes de produção.
 
 ## Ativar o serviço
 

@@ -10,15 +10,11 @@ const allowed = (o: string) =>
   /^https:\/\/[a-z0-9-]+\.lovable\.app$/.test(o) ||
   /^https:\/\/[a-z0-9-]+\.lovableproject\.com$/.test(o) ||
   /^http:\/\/localhost:\d+$/.test(o);
-let origin = "";
-let headers: Record<string, string> = {};
 const PACKAGES: Record<string, { credits: number; amount: number; name: string }> = {
   inicial: { credits: 5, amount: 1000, name: "Inicial" },
   criador: { credits: 15, amount: 2500, name: "Criador" },
   pro: { credits: 40, amount: 5900, name: "Pro" },
 };
-const respond = (data: unknown, status = 200) =>
-  new Response(JSON.stringify(data), { status, headers });
 const schema = {
   type: "object",
   additionalProperties: false,
@@ -43,13 +39,15 @@ Para sistemas que precisam persistência, autenticação ou dados compartilhados
 
 Deno.serve(async (req: Request) => {
   const reqOrigin = req.headers.get("origin") || "";
-  origin = allowed(reqOrigin) ? reqOrigin : "";
-  headers = {
+  const origin = allowed(reqOrigin) ? reqOrigin : "";
+  const headers: Record<string, string> = {
     "Access-Control-Allow-Origin": origin || "null",
     "Access-Control-Allow-Headers":
       "authorization, apikey, content-type, x-client-info, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
     "Content-Type": "application/json",
   };
+  const respond = (data: unknown, status = 200) =>
+    new Response(JSON.stringify(data), { status, headers });
   if (req.method === "OPTIONS") return new Response(null, { headers });
   if (req.method !== "POST") return respond({ error: "Método inválido" }, 405);
   if (!origin) return respond({ error: "Origem indisponível" }, 403);
@@ -170,7 +168,8 @@ Deno.serve(async (req: Request) => {
       body.prompt.trim().length < 10 ||
       body.prompt.length > 6000 ||
       !uuid.test(body.projectId) ||
-      !uuid.test(body.requestId)
+      !uuid.test(body.requestId) ||
+      (body.baseGenerationId !== undefined && !uuid.test(body.baseGenerationId))
     )
       return respond(
         { error: "Descreva o projeto em 10 a 6.000 caracteres" },
@@ -183,6 +182,29 @@ Deno.serve(async (req: Request) => {
       .eq("user_id", user.id)
       .single();
     if (projectError) return respond({ error: "Projeto indisponível" }, 404);
+    let previousArtifact: unknown = null;
+    if (body.baseGenerationId) {
+      const { data: base, error: baseError } = await db
+        .from("builder_generations")
+        .select("artifact")
+        .eq("id", body.baseGenerationId)
+        .eq("project_id", project.id)
+        .eq("status", "complete")
+        .maybeSingle();
+      if (baseError || !base)
+        return respond({ error: "A versão escolhida não está disponível neste projeto." }, 404);
+      previousArtifact = base.artifact;
+    } else {
+      const { data: previous } = await db
+        .from("builder_generations")
+        .select("artifact")
+        .eq("project_id", project.id)
+        .eq("status", "complete")
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      previousArtifact = previous?.artifact || null;
+    }
     const { data: job, error } = await db.rpc("builder_reserve", {
       uid: user.id,
       pid: project.id,
@@ -206,21 +228,13 @@ Deno.serve(async (req: Request) => {
     }
     if (!claim?.length) return respond({ generation: job });
     reserved = job.id;
-    const { data: previous } = await db
-      .from("builder_generations")
-      .select("artifact")
-      .eq("project_id", project.id)
-      .eq("status", "complete")
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .maybeSingle();
     const result = await generateProject(
       config,
       instructions,
       JSON.stringify({
         kind: project.kind,
         request: body.prompt,
-        previous: previous?.artifact || null,
+        previous: previousArtifact,
       }),
       schema,
     );
@@ -242,6 +256,11 @@ Deno.serve(async (req: Request) => {
       used_tokens: result.tokens,
     });
     if (saveError) throw new Error("Não foi possível salvar a geração.");
+    await db
+      .from("builder_projects")
+      .update({ title: artifact.title })
+      .eq("id", project.id)
+      .eq("user_id", user.id);
     return respond({ generation: { ...job, status: "complete", artifact } });
   } catch (error) {
     const message = checkout
