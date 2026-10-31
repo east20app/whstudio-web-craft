@@ -8,7 +8,9 @@ export function modelConfig(env: (key: string) => string): ModelConfig | null {
     env("WH_AI_PROVIDER") || (env("GEMINI_API_KEY") ? "gemini" : "openai");
   if (provider !== "gemini" && provider !== "openai") return null;
   const key = env(provider === "gemini" ? "GEMINI_API_KEY" : "OPENAI_API_KEY");
-  const model = env(provider === "gemini" ? "GEMINI_MODEL" : "OPENAI_MODEL");
+  const model =
+    env(provider === "gemini" ? "GEMINI_MODEL" : "OPENAI_MODEL") ||
+    (provider === "openai" ? "gpt-6.1-sol" : "");
   if (!key || !/^[a-zA-Z0-9._-]+$/.test(model)) return null;
   return { provider, key, model };
 }
