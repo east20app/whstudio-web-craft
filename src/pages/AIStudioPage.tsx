@@ -44,9 +44,24 @@ import {
 import { whatsappLink } from "@/config/site";
 
 const suggestions = [
-  "Um site para minha cafeteria, com cardápio e contato",
-  "Um sistema de tarefas com cadastro, filtros e status",
-  "Um painel de estoque com produtos e alertas",
+  {
+    title: "Site para cafeteria",
+    detail: "Cardápio, localização e contato",
+    prompt: "Crie um site responsivo para uma cafeteria, com cardápio, endereço, horário de funcionamento e botão de contato.",
+    kind: "site" as const,
+  },
+  {
+    title: "Gestão de tarefas",
+    detail: "Cadastro, filtros e status",
+    prompt: "Crie um sistema de tarefas com cadastro, responsáveis, filtros por status e uma tela de acompanhamento.",
+    kind: "system" as const,
+  },
+  {
+    title: "Controle de estoque",
+    detail: "Produtos, quantidades e alertas",
+    prompt: "Crie um painel de estoque com cadastro de produtos, busca, quantidade disponível e alertas de reposição.",
+    kind: "system" as const,
+  },
 ];
 const dateLabel = (value: string) =>
   new Intl.DateTimeFormat("pt-BR", {
@@ -444,13 +459,11 @@ export default function AIStudioPage() {
         </p>
       )}
       <main className="grid min-h-[calc(100dvh-68px)] grid-cols-1 min-[640px]:grid-cols-[minmax(250px,0.38fr)_minmax(0,0.62fr)] lg:grid-cols-[370px_minmax(0,1fr)]">
-        <aside className="flex min-h-[620px] flex-col border-b border-white/[.08] bg-[#0d1017] p-4 sm:p-5 min-[640px]:h-[calc(100dvh-68px)] min-[640px]:min-h-0 min-[640px]:max-h-[calc(100dvh-68px)] min-[640px]:overflow-y-auto lg:border-b-0 lg:border-r">
-          <div className="flex items-center justify-between">
+        <aside className="flex min-h-[620px] flex-col border-b border-white/[.08] bg-[#0d1017] p-4 sm:p-5 min-[640px]:h-[calc(100dvh-68px)] min-[640px]:min-h-0 min-[640px]:max-h-[calc(100dvh-68px)] min-[640px]:overflow-hidden lg:border-b-0 lg:border-r">
+          <div className="flex shrink-0 items-center justify-between gap-3">
             <div>
-              <p className="eyebrow mb-2 text-blue-300">Seu espaço de criação</p>
-              <h1 className="font-display text-2xl tracking-tight">
-                O que vamos criar?
-              </h1>
+              <p className="eyebrow mb-1.5 text-blue-300">WH Studio AI <span className="text-slate-600">/</span> novo projeto</p>
+              <h1 className="font-display text-[1.65rem] tracking-tight">Vamos criar juntos?</h1>
             </div>
             <Button
               size="icon"
@@ -467,17 +480,17 @@ export default function AIStudioPage() {
               <Plus />
             </Button>
           </div>
-          <p className="mt-3 max-w-sm text-sm leading-relaxed text-slate-400">
-            Conte sua ideia em linguagem natural. A IA cria o app com você; depois, refine o resultado no chat e veja cada mudança na prévia.
+          <p className="mt-2 max-w-sm shrink-0 text-[13px] leading-relaxed text-slate-400">
+            Descreva o que você precisa. A IA cria a primeira versão e você continua pedindo ajustes por aqui.
           </p>
           {!id && (
-            <div className="my-5 flex gap-2 rounded-xl border border-white/[.08] bg-white/[.025] p-1" role="group" aria-label="Tipo de projeto">
+            <div className="my-3 flex shrink-0 gap-1.5 rounded-xl border border-white/[.08] bg-[#090c12] p-1" role="group" aria-label="Tipo de projeto">
               {(["site", "system"] as const).map((k) => (
                 <Button
                   key={k}
                   variant={kind === k ? "default" : "outline"}
                   aria-pressed={kind === k}
-                  className="h-9 flex-1 rounded-lg"
+                  className={`h-9 flex-1 rounded-lg ${kind === k ? "shadow-[0_3px_14px_rgba(59,130,246,.22)]" : "border-transparent bg-transparent text-slate-400 hover:bg-white/[.05] hover:text-white"}`}
                   onClick={() => setKind(k)}
                 >
                   {k === "site" ? "Site" : "Sistema"}
@@ -486,7 +499,7 @@ export default function AIStudioPage() {
             </div>
           )}
           {projects.length > 0 && (
-            <label className="my-4 text-xs text-slate-400">
+            <label className="my-1 shrink-0 text-xs text-slate-400">
               Seus projetos
               <select
                 aria-label="Escolher projeto"
@@ -507,15 +520,15 @@ export default function AIStudioPage() {
               </select>
             </label>
           )}
-          <div className="max-h-[340px] flex-1 space-y-3 overflow-y-auto py-4" aria-label="Histórico e sugestões">
+          <div className="min-h-0 flex-1 space-y-2 overflow-y-auto py-3 [scrollbar-color:rgba(148,163,184,.25)_transparent] [scrollbar-width:thin]" aria-label="Histórico e sugestões">
             {versions.length ? (
               <>
-                <p className="eyebrow px-1">Conversa do projeto</p>
+                <p className="eyebrow sticky top-0 z-10 rounded-lg bg-[#0d1017]/95 px-2 py-2 backdrop-blur">Conversa do projeto</p>
                 {[...versions].reverse().map((v) => {
                   const viewing = current?.id === v.id;
                   return (
                     <article
-                      className={`rounded-xl border p-3 text-sm ${viewing ? "border-blue-400/40 bg-blue-400/[.06]" : "border-white/10"}`}
+                      className={`rounded-xl border p-3 text-sm ${viewing ? "border-blue-400/40 bg-blue-400/[.06]" : "border-white/10 bg-white/[.015]"}`}
                       key={v.id}
                     >
                       <div className="mb-2 flex items-center justify-between gap-2">
@@ -550,56 +563,52 @@ export default function AIStudioPage() {
               </>
             ) : (
               <>
-                <p className="eyebrow px-1">Ideias para começar</p>
+                <div className="flex items-end justify-between gap-3 px-1 pb-1">
+                  <div>
+                    <p className="eyebrow">Comece por uma ideia</p>
+                    <p className="mt-1 text-[11px] text-slate-500">Você pode editar antes de enviar.</p>
+                  </div>
+                  <Sparkles className="mb-1 h-4 w-4 text-blue-300" aria-hidden="true" />
+                </div>
                 {suggestions.map((s) => (
                   <button
-                    key={s}
+                    key={s.title}
                     onClick={() => {
-                      setPrompt(s);
-                      setKind(
-                        s.includes("sistema") || s.includes("painel")
-                          ? "system"
-                          : "site",
-                      );
+                      setPrompt(s.prompt);
+                      setKind(s.kind);
                     }}
-                    className="group flex w-full items-center gap-3 rounded-xl border border-white/[.08] bg-white/[.02] p-3 text-left text-sm text-slate-300 transition-colors hover:border-blue-400/40 hover:bg-blue-400/[.04]"
+                    className="group flex w-full items-center gap-3 rounded-xl border border-white/[.08] bg-white/[.02] px-3 py-2.5 text-left transition-colors hover:border-blue-400/40 hover:bg-blue-400/[.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
                   >
-                    <span className="flex-1">{s}</span>
-                    <Sparkles className="h-4 w-4 shrink-0 text-slate-500 transition-colors group-hover:text-blue-300" aria-hidden="true" />
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/[.08] bg-white/[.035] text-blue-300"><Sparkles className="h-4 w-4" aria-hidden="true" /></span>
+                    <span className="min-w-0 flex-1"><span className="block text-[13px] font-medium text-slate-200">{s.title}</span><span className="mt-0.5 block truncate text-[11px] text-slate-500">{s.detail}</span></span>
+                    <Plus className="h-4 w-4 shrink-0 text-slate-600 transition-colors group-hover:text-blue-300" aria-hidden="true" />
                   </button>
                 ))}
               </>
             )}
           </div>
-          {user && walletAvailable && balance < 1 && (
-            <div role="status" className="mb-3 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-amber-300/20 bg-amber-300/[.06] p-3 text-xs leading-relaxed text-amber-100">
-              <span>Sem créditos para gerar uma versão. Cada envio usa 1 crédito.</span>
-              <Button type="button" size="sm" className="h-8 rounded-lg" disabled={busy} onClick={() => void purchase("inicial")}>
-                Comprar 5 créditos · R$ 10
-              </Button>
-            </div>
-          )}
-          <details className="mb-3 rounded-xl border border-white/[.08] bg-white/[.02] px-3 py-2 text-xs text-slate-500">
-            <summary className="cursor-pointer select-none text-slate-400">Privacidade e uso de créditos</summary>
-            <p className="mt-2 leading-relaxed">Cada versão usa 1 crédito. Sua descrição e o código gerado são enviados ao provedor de IA e salvos na sua conta; não inclua dados sensíveis.</p>
-          </details>
-          <Button variant="outline" size="sm" className="mb-3 w-full rounded-xl border-white/10 text-slate-300" onClick={hireStudio}>
-            Precisa de ajuda da WH Studio?
-          </Button>
           <form
-            className="sticky bottom-0 z-20 mt-auto rounded-2xl border border-white/10 bg-[#11151d]/95 p-3 shadow-[0_-12px_30px_rgba(0,0,0,.2)] backdrop-blur-xl"
+            className="relative z-20 mt-auto shrink-0 rounded-2xl border border-white/[.12] bg-[#11151d] p-3 shadow-[0_12px_35px_rgba(0,0,0,.24)]"
             onSubmit={(event) => {
               event.preventDefault();
               void generate();
             }}
           >
+            {user && walletAvailable && balance < 1 && (
+              <div role="status" className="mb-2 flex items-center justify-between gap-2 rounded-lg border border-amber-300/20 bg-amber-300/[.06] px-2.5 py-2 text-[11px] text-amber-100">
+                <span>Sem créditos disponíveis</span>
+                <button type="button" disabled={busy} onClick={() => void purchase("inicial")} className="shrink-0 font-medium text-amber-200 underline underline-offset-2 hover:text-white disabled:opacity-50">Comprar créditos</button>
+              </div>
+            )}
             <Textarea
               id="ai-project-prompt"
               aria-label="Descreva seu projeto"
               placeholder={
                 current
-                  ? "O que vamos melhorar nesta versão?"
-                  : "Ex.: sistema de estoque com produtos, filtros e alerta de quantidade…"
+                  ? "Ex.: adicione uma página de preços com três planos…"
+                  : kind === "system"
+                    ? "Descreva o sistema, os dados que ele precisa guardar e as ações principais…"
+                    : "Descreva o site, as seções e o que as pessoas devem fazer nele…"
               }
               value={prompt}
               maxLength={6000}
@@ -610,19 +619,24 @@ export default function AIStudioPage() {
                   void generate();
                 }
               }}
-              className="min-h-[96px] resize-y border-0 bg-transparent shadow-none focus-visible:ring-0"
+              className="min-h-[82px] max-h-[30dvh] resize-y border-0 bg-transparent px-1 py-2 text-sm leading-relaxed shadow-none placeholder:text-slate-500 focus-visible:ring-0"
             />
-            <div className="flex items-center justify-between text-xs text-slate-500">
-              <span>{prompt.length}/6000 · 1 crédito por versão</span>
+            <div className="flex items-center justify-between gap-2 border-t border-white/[.07] pt-2 text-xs text-slate-500">
+              <span className="truncate" title="Sua descrição e o código gerado serão enviados ao serviço de IA. Evite incluir dados sensíveis.">{prompt.length}/6000 <span className="px-1 text-slate-700">·</span> 1 crédito · evite dados sensíveis</span>
               <Button
                 type="submit"
-                className="min-w-[116px]"
+                size="sm"
+                className="h-9 shrink-0 rounded-lg px-3"
                 disabled={pending || prompt.trim().length < 10 || (Boolean(user) && !walletAvailable)}
+                aria-label={pending ? "Criando versão" : "Enviar solicitação para gerar versão"}
               >
-                {pending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Criando</> : <><Sparkles className="mr-2 h-4 w-4" />Gerar versão</>}
+                {pending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Criando</> : <><Sparkles className="mr-1.5 h-4 w-4" />Gerar</>}
               </Button>
             </div>
-            <p className="mt-2 text-right text-[11px] text-slate-500">Atalho: Ctrl + Enter</p>
+            <div className="mt-2 flex items-center justify-between gap-2 text-[10px] text-slate-500">
+              <button type="button" onClick={hireStudio} className="truncate text-left transition-colors hover:text-blue-300">Prefere um projeto feito com a gente?</button>
+              <span className="shrink-0">Ctrl + Enter</span>
+            </div>
           </form>
         </aside>
         <section className="min-w-0 p-4 lg:p-6">
