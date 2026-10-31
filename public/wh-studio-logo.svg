@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 184 44" fill="none">
+  <path d="M4 11.5 10.7 31l7.1-16.4L24.4 31l7.1-19.5" stroke="#F8FAFC" stroke-width="5.2" stroke-linecap="square" stroke-linejoin="miter"/>
+  <path d="m42 7-9 31" stroke="#3CA2FA" stroke-width="5.2"/>
+  <path d="M47 13v17m15-17v17M47 21.5h15" stroke="#F8FAFC" stroke-width="4.4" stroke-linecap="square"/>
+  <text x="74" y="29" fill="#F8FAFC" font-family="Arial,sans-serif" font-size="22" font-weight="600" letter-spacing="-1.1">studio</text>
+</svg>

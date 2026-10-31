@@ -6,6 +6,7 @@ import { navLinks } from "@/config/site";
 import AvailabilityBanner from "@/components/AvailabilityBanner";
 import ThemeToggle from "@/components/ThemeToggle";
 import { useOrcamentoAction } from "@/components/tickets/TicketChat";
+import BrandLogo from "@/components/BrandLogo";
 
 const Header = () => {
   const [open, setOpen] = useState(false);
@@ -27,7 +28,7 @@ const Header = () => {
       <a href="#main-content" className="studio-skip">Pular para o conteúdo</a>
       <AvailabilityBanner />
       <div className="container flex h-20 items-center justify-between gap-4">
-        <Link to="/" onClick={() => setOpen(false)} className="studio-brand" aria-label="WH Studio — página inicial">wh<span className="text-primary">/</span><span className="studio-brand__suffix">studio</span></Link>
+        <Link to="/" onClick={() => setOpen(false)} className="studio-brand" aria-label="WH Studio — página inicial"><BrandLogo className="h-10 w-[156px]" /></Link>
         <nav className="hidden items-center gap-6 lg:flex" aria-label="Navegação principal">{links}</nav>
         <div className="flex items-center gap-3"><ThemeToggle /><Button onClick={start} className="hidden h-11 rounded-full px-5 lg:inline-flex">Iniciar projeto <ArrowUpRight className="h-4 w-4" aria-hidden="true" /></Button><button ref={toggle} type="button" className="grid h-11 w-11 place-items-center rounded-full border border-border lg:hidden" onClick={() => setOpen(!open)} aria-label={open ? "Fechar menu" : "Abrir menu"} aria-expanded={open} aria-controls="mobile-navigation">{open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}</button></div>
       </div>

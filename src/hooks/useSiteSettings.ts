@@ -33,7 +33,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   whatsappDisplay: "(84) 98876-6134",
   whatsappFull: "+55 (84) 98876-6134",
   discord: "https://discord.gg/whstudio",
-  email: "contato@whstudio.com.br",
+  email: "contato@whstudio.site",
   footerText: "Desenvolvimento de sites, sistemas e integrações para empresas.",
   authorName: "Walmry Netto",
   acceptingProjects: true,

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useMaintenanceMode } from "@/hooks/useMaintenanceMode";
 import { useAuth } from "@/dashboard/store";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
-import logo from "@/assets/wh-studio-logo.png";
+import BrandLogo from "@/components/BrandLogo";
 
 /**
  * Envolve as rotas públicas. Com o modo de manutenção ligado, visitantes não
@@ -27,7 +27,7 @@ const MaintenanceGate = ({ children }: { children: React.ReactNode }) => {
   return (
     <main className="min-h-screen grid place-items-center bg-background px-6 py-16">
       <div className="w-full max-w-lg text-center">
-        <img src={logo} alt={`${settings.siteName} — logo`} className="logo-invert h-14 mx-auto mb-10 object-contain" />
+        <BrandLogo className="mx-auto mb-10 h-14 w-56 text-foreground" />
 
         <div className="card-premium p-8 md:p-10">
           <span className="mx-auto mb-6 flex h-11 w-11 items-center justify-center border border-border bg-foreground/[0.03]">

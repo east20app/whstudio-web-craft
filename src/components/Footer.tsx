@@ -3,6 +3,7 @@ import { ArrowUpRight, Mail, MapPin, MessageCircle } from "lucide-react";
 import { navLinks } from "@/config/site";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { FooterBackgroundGradient, TextHoverEffect } from "@/components/ui/hover-footer";
+import BrandLogo from "@/components/BrandLogo";
 
 const Footer = () => {
   const settings = useSiteSettings();
@@ -16,7 +17,7 @@ const Footer = () => {
           <Link to="/orcamento" className="group flex min-h-14 items-center gap-6 rounded-full border border-white/25 px-6 text-sm transition-colors hover:border-[#3ca2fa] hover:bg-white/5">Conte sua ideia <ArrowUpRight className="h-5 w-5 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" aria-hidden="true" /></Link>
         </div>
         <div className="grid gap-10 md:grid-cols-12">
-          <div className="md:col-span-5"><Link to="/" className="studio-brand !text-white" aria-label="WH Studio — página inicial">wh<span className="text-[#3ca2fa]">/</span><span className="studio-brand__suffix">studio</span></Link><p className="mt-5 max-w-xs text-sm leading-relaxed text-white/60">{settings.footerText}</p></div>
+          <div className="md:col-span-5"><Link to="/" className="studio-brand !text-white" aria-label="WH Studio — página inicial"><BrandLogo className="h-10 w-[156px]" /></Link><p className="mt-5 max-w-xs text-sm leading-relaxed text-white/60">{settings.footerText}</p></div>
           <nav className="md:col-span-3" aria-label="Navegação do rodapé"><h3 className="mb-5 text-sm">WH Studio</h3><div className="flex flex-col items-start gap-2">{navLinks.map(link => <Link key={link.href} to={link.href} className="inline-flex min-h-8 items-center text-sm text-white/60 transition-colors hover:text-[#3ca2fa]">{link.label}</Link>)}</div></nav>
           <div className="md:col-span-4"><h3 className="mb-5 text-sm">Uma conversa, sem intermediários.</h3><div className="flex flex-col gap-4 text-sm text-white/60"><a className="flex items-center gap-3 transition-colors hover:text-[#3ca2fa]" href={`mailto:${settings.email}`}><Mail className="h-4 w-4 shrink-0 text-[#3ca2fa]" aria-hidden="true" /><span className="break-all">{settings.email}</span></a><a className="flex items-center gap-3 transition-colors hover:text-[#3ca2fa]" href={waLink} target="_blank" rel="noopener noreferrer"><MessageCircle className="h-4 w-4 text-[#3ca2fa]" aria-hidden="true" />{settings.whatsappDisplay}</a><p className="flex items-center gap-3"><MapPin className="h-4 w-4 text-[#3ca2fa]" aria-hidden="true" />Rio Grande do Norte · para todo o Brasil</p></div></div>
         </div>

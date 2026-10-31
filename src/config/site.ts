@@ -7,7 +7,7 @@ export const siteConfig = {
   description:
     "WH Studio — empresa de desenvolvimento de sites, sistemas personalizados e automações. Design, integração e suporte conforme seu projeto.",
   url: "https://whstudio.site",
-  email: "contato@whstudio.com.br",
+  email: "contato@whstudio.site",
   whatsapp: {
     number: "5584988766134",
     display: "(84) 98876-6134",

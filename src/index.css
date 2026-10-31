@@ -282,7 +282,7 @@ body:has(#lovable-badge-close) aside:has(#lovable-badge-close) {
 
 
 /* WH Studio: graphite surfaces, blue ink, purposeful typography. */
-.studio-brand { display: inline-flex; align-items: baseline; gap: 2px; color: hsl(var(--foreground)); font-family: 'Space Grotesk', sans-serif; font-size: 2.6rem; line-height: 1; font-weight: 700; letter-spacing: -.09em; }
+.studio-brand { display: inline-flex; align-items: center; gap: 2px; color: hsl(var(--foreground)); font-family: 'Space Grotesk', sans-serif; font-size: 2.6rem; line-height: 1; font-weight: 700; letter-spacing: -.09em; }
 .studio-brand__suffix { margin-left: 7px; font-size: 1.05rem; letter-spacing: -.04em; font-weight: 500; }
 .studio-nav-link { position: relative; padding: 12px 0; font-size: .8rem; color: hsl(var(--muted-foreground)); transition: color 160ms; }
 .studio-nav-link:hover, .studio-nav-link--active { color: hsl(var(--foreground)); }
@@ -290,14 +290,31 @@ body:has(#lovable-badge-close) aside:has(#lovable-badge-close) {
 .studio-skip { position: fixed; top: 8px; left: 16px; z-index: 100; padding: 12px 20px; border-radius: 8px; background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); transform: translateY(-200%); }
 .studio-skip:focus { transform: translateY(0); }
 .studio-headline { font-family: 'Space Grotesk', 'Inter', sans-serif; font-size: clamp(3.6rem, 7.8vw, 7.5rem); font-weight: 600; letter-spacing: -.075em; line-height: .99; }
-.studio-hero { background: hsl(var(--background)); }
-.hero-object { position: relative; min-height: 350px; align-self: center; color: hsl(var(--primary)); }
-.hero-object__ring { position: absolute; width: 330px; height: 330px; left: 50%; top: 50%; border: 1px solid hsl(var(--primary) / .5); border-radius: 50%; box-shadow: 0 0 30px hsl(var(--primary) / .07) inset; }
-.hero-object__ring--one { transform: translate(-50%, -50%) rotate(-25deg) scaleX(.52); }
-.hero-object__ring--two { transform: translate(-50%, -50%) rotate(35deg) scaleX(.52); }
-.hero-object__ring--three { transform: translate(-50%, -50%) rotate(95deg) scaleX(.52); }
-.hero-object__star { position: absolute; width: 220px; height: 220px; left: 50%; top: 50%; transform: translate(-50%, -50%); opacity: .9; }
-.hero-object__caption { position: absolute; bottom: -8px; left: 0; right: 0; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: .12em; color: hsl(var(--muted-foreground)); }
+.studio-hero { position: relative; isolation: isolate; overflow: hidden; background: radial-gradient(ellipse at 78% 44%, hsl(var(--primary) / .1), transparent 35%), hsl(var(--background)); }
+.studio-hero::before { position: absolute; z-index: -1; inset: 0; content: ''; opacity: .18; pointer-events: none; background-image: linear-gradient(hsl(var(--foreground) / .08) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--foreground) / .08) 1px, transparent 1px); background-size: 56px 56px; mask-image: linear-gradient(to bottom, black, transparent 80%); }
+.hero-object { position: relative; min-height: 370px; align-self: center; display: grid; place-items: center; }
+.hero-object__glow { position: absolute; inset: 8% -18%; border-radius: 50%; background: hsl(var(--primary) / .14); filter: blur(70px); }
+.hero-project-card { position: relative; width: min(100%, 360px); overflow: hidden; border: 1px solid hsl(var(--foreground) / .13); border-radius: 18px; background: #10141b; color: #f1f5f9; box-shadow: 0 35px 90px #0005, 0 0 60px hsl(var(--primary) / .1); transform: perspective(900px) rotateY(-8deg) rotateX(3deg); }
+.hero-project-card__bar { display: flex; align-items: center; gap: 10px; height: 42px; padding: 0 13px; border-bottom: 1px solid #ffffff12; color: #8a96a8; font: 9px 'JetBrains Mono', monospace; letter-spacing: .06em; text-transform: uppercase; }
+.hero-project-card__dots { display: flex; gap: 4px; }
+.hero-project-card__dots i { width: 6px; height: 6px; border-radius: 50%; background: #586272; }
+.hero-project-card__dots i:first-child { background: #3ca2fa; }
+.hero-project-card__ready { display: inline-flex; align-items: center; gap: 5px; margin-left: auto; color: #8bd7ac; text-transform: none; }
+.hero-project-card__ready span { width: 5px; height: 5px; border-radius: 50%; background: #62d394; }
+.hero-project-card__body { padding: 22px; }
+.hero-project-card__brand { display: flex; align-items: center; gap: 4px; color: #d8e2ee; font: 600 10px 'JetBrains Mono', monospace; letter-spacing: .08em; }
+.hero-project-card__brand span:first-child { font: 700 15px 'Space Grotesk', sans-serif; letter-spacing: -.08em; }
+.hero-project-card__headline { display: grid; gap: 8px; margin-top: 30px; }
+.hero-project-card__headline span { height: 14px; width: 87%; border-radius: 4px; background: linear-gradient(90deg, #e7eef8 0 65%, #3ca2fa 65% 100%); opacity: .92; }
+.hero-project-card__headline span:nth-child(2) { width: 70%; background: #e7eef8; }
+.hero-project-card__headline span:nth-child(3) { width: 46%; background: #3ca2fa; }
+.hero-project-card__copy { display: grid; gap: 6px; margin-top: 17px; }
+.hero-project-card__copy span { width: 90%; height: 5px; border-radius: 4px; background: #687486; opacity: .55; }
+.hero-project-card__copy span:last-child { width: 63%; }
+.hero-project-card__button { display: inline-flex; align-items: center; gap: 7px; margin-top: 20px; padding: 8px 11px; border: 1px solid #3ca2fa55; border-radius: 7px; background: #3ca2fa17; color: #8fcaff; font: 9px 'JetBrains Mono', monospace; }
+.hero-project-card__tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 19px; }
+.hero-project-card__tiles span { height: 53px; border: 1px solid #ffffff12; border-radius: 7px; background: linear-gradient(145deg, #ffffff0b, #3ca2fa0d); }
+.hero-object__caption { position: absolute; bottom: 0; left: 0; right: 0; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: .12em; color: hsl(var(--muted-foreground)); }
 .service-row { transition: background-color 180ms; }
 .service-row:hover { background: hsl(var(--primary) / .035); }
 .service-row__action svg { transition: transform 180ms; }

@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { signIn, useAuth } from "./store";
 import { toast } from "sonner";
 import { Lock } from "lucide-react";
+import BrandLogo from "@/components/BrandLogo";
 
 const OWNER_EMAILS = ["whgamersc@gmail.com", "whstudio@whstudio.site"];
 
@@ -47,7 +48,7 @@ const LoginPage = () => {
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center gap-8 px-4 py-12 bg-background">
-      <Link to="/" className="studio-brand" aria-label="WH Studio — página inicial">wh<span className="text-primary">/</span><span className="studio-brand__suffix">studio</span></Link>
+      <Link to="/" className="studio-brand" aria-label="WH Studio — página inicial"><BrandLogo className="h-10 w-[156px]" /></Link>
       <form onSubmit={onSubmit} className="w-full max-w-md card-dark p-8">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-12 h-12 rounded-full border border-primary/30 bg-primary/10 flex items-center justify-center">
