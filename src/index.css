@@ -275,6 +275,11 @@ div[style*="Edit with Lovable"] {
   display: none !important;
 }
 
+/* The injected badge's close button has its own id; hide its outer shell too. */
+body:has(#lovable-badge-close) aside:has(#lovable-badge-close) {
+  display: none !important;
+}
+
 
 /* WH Studio: graphite surfaces, blue ink, purposeful typography. */
 .studio-brand { display: inline-flex; align-items: baseline; gap: 2px; color: hsl(var(--foreground)); font-family: 'Space Grotesk', sans-serif; font-size: 2.6rem; line-height: 1; font-weight: 700; letter-spacing: -.09em; }

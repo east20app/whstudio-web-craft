@@ -572,9 +572,12 @@ export default function AIStudioPage() {
             )}
           </div>
           {user && walletAvailable && balance < 1 && (
-            <p role="status" className="mb-3 rounded-lg border border-amber-300/20 bg-amber-300/[.06] p-3 text-xs leading-relaxed text-amber-100">
-              Sem créditos. Escolha um pacote no topo para continuar.
-            </p>
+            <div role="status" className="mb-3 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-amber-300/20 bg-amber-300/[.06] p-3 text-xs leading-relaxed text-amber-100">
+              <span>Sem créditos para gerar uma versão. Cada envio usa 1 crédito.</span>
+              <Button type="button" size="sm" className="h-8 rounded-lg" disabled={busy} onClick={() => void purchase("inicial")}>
+                Comprar 5 créditos · R$ 10
+              </Button>
+            </div>
           )}
           <details className="mb-3 rounded-xl border border-white/[.08] bg-white/[.02] px-3 py-2 text-xs text-slate-500">
             <summary className="cursor-pointer select-none text-slate-400">Privacidade e uso de créditos</summary>
@@ -614,7 +617,7 @@ export default function AIStudioPage() {
               <Button
                 type="submit"
                 className="min-w-[116px]"
-                disabled={pending || prompt.trim().length < 10 || (Boolean(user) && (!walletAvailable || balance < 1))}
+                disabled={pending || prompt.trim().length < 10 || (Boolean(user) && !walletAvailable)}
               >
                 {pending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Criando</> : <><Sparkles className="mr-2 h-4 w-4" />Gerar versão</>}
               </Button>
