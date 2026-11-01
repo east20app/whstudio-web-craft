@@ -53,15 +53,39 @@ const Testimonials = () => {
   const [featured, ...rest] = items;
 
   return (
-    <section id="depoimentos" className="scroll-mt-28 py-24 md:py-32 border-t border-border">
+    <section id="depoimentos" className="scroll-mt-32 md:scroll-mt-36 py-20 md:py-28 border-t border-border">
       <div className="container">
-        <div className="mb-16 max-w-3xl">
+        <div className="mb-10 md:mb-14 max-w-3xl">
           <p className="eyebrow mb-5">Quem confiou</p>
-          <h2 className="display-huge text-5xl md:text-7xl">
+          <h2 className="display-huge text-4xl md:text-6xl">
             Avaliação de quem recebeu o projeto. <em>Escrita por eles.</em>
           </h2>
         </div>
 
+        {rest.length === 0 ? (
+          <motion.figure
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-8%" }}
+            transition={{ duration: 0.45 }}
+            className="relative overflow-hidden rounded-2xl border border-border bg-card p-6 sm:p-9 md:p-12"
+          >
+            <div className="pointer-events-none absolute -right-16 -top-24 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
+            <div className="relative max-w-4xl">
+              <Stars rating={featured.rating ?? 0} />
+              <blockquote className="mt-6 font-display text-2xl leading-snug sm:text-3xl md:text-4xl">
+                “{featured.testimonial}”
+              </blockquote>
+              <figcaption className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-5">
+                <div>
+                  <p className="text-base font-semibold">{featured.client_name || "Cliente WH Studio"}</p>
+                  {featured.project_name && <p className="num-label mt-1.5">{featured.project_name}</p>}
+                </div>
+                <span className="num-label">Feedback publicado por cliente</span>
+              </figcaption>
+            </div>
+          </motion.figure>
+        ) : (
         <div className="grid lg:grid-cols-12 gap-x-12">
           <motion.figure
             initial={{ opacity: 0 }}
@@ -71,7 +95,7 @@ const Testimonials = () => {
             className="lg:col-span-7 pb-10 lg:pb-0 lg:border-r lg:border-border lg:pr-12 self-start"
           >
             <Stars rating={featured.rating ?? 0} />
-            <blockquote className="mt-6 font-display text-3xl md:text-4xl leading-snug">
+              <blockquote className="mt-6 max-w-[35ch] font-display text-2xl sm:text-3xl md:text-4xl leading-snug">
               “{featured.testimonial}”
             </blockquote>
             <figcaption className="mt-8">
@@ -104,6 +128,7 @@ const Testimonials = () => {
             ))}
           </div>
         </div>
+        )}
       </div>
     </section>
   );
