@@ -32,7 +32,6 @@ const Status = ({ status }: { status: ProjectStatus }) => (
 );
 
 const BrowserFrame = ({ p, aspect }: { p: PortfolioItem; aspect: string }) => {
-  const [coverFailed, setCoverFailed] = useState(false);
   const urlShown = (displayOf(p.url) ?? p.category.toLowerCase()) || "projeto";
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card">
@@ -45,19 +44,7 @@ const BrowserFrame = ({ p, aspect }: { p: PortfolioItem; aspect: string }) => {
         </span>
       </div>
       <div className={`relative overflow-hidden bg-secondary ${aspect}`}>
-        {p.coverUrl && !coverFailed ? (
-          <img
-            src={p.coverUrl}
-            alt={`Preview do projeto ${p.title}`}
-            loading="lazy"
-            decoding="async"
-            width={1600}
-            height={1000}
-            className="h-full w-full object-cover object-top"
-            onError={() => setCoverFailed(true)}
-          />
-        ) : (
-          <div className={`group/artwork relative h-full w-full overflow-hidden bg-gradient-to-br ${artworkPalettes[previewPalette(p.title)]}`}>
+        <div className={`group/artwork relative h-full w-full overflow-hidden bg-gradient-to-br ${artworkPalettes[previewPalette(p.title)]}`}>
             <div className="absolute -right-10 -top-28 h-72 w-72 rounded-full bg-primary/20 blur-[90px] transition-transform duration-700 group-hover/artwork:scale-125" />
             <div className="absolute inset-0 opacity-[.12] [background-image:linear-gradient(rgba(255,255,255,.2)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.2)_1px,transparent_1px)] [background-size:34px_34px] [mask-image:linear-gradient(to_bottom,black,transparent)]" />
             <div className="relative grid h-full grid-cols-12 items-center gap-3 p-4 sm:gap-6 sm:p-8 md:p-10">
@@ -65,7 +52,7 @@ const BrowserFrame = ({ p, aspect }: { p: PortfolioItem; aspect: string }) => {
                 <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/20 px-2.5 py-1 font-mono text-[8px] uppercase tracking-[.16em] text-white/70 sm:mb-5 sm:text-[10px]">
                   <span className="h-1.5 w-1.5 rounded-full bg-[#b3f46c]" />Prévia visual · {p.category || "Projeto digital"}
                 </div>
-                <h2 className="max-w-[12ch] break-words font-display text-[clamp(1.5rem,4vw,4.5rem)] font-semibold leading-[.98] tracking-[-.055em] text-white">{p.title}</h2>
+                <h2 className="max-w-[12ch] text-balance font-display text-[clamp(1.35rem,3vw,3.8rem)] font-semibold leading-[.98] tracking-[-.055em] text-white">{p.title}</h2>
                 <p className="mt-2 max-w-sm line-clamp-2 text-[10px] leading-relaxed text-white/65 sm:mt-4 sm:text-sm">{p.desc || "Projeto digital desenvolvido de acordo com a necessidade do cliente."}</p>
                 <span className="mt-3 inline-flex items-center gap-2 text-[9px] font-medium text-[#c3ff7e] sm:mt-6 sm:text-xs">Abrir página do projeto <ArrowUpRight className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" /></span>
               </div>
@@ -90,8 +77,7 @@ const BrowserFrame = ({ p, aspect }: { p: PortfolioItem; aspect: string }) => {
                 </div>
               </div>
             </div>
-          </div>
-        )}
+        </div>
       </div>
     </div>
   );
