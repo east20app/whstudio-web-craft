@@ -27,6 +27,7 @@ const RequireAuth = lazy(() =>
   import("./dashboard/RequireAuth").then((m) => ({ default: m.RequireAuth }))
 );
 const LoginPage = lazy(() => import("./dashboard/LoginPage"));
+const PortfolioProjectPage = lazy(() => import("./pages/PortfolioProjectPage"));
 const Overview = lazy(() => import("./dashboard/Overview"));
 const BudgetsPage = lazy(() => import("./dashboard/BudgetsPage"));
 const ClientsPage = lazy(() => import("./dashboard/ClientsPage"));
@@ -71,6 +72,7 @@ const App = () => (
                 <Route path="/sistemas" element={<SistemasPage />} />
                 <Route path="/orcamento" element={<OrcamentoPage />} />
                 <Route path="/planos" element={<Navigate to="/orcamento" replace />} />
+                <Route path="/portfolio/:projectId" element={<Suspense fallback={<PageLoader />}><PortfolioProjectPage /></Suspense>} />
                 <Route path="/portfolio" element={<PortfolioPage />} />
                 <Route path="/contato" element={<ContatoPage />} />
                 <Route path="/sobre" element={<SobrePage />} />

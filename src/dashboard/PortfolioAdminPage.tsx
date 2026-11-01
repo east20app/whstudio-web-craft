@@ -387,13 +387,14 @@ const PortfolioAdminPage = () => {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="p-url">Link (opcional)</Label>
+              <Label htmlFor="p-url">Endereço do site (opcional)</Label>
               <Input
                 id="p-url"
                 placeholder="https://..."
                 value={draft.url}
                 onChange={(e) => setDraft({ ...draft, url: e.target.value })}
               />
+              <p className="text-xs text-muted-foreground">Esse site será carregado na página do projeto. Deixe vazio quando não houver um endereço público.</p>
             </div>
             <div className="space-y-2">
               <Label htmlFor="p-tech">Tecnologias (separadas por vírgula)</Label>

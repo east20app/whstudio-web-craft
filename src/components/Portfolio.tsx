@@ -1,8 +1,10 @@
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowUpRight, Lock } from "lucide-react";
+import { ArrowUpRight, ExternalLink, Lock } from "lucide-react";
+import { Link } from "react-router-dom";
 import { statusLabels, type ProjectStatus } from "@/config/site";
 import { usePortfolio, type PortfolioItem } from "@/hooks/usePortfolio";
+import { portfolioWebUrl } from "@/lib/portfolio-url";
 
 const STATUS_DOT: Record<ProjectStatus, string> = {
   online: "bg-emerald-500",
@@ -137,7 +139,8 @@ const Portfolio = () => {
             const anyFeatured = filtered.some((x) => x.featured);
             const featured = anyFeatured ? !!p.featured : i === 0;
             const status = statusLabels[p.status];
-            const hasUrl = !!p.url;
+            const liveUrl = p.status === "privado" ? null : portfolioWebUrl(p.url);
+            const hasUrl = !!liveUrl;
 
             return (
               <motion.article
@@ -149,18 +152,18 @@ const Portfolio = () => {
                 transition={{ duration: 0.45, delay: i * 0.06 }}
                 className={`scroll-mt-28 ${featured ? "md:col-span-2" : ""}`}
               >
-                <BrowserFrame p={p} aspect={featured ? "aspect-[16/10] md:aspect-[16/8]" : "aspect-[4/3]"} />
+                <Link to={`/portfolio/${p.id}`} aria-label={`Abrir página do projeto ${p.title}`} className="block rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4">
+                  <BrowserFrame p={p} aspect={featured ? "aspect-[16/10] md:aspect-[16/8]" : "aspect-[4/3]"} />
+                </Link>
 
                 <div className="mt-6 flex items-start justify-between gap-4">
                   <div>
                     <p className="num-label">{p.category}</p>
-                    <h3
-                      className={`font-display mt-1.5 leading-none ${
+                    <Link to={`/portfolio/${p.id}`} className={`mt-1.5 inline-block font-display leading-none transition-colors hover:text-primary ${
                         featured ? "text-3xl md:text-4xl" : "text-2xl md:text-3xl"
-                      }`}
-                    >
+                      }`}>
                       {p.title}
-                    </h3>
+                    </Link>
                   </div>
                   <Status status={p.status} />
                 </div>
@@ -179,18 +182,16 @@ const Portfolio = () => {
                 </div>
 
                 <div className="mt-6 pt-4 border-t border-border flex items-center justify-between gap-4">
+                  <Link to={`/portfolio/${p.id}`} className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.16em] text-primary transition-colors hover:text-primary/80">
+                    Ver página do projeto <ArrowUpRight className="h-4 w-4" />
+                  </Link>
                   {hasUrl ? (
-                    <a
-                      href={p.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.16em] text-primary hover:text-primary/80 transition-colors"
-                    >
-                      Ver projeto <ArrowUpRight className="w-4 h-4" />
+                    <a href={liveUrl!} target="_blank" rel="noopener noreferrer" aria-label={`Abrir o site original de ${p.title} em uma nova aba`} className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground transition-colors hover:text-foreground">
+                      <ExternalLink className="h-3.5 w-3.5" /><span className="hidden sm:inline">Site original</span>
                     </a>
                   ) : (
-                    <span className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
-                      <Lock className="w-3.5 h-3.5" /> Projeto privado
+                    <span className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
+                      <Lock className="h-3.5 w-3.5" /> Sem site público
                     </span>
                   )}
                   <span className="num-label hidden sm:inline">// {status.label.toUpperCase()}</span>
