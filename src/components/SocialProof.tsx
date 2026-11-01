@@ -7,7 +7,7 @@ import { testimonials } from "@/config/site";
  * com marcas mono — para não parecer avaliação verificada.
  */
 const SocialProof = () => (
-  <section id="depoimentos" className="py-24 md:py-32 border-t border-border">
+  <section id="depoimentos" className="scroll-mt-28 py-24 md:py-32 border-t border-border">
     <div className="container">
       <div className="grid lg:grid-cols-12 gap-8 items-end mb-14">
         <div className="lg:col-span-8">

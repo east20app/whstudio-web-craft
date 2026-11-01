@@ -97,7 +97,7 @@ const Portfolio = () => {
 
   if (!loading && portfolio.length === 0) {
     return (
-      <section id="portfolio" className="border-t border-border py-24 md:py-32">
+      <section id="portfolio" className="scroll-mt-28 border-t border-border py-24 md:py-32">
         <div className="container">
           <p className="eyebrow mb-5">Portfólio</p>
           <h2 className="display-huge text-4xl md:text-5xl max-w-xl">
@@ -112,7 +112,7 @@ const Portfolio = () => {
   }
 
   return (
-    <section id="portfolio" className="border-t border-border py-24 md:py-32">
+    <section id="portfolio" className="scroll-mt-28 border-t border-border py-24 md:py-32">
       <div className="container">
         <div className="grid lg:grid-cols-12 gap-8 items-end mb-12">
           <div className="lg:col-span-8">

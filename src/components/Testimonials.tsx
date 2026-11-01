@@ -53,7 +53,7 @@ const Testimonials = () => {
   const [featured, ...rest] = items;
 
   return (
-    <section id="depoimentos" className="py-24 md:py-32 border-t border-border">
+    <section id="depoimentos" className="scroll-mt-28 py-24 md:py-32 border-t border-border">
       <div className="container">
         <div className="mb-16 max-w-3xl">
           <p className="eyebrow mb-5">Quem confiou</p>

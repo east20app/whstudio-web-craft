@@ -33,7 +33,7 @@ const faqs = [
 ];
 
 const FAQ = () => (
-  <section id="faq" className="py-24 md:py-32 border-t border-border">
+  <section id="faq" className="scroll-mt-28 py-24 md:py-32 border-t border-border">
     <div className="container">
       <div className="grid lg:grid-cols-12 gap-10">
         <div className="lg:col-span-4">

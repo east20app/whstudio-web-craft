@@ -1,11 +1,11 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import ProvaConfianca from "@/components/ProvaConfianca";
-import Services from "@/components/Services";
 import TiposDeProjetos from "@/components/TiposDeProjetos";
 import Portfolio from "@/components/Portfolio";
 import HowItWorks from "@/components/HowItWorks";
 import SolucoesEmpresas from "@/components/SolucoesEmpresas";
+import Entregas from "@/components/Entregas";
 import WhAI from "@/components/WhAI";
 import ProjectInquiry from "@/components/ProjectInquiry";
 import Testimonials from "@/components/Testimonials";
@@ -22,11 +22,11 @@ const Index = () => (
     <main id="main-content" tabIndex={-1}>
       <Hero />
       <ProvaConfianca />
-      <Services />
       <TiposDeProjetos />
+      <SolucoesEmpresas />
+      <Entregas />
       <Portfolio />
       <HowItWorks />
-      <SolucoesEmpresas />
       <WhAI />
       <ProjectInquiry />
       <Testimonials />

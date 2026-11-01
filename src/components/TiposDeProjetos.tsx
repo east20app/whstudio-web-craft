@@ -47,7 +47,7 @@ const TiposDeProjetos = () => {
   const { requestQuote } = useOrcamentoAction();
 
   return (
-    <section id="tipos" className="py-24 md:py-32">
+    <section id="tipos" className="scroll-mt-28 py-24 md:py-32">
       <div className="container">
         <div className="grid lg:grid-cols-12 gap-8 items-end mb-16">
           <div className="lg:col-span-8">

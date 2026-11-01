@@ -41,9 +41,9 @@ const Seo = ({ title, description, path, jsonLd }: SeoProps) => {
 /** Textos de SEO das páginas públicas — mesmo tom de voz do site. */
 export const pageSeo = {
   home: {
-    title: "WH Studio — Desenvolvimento de sites e sistemas",
+    title: "WH Studio — Sites profissionais e sistemas sob medida",
     description:
-      "Empresa de desenvolvimento de sites e sistemas. Criamos presença digital, plataformas de gestão, automações e integrações sob medida.",
+      "Criação de sites institucionais, sistemas personalizados e automações para empresas. Design responsivo, escopo claro e atendimento direto em todo o Brasil.",
     path: "/",
   },
   servicos: {
