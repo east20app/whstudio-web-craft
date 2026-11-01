@@ -13,13 +13,16 @@ const STATUS_DOT: Record<ProjectStatus, string> = {
   privado: "bg-muted-foreground",
 };
 
-const initialsOf = (title: string) => {
-  const words = title.trim().split(/\s+/).filter(Boolean);
-  if (words.length >= 2) return `${words[0][0]}${words[1][0]}`.toUpperCase();
-  return title.slice(0, 2).toUpperCase();
-};
-
 const displayOf = (url?: string) => (url ? url.replace(/^https?:\/\//, "").replace(/\/$/, "") : undefined);
+const artworkPalettes = [
+  "from-[#102c48] via-[#0d1828] to-[#080c13]",
+  "from-[#173b35] via-[#10211f] to-[#080c13]",
+  "from-[#3a2445] via-[#25182e] to-[#080c13]",
+  "from-[#3d3320] via-[#262015] to-[#080c13]",
+];
+
+const previewPalette = (title: string) =>
+  title.split("").reduce((sum, char) => sum + char.charCodeAt(0), 0) % artworkPalettes.length;
 
 const Status = ({ status }: { status: ProjectStatus }) => (
   <span className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
@@ -29,6 +32,7 @@ const Status = ({ status }: { status: ProjectStatus }) => (
 );
 
 const BrowserFrame = ({ p, aspect }: { p: PortfolioItem; aspect: string }) => {
+  const [coverFailed, setCoverFailed] = useState(false);
   const urlShown = (displayOf(p.url) ?? p.category.toLowerCase()) || "projeto";
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card">
@@ -41,7 +45,7 @@ const BrowserFrame = ({ p, aspect }: { p: PortfolioItem; aspect: string }) => {
         </span>
       </div>
       <div className={`relative overflow-hidden bg-secondary ${aspect}`}>
-        {p.coverUrl ? (
+        {p.coverUrl && !coverFailed ? (
           <img
             src={p.coverUrl}
             alt={`Preview do projeto ${p.title}`}
@@ -50,16 +54,42 @@ const BrowserFrame = ({ p, aspect }: { p: PortfolioItem; aspect: string }) => {
             width={1600}
             height={1000}
             className="h-full w-full object-cover object-top"
+            onError={() => setCoverFailed(true)}
           />
         ) : (
-          <div className="flex h-full w-full flex-col items-center justify-center gap-4 px-6">
-            <span
-              className="font-display text-6xl md:text-7xl leading-none text-foreground/25"
-              aria-hidden="true"
-            >
-              {initialsOf(p.title)}
-            </span>
-            <span className="num-label">{p.status === "privado" ? "Projeto privado" : "Conheça o projeto abaixo"}</span>
+          <div className={`group/artwork relative h-full w-full overflow-hidden bg-gradient-to-br ${artworkPalettes[previewPalette(p.title)]}`}>
+            <div className="absolute -right-10 -top-28 h-72 w-72 rounded-full bg-primary/20 blur-[90px] transition-transform duration-700 group-hover/artwork:scale-125" />
+            <div className="absolute inset-0 opacity-[.12] [background-image:linear-gradient(rgba(255,255,255,.2)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.2)_1px,transparent_1px)] [background-size:34px_34px] [mask-image:linear-gradient(to_bottom,black,transparent)]" />
+            <div className="relative grid h-full grid-cols-12 items-center gap-3 p-4 sm:gap-6 sm:p-8 md:p-10">
+              <div className="col-span-7 min-w-0 sm:col-span-6">
+                <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/20 px-2.5 py-1 font-mono text-[8px] uppercase tracking-[.16em] text-white/70 sm:mb-5 sm:text-[10px]">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#b3f46c]" />Prévia visual · {p.category || "Projeto digital"}
+                </div>
+                <h2 className="max-w-[12ch] break-words font-display text-[clamp(1.5rem,4vw,4.5rem)] font-semibold leading-[.98] tracking-[-.055em] text-white">{p.title}</h2>
+                <p className="mt-2 max-w-sm line-clamp-2 text-[10px] leading-relaxed text-white/65 sm:mt-4 sm:text-sm">{p.desc || "Projeto digital desenvolvido de acordo com a necessidade do cliente."}</p>
+                <span className="mt-3 inline-flex items-center gap-2 text-[9px] font-medium text-[#c3ff7e] sm:mt-6 sm:text-xs">Abrir página do projeto <ArrowUpRight className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" /></span>
+              </div>
+              <div className="col-span-5 sm:col-span-6">
+                <div className="ml-auto w-full max-w-[430px] -rotate-2 overflow-hidden rounded-lg border border-white/30 bg-[#f6f8fb] shadow-[0_22px_65px_rgba(0,0,0,.4)] transition-transform duration-500 group-hover/artwork:rotate-0 sm:rounded-xl">
+                  <div className="flex h-5 items-center gap-1 border-b border-slate-200 bg-white px-2 sm:h-8 sm:gap-1.5 sm:px-3">
+                    <i className="h-1 w-1 rounded-full bg-slate-300 sm:h-1.5 sm:w-1.5" /><i className="h-1 w-1 rounded-full bg-slate-300 sm:h-1.5 sm:w-1.5" /><i className="h-1 w-1 rounded-full bg-slate-300 sm:h-1.5 sm:w-1.5" />
+                    <span className="ml-2 truncate font-mono text-[6px] text-slate-400 sm:text-[8px]">{urlShown}</span>
+                  </div>
+                  <div className="min-h-[110px] bg-[radial-gradient(ellipse_at_85%_12%,#3ca2fa28,transparent_45%),linear-gradient(135deg,#f8fafc,#e8eef7)] p-2.5 sm:min-h-[210px] sm:p-5 md:min-h-[260px]">
+                    <div className="flex items-center justify-between text-[6px] font-semibold text-slate-500 sm:text-[9px]"><span>{p.title.toUpperCase()}</span><span className="flex gap-2"><i className="h-1 w-5 rounded bg-slate-300 sm:w-8"/><i className="h-1 w-5 rounded bg-slate-300 sm:w-8"/></span></div>
+                    <div className="mt-4 sm:mt-8">
+                      <span className="block h-1 w-7 rounded bg-primary/70 sm:h-1.5 sm:w-12" />
+                      <span className="mt-2 block h-2.5 w-[82%] rounded-sm bg-slate-800/90 sm:mt-3 sm:h-4" />
+                      <span className="mt-1.5 block h-2.5 w-[56%] rounded-sm bg-primary/80 sm:mt-2 sm:h-4" />
+                      <span className="mt-2 block h-1 w-[75%] rounded bg-slate-400/50 sm:mt-4 sm:h-1.5" />
+                      <span className="mt-1 block h-1 w-[61%] rounded bg-slate-400/40 sm:mt-2 sm:h-1.5" />
+                      <span className="mt-3 inline-block h-4 w-12 rounded-full bg-primary sm:mt-5 sm:h-7 sm:w-20" />
+                    </div>
+                    <div className="mt-3 grid grid-cols-3 gap-1 sm:mt-6 sm:gap-2"><i className="h-6 rounded-sm border border-slate-200 bg-white/80 sm:h-12"/><i className="h-6 rounded-sm border border-slate-200 bg-white/80 sm:h-12"/><i className="h-6 rounded-sm border border-slate-200 bg-white/80 sm:h-12"/></div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </div>
