@@ -62,73 +62,33 @@ const Testimonials = () => {
           </h2>
         </div>
 
-        {rest.length === 0 ? (
-          <motion.figure
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-8%" }}
-            transition={{ duration: 0.45 }}
-            className="relative overflow-hidden rounded-2xl border border-border bg-card p-6 sm:p-9 md:p-12"
-          >
-            <div className="pointer-events-none absolute -right-16 -top-24 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
-            <div className="relative max-w-4xl">
-              <Stars rating={featured.rating ?? 0} />
-              <blockquote className="mt-6 font-display text-2xl leading-snug sm:text-3xl md:text-4xl">
-                “{featured.testimonial}”
-              </blockquote>
-              <figcaption className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-5">
+        <div className="grid max-w-6xl gap-x-10 gap-y-10 md:grid-cols-2">
+          {[featured, ...rest].map((item, i) => (
+            <motion.figure
+              key={item.id}
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-8%" }}
+              transition={{ duration: 0.4, delay: i * 0.05 }}
+              className={`flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card p-6 sm:p-8 ${rest.length === 0 ? "md:col-span-2" : ""}`}
+            >
+              <div className="flex flex-wrap items-start justify-between gap-4 border-b border-border pb-4">
                 <div>
-                  <p className="text-base font-semibold">{featured.client_name || "Cliente WH Studio"}</p>
-                  {featured.project_name && <p className="num-label mt-1.5">{featured.project_name}</p>}
+                  <p className="eyebrow mb-2">Projeto entregue</p>
+                  {item.project_name && <p className="font-display text-xl sm:text-2xl">{item.project_name}</p>}
                 </div>
-                <span className="num-label">Feedback publicado por cliente</span>
+                <Stars rating={item.rating ?? 0} />
+              </div>
+              <blockquote className="my-6 max-w-[55ch] flex-1 font-display text-xl leading-relaxed sm:text-2xl">
+                “{item.testimonial}”
+              </blockquote>
+              <figcaption className="flex items-center justify-between gap-4 border-t border-border pt-4">
+                <p className="text-sm font-semibold">{item.client_name || "Cliente WH Studio"}</p>
+                <span className="num-label">Feedback publicado</span>
               </figcaption>
-            </div>
-          </motion.figure>
-        ) : (
-        <div className="grid lg:grid-cols-12 gap-x-12">
-          <motion.figure
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, margin: "-8%" }}
-            transition={{ duration: 0.45 }}
-            className="lg:col-span-7 pb-10 lg:pb-0 lg:border-r lg:border-border lg:pr-12 self-start"
-          >
-            <Stars rating={featured.rating ?? 0} />
-              <blockquote className="mt-6 max-w-[35ch] font-display text-2xl sm:text-3xl md:text-4xl leading-snug">
-              “{featured.testimonial}”
-            </blockquote>
-            <figcaption className="mt-8">
-              <p className="text-base font-semibold">{featured.client_name || "Cliente WH Studio"}</p>
-              {featured.project_name && <p className="num-label mt-1.5">{featured.project_name}</p>}
-            </figcaption>
-          </motion.figure>
-
-          <div className="lg:col-span-5 divide-y divide-border">
-            {rest.map((t, i) => (
-              <motion.figure
-                key={t.id}
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true, margin: "-8%" }}
-                transition={{ duration: 0.4, delay: i * 0.05 }}
-                className="py-8 lg:py-9"
-              >
-                <blockquote className="font-display text-lg md:text-xl leading-snug">
-                  “{t.testimonial}”
-                </blockquote>
-                <figcaption className="mt-4 flex items-center justify-between gap-4">
-                  <div>
-                    <p className="text-sm font-semibold">{t.client_name || "Cliente WH Studio"}</p>
-                    {t.project_name && <p className="num-label mt-1">{t.project_name}</p>}
-                  </div>
-                  <Stars rating={t.rating ?? 0} />
-                </figcaption>
-              </motion.figure>
-            ))}
-          </div>
+            </motion.figure>
+          ))}
         </div>
-        )}
       </div>
     </section>
   );
