@@ -44,6 +44,24 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_bootstrap: {
+        Row: {
+          claimed_at: string
+          owner_id: string
+          singleton: boolean
+        }
+        Insert: {
+          claimed_at?: string
+          owner_id: string
+          singleton?: boolean
+        }
+        Update: {
+          claimed_at?: string
+          owner_id?: string
+          singleton?: boolean
+        }
+        Relationships: []
+      }
       budgets: {
         Row: {
           client: string
@@ -528,6 +546,24 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       whia_conversations: {
         Row: {
           archived: boolean
@@ -827,6 +863,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_signup_available: { Args: never; Returns: boolean }
       builder_finish: {
         Args: {
           failure: string
