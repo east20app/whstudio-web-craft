@@ -7,21 +7,31 @@ import { signIn, useAuth } from "./store";
 import { toast } from "sonner";
 import { Lock } from "lucide-react";
 import BrandLogo from "@/components/BrandLogo";
-
-const OWNER_EMAILS = ["whgamersc@gmail.com", "whstudio@whstudio.site"];
+import { supabase } from "@/integrations/supabase/client";
+import { useAdminAccess } from "./useAdminAccess";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [signupAvailable, setSignupAvailable] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [confirmation, setConfirmation] = useState(false);
   const navigate = useNavigate();
   const { user, loading } = useAuth();
+  const { isAdmin, checking } = useAdminAccess(user?.id);
 
   useEffect(() => {
-    if (!loading && user && OWNER_EMAILS.includes((user.email ?? "").toLowerCase())) {
+    supabase.rpc("admin_signup_available").then(({ data, error }) => {
+      setSignupAvailable(!error && data === true);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!loading && !checking && user && isAdmin) {
       navigate("/dashboard", { replace: true });
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, checking, isAdmin, navigate]);
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -29,12 +39,28 @@ const LoginPage = () => {
       toast.error("Preencha e-mail e senha");
       return;
     }
-    if (!OWNER_EMAILS.includes(email.trim().toLowerCase())) {
-      toast.error("Acesso restrito ao administrador");
+    setSubmitting(true);
+    if (creating) {
+      const { data: available, error: availabilityError } = await supabase.rpc("admin_signup_available");
+      if (availabilityError || available !== true) {
+        setSignupAvailable(false);
+        setCreating(false);
+        setSubmitting(false);
+        toast.error("A conta administradora já foi criada. Entre com sua conta.");
+        return;
+      }
+      const { data, error } = await supabase.auth.signUp({
+        email: email.trim(), password,
+        options: { emailRedirectTo: `${window.location.origin}/dashboard/login` },
+      });
+      setSubmitting(false);
+      if (error) { toast.error(error.message); return; }
+      setSignupAvailable(false);
+      setCreating(false);
+      setConfirmation(!data.session);
+      if (!data.session) toast.success("Confira seu e-mail para confirmar a conta.");
       return;
     }
-
-    setSubmitting(true);
     const error = await signIn(email.trim(), password);
     setSubmitting(false);
 
@@ -42,7 +68,12 @@ const LoginPage = () => {
       toast.error(/invalid login/i.test(error) ? "E-mail ou senha incorretos" : error);
       return;
     }
-    toast.success("Login realizado com sucesso");
+    const { data: admin, error: roleError } = await supabase.rpc("is_admin");
+    if (roleError || admin !== true) {
+      await supabase.auth.signOut();
+      toast.error("Esta conta não é administradora.");
+      return;
+    }
     navigate("/dashboard", { replace: true });
   };
 
@@ -55,10 +86,12 @@ const LoginPage = () => {
             <Lock className="w-5 h-5 text-primary" aria-hidden="true" />
           </div>
           <div>
-            <h1 className="font-display text-2xl">Acesse o painel</h1>
+            <h1 className="font-display text-2xl">{creating ? "Criar conta administradora" : "Acesse o painel"}</h1>
             <p className="text-xs text-muted-foreground">WH Studio · acesso restrito</p>
           </div>
         </div>
+
+        {confirmation && <p role="status" className="text-sm text-muted-foreground mb-4">Confirme sua conta pelo link enviado ao seu e-mail antes de entrar.</p>}
 
         <div className="space-y-4">
           <div className="space-y-2">
@@ -84,16 +117,17 @@ const LoginPage = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              autoComplete="current-password"
-              minLength={6}
+              autoComplete={creating ? "new-password" : "current-password"}
+              minLength={creating ? 8 : 6}
               required
             />
           </div>
         </div>
 
         <Button type="submit" className="w-full mt-6" disabled={submitting}>
-          {submitting ? "Aguarde…" : "Entrar no painel"}
+          {submitting ? "Aguarde…" : creating ? "Criar conta administradora" : "Entrar no painel"}
         </Button>
+        {signupAvailable && <Button type="button" variant="outline" className="w-full mt-3" disabled={submitting} onClick={() => setCreating(!creating)}>{creating ? "Já tenho conta" : "Criar primeira conta admin"}</Button>}
       </form>
       <Link to="/" className="text-sm text-muted-foreground transition-colors hover:text-primary">← Voltar para o site</Link>
     </main>

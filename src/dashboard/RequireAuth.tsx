@@ -1,9 +1,11 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "./store";
+import { useAdminAccess } from "./useAdminAccess";
 
 export const RequireAuth = ({ children }: { children: JSX.Element }) => {
   const { user, loading } = useAuth();
-  if (loading) {
+  const { isAdmin, checking } = useAdminAccess(user?.id);
+  if (loading || checking) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-muted-foreground text-sm">Carregando…</div>
@@ -11,8 +13,7 @@ export const RequireAuth = ({ children }: { children: JSX.Element }) => {
     );
   }
   if (!user) return <Navigate to="/dashboard/login" replace />;
-  const admins = ["whgamersc@gmail.com", "whstudio@whstudio.site"];
-  if (!admins.includes((user.email ?? "").toLowerCase())) {
+  if (!isAdmin) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background px-4">
         <div className="card-dark p-8 max-w-md text-center">
