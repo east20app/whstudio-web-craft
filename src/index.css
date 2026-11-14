@@ -340,3 +340,34 @@ select { background-color: hsl(var(--card)); color: hsl(var(--foreground)); }
 #processo ol > li { padding-inline: 20px; }
 #processo ol > li:first-child { padding-left: 0; }
 @media (max-width: 767px) { #processo ol > li { padding-inline: 0; } }
+
+/* Cinematic presentation has its own fixed dark stage in either site theme. */
+:root {
+  --intro-background: 225 30% 4%;
+  --intro-foreground: 210 20% 97%;
+  --intro-muted: 220 12% 65%;
+  --intro-accent: 207 95% 64%;
+  --intro-border: 220 18% 22%;
+}
+.cinematic-entrance { position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; overflow: hidden; background: hsl(var(--intro-background)); color: hsl(var(--intro-foreground)); transition: transform 700ms cubic-bezier(.79,0,.19,1), visibility 700ms; }
+.cinematic-entrance--leaving { transform: translateY(-100%); visibility: hidden; }
+.cinematic-entrance__edition { position: absolute; top: 32px; left: 36px; color: hsl(var(--intro-muted)); font: 10px 'JetBrains Mono', monospace; letter-spacing: 0; }
+.cinematic-entrance__inner { width: min(480px, calc(100% - 48px)); text-align: center; }
+.cinematic-entrance__kicker, .cinematic-entrance__presents { font: 11px 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: 0; }
+.cinematic-entrance__kicker { color: hsl(var(--intro-accent)); margin-bottom: 32px; animation: entrance-reveal 800ms ease both; }
+.cinematic-entrance__title { display: flex; flex-direction: column; align-items: center; font-family: 'Inter', sans-serif; font-weight: 800; line-height: .9; letter-spacing: 0; }
+.cinematic-entrance__wh { display: block; font-size: 136px; animation: entrance-reveal 1100ms cubic-bezier(.2,.8,.2,1) both; }
+.cinematic-entrance__dot { color: hsl(var(--intro-accent)); }
+.cinematic-entrance__studio { font-size: 36px; font-weight: 500; margin-top: 14px; animation: entrance-reveal 1100ms 150ms cubic-bezier(.2,.8,.2,1) both; }
+.cinematic-entrance__presents { color: hsl(var(--intro-muted)); margin-top: 28px; animation: entrance-reveal 900ms 350ms ease both; }
+.cinematic-entrance__loading { margin-top: 64px; }
+.cinematic-entrance__progress { display: block; width: 100%; height: 2px; border: none; appearance: none; background: hsl(var(--intro-border)); color: hsl(var(--intro-accent)); }
+.cinematic-entrance__progress::-webkit-progress-bar { background: hsl(var(--intro-border)); }
+.cinematic-entrance__progress::-webkit-progress-value { background: hsl(var(--intro-accent)); }
+.cinematic-entrance__progress::-moz-progress-bar { background: hsl(var(--intro-accent)); }
+.cinematic-entrance__foot { display: flex; justify-content: space-between; gap: 16px; margin-top: 14px; color: hsl(var(--intro-muted)); font: 10px 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: 0; font-variant-numeric: tabular-nums; }
+.cinematic-entrance__skip { position: absolute; bottom: 28px; right: 32px; border: 1px solid hsl(var(--intro-border)); color: hsl(var(--intro-foreground)); font-size: 11px; }
+.cinematic-entrance__skip:hover { background: hsl(var(--intro-border)); color: hsl(var(--intro-foreground)); }
+@keyframes entrance-reveal { from { opacity: 0; transform: translateY(24px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@media (max-width: 480px) { .cinematic-entrance__wh { font-size: 104px; } .cinematic-entrance__studio { font-size: 28px; } .cinematic-entrance__edition { top: 24px; left: 24px; } .cinematic-entrance__skip { right: 24px; bottom: 24px; } .cinematic-entrance__loading { margin-top: 44px; } }
+@media (max-height: 500px) { .cinematic-entrance__wh { font-size: 80px; } .cinematic-entrance__studio { font-size: 24px; } .cinematic-entrance__kicker { margin-bottom: 16px; } .cinematic-entrance__presents { margin-top: 18px; } .cinematic-entrance__loading { margin-top: 28px; } }

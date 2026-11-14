@@ -17,6 +17,7 @@ import SobrePage from "./pages/SobrePage.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import FeedbackPublicPage from "./pages/FeedbackPublicPage.tsx";
 import MaintenanceGate from "./components/MaintenanceGate";
+import CinematicEntrance from "./components/CinematicEntrance";
 import { TicketChatProvider } from "./components/tickets/TicketChat";
 
 // Dashboard e páginas pesadas só carregam quando a rota abre —
@@ -60,11 +61,11 @@ const App = () => (
               <Route path="/ai/projetos/:id" element={<Suspense fallback={<PageLoader />}><AIStudioPage /></Suspense>} />
               <Route
                 element={
-                  <MaintenanceGate>
+                  <CinematicEntrance><MaintenanceGate>
                     <TicketChatProvider>
                       <Outlet />
                     </TicketChatProvider>
-                  </MaintenanceGate>
+                  </MaintenanceGate></CinematicEntrance>
                 }
               >
                 <Route path="/" element={<Index />} />
