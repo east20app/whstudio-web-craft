@@ -291,8 +291,8 @@ body:has(#lovable-badge-close) aside:has(#lovable-badge-close) {
 .studio-nav-quote:hover { background: #c3ff7e; transform: translateY(-1px); }
 .studio-mobile-nav .studio-nav-link { min-height: 44px; padding: 0 12px; border-radius: 12px; font-size: .9rem; }
 .studio-mobile-nav .studio-nav-link:hover { background: #ffffff0d; }
-.studio-skip { position: fixed; top: 8px; left: 16px; z-index: 100; padding: 12px 20px; border-radius: 8px; background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); transform: translateY(-200%); }
-.studio-skip:focus { transform: translateY(0); }
+.studio-skip { position: fixed; top: 8px; left: 16px; z-index: 100; padding: 12px 20px; border-radius: 8px; background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); clip-path: inset(50%); }
+.studio-skip:focus { clip-path: none; }
 .studio-hero { min-height: 760px; background: #090c12; color: #f8fafc; }
 .studio-hero__photo { position: absolute; z-index: -2; inset: 0; overflow: hidden; background: #090c12; }
 .studio-hero__photo img { width: 100%; height: 100%; object-fit: cover; object-position: center 42%; opacity: .95; }

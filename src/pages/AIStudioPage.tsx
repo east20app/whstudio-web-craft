@@ -22,6 +22,7 @@ import {
   type Generation,
   type Project,
 } from "@/lib/builder";
+import BrandLogo from "@/components/BrandLogo";
 import BuilderFiles from "@/components/BuilderFiles";
 import BuilderBackend from "@/components/BuilderBackend";
 import { Button } from "@/components/ui/button";
@@ -75,8 +76,8 @@ export default function AIStudioPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null),
-    [projects, setProjects] = useState<Project[]>([]),
-    [versions, setVersions] = useState<Generation[]>([]);
+    [loadedProjects, setProjects] = useState<Project[]>([]),
+    [loadedVersions, setVersions] = useState<Generation[]>([]);
   const [selected, setSelected] = useState<string>(""),
     [prompt, setPrompt] = useState(""),
     [kind, setKind] = useState<"site" | "system">("site");
@@ -95,8 +96,12 @@ export default function AIStudioPage() {
     [password, setPassword] = useState(""),
     [authBusy, setAuthBusy] = useState(false),
     [recovery, setRecovery] = useState(false);
+  const projects = loadedProjects.filter((project) => user && project.user_id === user.id);
+  const versions = loadedVersions.filter((version) => user && version.user_id === user.id && version.project_id === id);
+  const latestRefresh = useRef(0);
   const walletOwner = useRef<string | null>(null);
   const refresh = useCallback(async () => {
+    const refreshId = ++latestRefresh.current;
     if (!user) {
       walletOwner.current = null;
       setWalletAvailable(false);
@@ -113,6 +118,7 @@ export default function AIStudioPage() {
         builderDb
           .from("builder_projects")
           .select("*")
+          .eq("user_id", user.id)
           .order("created_at", { ascending: false }),
         builderDb
           .from("builder_wallets")
@@ -120,6 +126,7 @@ export default function AIStudioPage() {
           .eq("user_id", user.id)
           .maybeSingle(),
       ]);
+      if (refreshId !== latestRefresh.current) return;
       if (p.error) {
         setWalletAvailable(false);
         setNotice("O serviço ainda precisa da instalação do banco da WH Studio AI.");
@@ -139,15 +146,18 @@ export default function AIStudioPage() {
           .from("builder_generations")
           .select("*")
           .eq("project_id", id)
+          .eq("user_id", user.id)
           .order("created_at", { ascending: false });
+        if (refreshId !== latestRefresh.current) return;
         if (error) setNotice("Não foi possível carregar as versões.");
         else setVersions(data || []);
       } else setVersions([]);
     } catch {
+      if (refreshId !== latestRefresh.current) return;
       setWalletAvailable(false);
       setNotice("Não foi possível carregar seus projetos agora. Tente novamente.");
     } finally {
-      if (firstLoadForUser) setWalletLoading(false);
+      if (refreshId === latestRefresh.current && firstLoadForUser) setWalletLoading(false);
     }
   }, [user, id]);
   useEffect(() => {
@@ -165,6 +175,7 @@ export default function AIStudioPage() {
   }, []);
   useEffect(() => {
     void refresh();
+    return () => { latestRefresh.current++; };
   }, [refresh]);
   useEffect(() => {
     if (!user) {
@@ -181,11 +192,12 @@ export default function AIStudioPage() {
     setCode(false);
     setBackend(false);
   }, [id]);
+  const awaitingVersion = versions.some((version) => version.status === "pending");
   useEffect(() => {
-    if (!versions.some((v) => v.status === "pending")) return;
+    if (!awaitingVersion) return;
     const timer = setInterval(() => void refresh(), 4000);
     return () => clearInterval(timer);
-  }, [versions, refresh]);
+  }, [awaitingVersion, refresh]);
   const current =
     versions.find((v) => v.id === selected && v.status === "complete") ||
     versions.find((v) => v.status === "complete");
@@ -390,19 +402,16 @@ export default function AIStudioPage() {
     }
   }
   return (
-    <div className="min-h-screen bg-[#0b0d12] text-slate-100">
-      <header className="sticky top-0 z-40 flex min-h-[68px] flex-wrap items-center justify-between gap-3 border-b border-white/[.08] bg-[#0b0d12]/95 px-4 py-3 backdrop-blur-xl sm:px-5">
+    <div className="min-h-screen bg-[#050507] text-slate-100">
+      <header className="sticky top-0 z-40 flex min-h-[68px] flex-wrap items-center justify-between gap-3 border-b border-white/[.08] bg-[#050507] px-4 py-3 sm:px-5">
         <div className="flex min-w-0 items-center gap-3">
-          <Link to="/" className="font-display text-xl font-bold tracking-tight">
-            WH<span className="text-blue-400">/</span><span className="text-base font-medium text-slate-300">studio</span>
-          </Link>
+          <Link to="/" aria-label="WH Studio · início"><BrandLogo className="h-8 w-28" /></Link>
           <span className="h-5 w-px bg-white/10" aria-hidden="true" />
           <span className="text-sm font-medium text-slate-200">AI Studio</span>
-          <span className="hidden rounded-full border border-blue-400/20 bg-blue-400/[.08] px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider text-blue-200 sm:inline-flex">Beta</span>
         </div>
         <div className="flex min-w-0 flex-wrap items-center justify-end gap-2 text-sm sm:gap-3">
           <span className="rounded-full border border-white/10 bg-white/[.04] px-3 py-2 text-xs text-slate-300" aria-live="polite">
-            {!user ? "Entre para salvar" : walletLoading && !walletAvailable ? "Carregando saldo…" : walletAvailable ? `${balance} créditos` : "Saldo indisponível"}
+            {!user ? "Entre para salvar" : walletLoading && !walletAvailable ? "Carregando saldo…" : walletAvailable && walletOwner.current === user.id ? `${balance} créditos` : "Saldo indisponível"}
           </span>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -459,7 +468,7 @@ export default function AIStudioPage() {
         </p>
       )}
       <main className="grid min-h-[calc(100dvh-68px)] grid-cols-1 min-[640px]:grid-cols-[minmax(250px,0.38fr)_minmax(0,0.62fr)] lg:grid-cols-[370px_minmax(0,1fr)]">
-        <aside className="flex min-h-[620px] flex-col border-b border-white/[.08] bg-[#0d1017] p-4 sm:p-5 min-[640px]:h-[calc(100dvh-68px)] min-[640px]:min-h-0 min-[640px]:max-h-[calc(100dvh-68px)] min-[640px]:overflow-hidden lg:border-b-0 lg:border-r">
+        <aside className="flex min-h-[620px] flex-col border-b border-white/[.08] bg-[#121216] p-4 sm:p-5 min-[640px]:h-[calc(100dvh-68px)] min-[640px]:min-h-0 min-[640px]:max-h-[calc(100dvh-68px)] min-[640px]:overflow-hidden lg:border-b-0 lg:border-r">
           <div className="flex shrink-0 items-center justify-between gap-3">
             <div>
               <p className="eyebrow mb-1.5 text-blue-300">WH Studio AI <span className="text-slate-600">/</span> novo projeto</p>

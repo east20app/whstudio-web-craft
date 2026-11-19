@@ -92,3 +92,18 @@ test("galeria usa capas cadastradas e mantém categorias e páginas individuais"
   await expect(page.getByText("React", { exact: true })).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath("portfolio-projeto.png"), fullPage: true });
 });
+
+test("visitante abre atendimento e o estúdio exige sessão para gerar", async ({ page }, testInfo) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "Abrir central de atendimento" }).click();
+  const chat = page.getByRole("dialog", { name: "Central de atendimento" });
+  await expect(chat).toBeVisible();
+  await page.getByRole("button", { name: "Fechar atendimento" }).click();
+  await expect(chat).toHaveCount(0);
+  await page.getByRole("navigation", { name: "Navegação principal" }).getByRole("link", { name: "WH Studio AI" }).click();
+  await expect(page.getByRole("heading", { name: "Vamos criar juntos?" })).toBeVisible();
+  await page.getByRole("button", { name: /Gestão de tarefas/ }).click();
+  await page.getByRole("button", { name: "Enviar solicitação para gerar versão", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Entre para criar" })).toBeVisible();
+  await page.screenshot({ path: testInfo.outputPath("ai-login.png"), animations: "disabled" });
+});
