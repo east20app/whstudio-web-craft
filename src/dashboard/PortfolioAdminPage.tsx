@@ -27,7 +27,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { usePortfolio, type PortfolioItem } from "@/hooks/usePortfolio";
 import { statusLabels, type ProjectStatus } from "@/config/site";
-import { logActivity } from "@/lib/activity";
+import { usePortfolioCover } from "@/hooks/usePortfolioCover";
 import EmptyState from "./components/EmptyState";
 
 const statusOptions: ProjectStatus[] = ["online", "demo", "em-desenvolvimento", "privado"];
@@ -60,6 +60,11 @@ const emptyDraft: Draft = {
   sortOrder: 0,
   featured: false,
 };
+
+function AdminCover({ url, label, className }: { url: string; label: string; className: string }) {
+  const image = usePortfolioCover(url);
+  return image ? <img src={image} alt={label} loading="lazy" className={className} /> : null;
+}
 
 const PortfolioAdminPage = () => {
   const { data, loading, addProject, updateProject, removeProject } = usePortfolio();
@@ -102,8 +107,7 @@ const PortfolioAdminPage = () => {
       .from("portfolio-covers")
       .upload(path, file, { cacheControl: "31536000", upsert: false, contentType: file.type });
     if (error) return null;
-    const { data: pub } = supabase.storage.from("portfolio-covers").getPublicUrl(path);
-    return pub.publicUrl;
+    return `portfolio-covers/${path}`;
   };
 
   const onFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -162,12 +166,7 @@ const PortfolioAdminPage = () => {
       toast.error("Não foi possível salvar.");
       return;
     }
-    await logActivity({
-      action: editing ? "portfolio.update" : "portfolio.create",
-      entity: "portfolio_projects",
-      entityId: editing?.id ?? null,
-      details: payload.title,
-    });
+
     toast.success(editing ? "Projeto atualizado." : "Projeto adicionado ao portfólio.");
     setOpen(false);
   };
@@ -179,12 +178,7 @@ const PortfolioAdminPage = () => {
       toast.error("Não foi possível excluir.");
       return;
     }
-    await logActivity({
-      action: "portfolio.delete",
-      entity: "portfolio_projects",
-      entityId: toDelete.id,
-      details: toDelete.title,
-    });
+
     toast.success("Projeto excluído do portfólio.");
     setToDelete(null);
   };
@@ -192,12 +186,7 @@ const PortfolioAdminPage = () => {
   const togglePublished = async (p: PortfolioItem) => {
     const ok = await updateProject(p.id, { published: !p.published });
     if (ok) {
-      await logActivity({
-        action: p.published ? "portfolio.unpublish" : "portfolio.publish",
-        entity: "portfolio_projects",
-        entityId: p.id,
-        details: p.title,
-      });
+
       toast.success(p.published ? "Projeto oculto no site." : "Projeto visível no site.");
     }
   };
@@ -226,12 +215,7 @@ const PortfolioAdminPage = () => {
           {data.map((p, i) => (
             <div key={p.id} className="px-5 py-4 flex flex-wrap items-start gap-4">
               {p.coverUrl ? (
-                <img
-                  src={p.coverUrl}
-                  alt=""
-                  className="w-24 h-16 object-cover border border-border hidden sm:block"
-                  loading="lazy"
-                />
+                <AdminCover url={p.coverUrl} label="" className="w-24 h-16 object-cover border border-border hidden sm:block" />
               ) : (
                 <span className="w-24 h-16 border border-border bg-secondary items-center justify-center font-display text-2xl hidden sm:flex" aria-hidden="true">
                   {p.title.slice(0, 2).toUpperCase()}
@@ -316,7 +300,7 @@ const PortfolioAdminPage = () => {
               <span className="field-label">Capa do projeto</span>
               {draft.coverUrl ? (
                 <div className="relative border border-border overflow-hidden">
-                  <img src={draft.coverUrl} alt="Prévia da capa" className="w-full aspect-[4/3] object-cover object-top" />
+                  <AdminCover url={draft.coverUrl} label="Prévia da capa" className="w-full aspect-[4/3] object-cover object-top" />
                   <button
                     type="button"
                     onClick={removeCover}

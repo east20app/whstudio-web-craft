@@ -5,6 +5,8 @@ type TicketRow = Database["public"]["Tables"]["tickets"]["Row"];
 type TicketMessageRow = Database["public"]["Tables"]["ticket_messages"]["Row"];
 
 export type TicketStatus = "aberto" | "em-andamento" | "respondido" | "fechado";
+export const ticketPriorities = { baixa: "Baixa", normal: "Normal", alta: "Alta", urgente: "Urgente" } as const;
+export type TicketPriority = keyof typeof ticketPriorities;
 export type TicketSender = "cliente" | "admin";
 
 export type PublicTicket = {

@@ -2,7 +2,12 @@ import { useState } from "react";
 import { ArrowUpRight, ImageOff } from "lucide-react";
 import { Link } from "react-router-dom";
 import { usePortfolio } from "@/hooks/usePortfolio";
-import { portfolioWebUrl } from "@/lib/portfolio-url";
+import { usePortfolioCover } from "@/hooks/usePortfolioCover";
+
+function ProjectCover({ url, title }: { url?: string; title: string }) {
+  const cover = usePortfolioCover(url);
+  return cover ? <img src={cover} alt={`Capa de ${title}`} loading="lazy" decoding="async" /> : <ImageOff aria-hidden="true" className="text-muted-foreground" />;
+}
 
 export default function Portfolio({ preview = false }: { preview?: boolean }) {
   const { data, loading, error } = usePortfolio(true);
@@ -32,11 +37,10 @@ export default function Portfolio({ preview = false }: { preview?: boolean }) {
         {!loading && !error && !projects.length && <p className="text-muted-foreground">Nenhum projeto publicado nesta seleção.</p>}
         <div className="wh-gallery-grid">
           {projects.map((project) => {
-            const cover = portfolioWebUrl(project.coverUrl);
             return (
               <Link className="wh-project" key={project.id} to={`/portfolio/${project.id}`}>
                 <div className="wh-project-image">
-                  {cover ? <img src={cover} alt={`Capa de ${project.title}`} loading="lazy" decoding="async" /> : <ImageOff aria-hidden="true" className="text-muted-foreground" />}
+                  <ProjectCover url={project.coverUrl} title={project.title} />
                 </div>
                 <div className="wh-project-info"><div><h3>{project.title}</h3><small>{project.category}</small></div><ArrowUpRight aria-hidden="true" size={22} /></div>
               </Link>

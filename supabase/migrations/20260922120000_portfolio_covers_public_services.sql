@@ -5,7 +5,6 @@
 
 -- 1) Imagem de capa no portfólio. O gradiente `color` deixa de ser usado.
 ALTER TABLE public.portfolio_projects ADD COLUMN IF NOT EXISTS cover_url TEXT;
-ALTER TABLE public.portfolio_projects DROP COLUMN IF EXISTS color;
 
 -- 2) Bucket público de capas (imagens via CDN; gravação só de admin).
 INSERT INTO storage.buckets (id, name, public)

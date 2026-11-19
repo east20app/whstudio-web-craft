@@ -13,33 +13,13 @@ export type ActivityEntry = {
   createdAt: string;
 };
 
-/** Registra uma ação do admin no log de atividade (silencioso em caso de erro). */
-export const logActivity = async (input: {
-  action: string;
-  entity: string;
-  entityId?: string | null;
-  details?: string | null;
-}) => {
-  try {
-    const { data } = await supabase.auth.getSession();
-    await supabase.from("activity_log").insert({
-      actor: data.session?.user.email ?? "admin",
-      action: input.action,
-      entity: input.entity,
-      entity_id: input.entityId ?? null,
-      details: input.details ?? null,
-    });
-  } catch {
-    /* log não deve quebrar a operação principal */
-  }
-};
-
 export const fetchActivity = async (limit = 10): Promise<ActivityEntry[]> => {
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("activity_log")
     .select("*")
     .order("created_at", { ascending: false })
     .limit(limit);
+  if (error) throw error;
   return ((data as ActivityRow[]) ?? []).map((r) => ({
     id: r.id,
     actor: r.actor ?? "",

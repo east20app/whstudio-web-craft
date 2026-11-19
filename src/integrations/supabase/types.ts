@@ -516,6 +516,7 @@ export type Database = {
           id: string
           last_message_at: string
           name: string
+          priority: string
           status: string
           subject: string
           updated_at: string
@@ -528,6 +529,7 @@ export type Database = {
           id?: string
           last_message_at?: string
           name?: string
+          priority?: string
           status?: string
           subject?: string
           updated_at?: string
@@ -540,6 +542,7 @@ export type Database = {
           id?: string
           last_message_at?: string
           name?: string
+          priority?: string
           status?: string
           subject?: string
           updated_at?: string
@@ -863,6 +866,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      reply_to_ticket: {
+        Args: { _ticket_id: string; _message_id: string; _body: string }
+        Returns: boolean
+      }
       submit_budget_request: {
         Args: {
           request_id: string

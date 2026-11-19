@@ -18,11 +18,17 @@ alter table public.builder_projects enable row level security;
 alter table public.builder_wallets enable row level security;
 alter table public.builder_generations enable row level security;
 alter table public.builder_orders enable row level security;
+drop policy if exists projects_read on public.builder_projects;
 create policy projects_read on public.builder_projects for select to authenticated using(user_id=auth.uid());
+drop policy if exists projects_insert on public.builder_projects;
 create policy projects_insert on public.builder_projects for insert to authenticated with check(user_id=auth.uid());
+drop policy if exists projects_update on public.builder_projects;
 create policy projects_update on public.builder_projects for update to authenticated using(user_id=auth.uid()) with check(user_id=auth.uid());
+drop policy if exists wallet_read on public.builder_wallets;
 create policy wallet_read on public.builder_wallets for select to authenticated using(user_id=auth.uid());
+drop policy if exists generations_read on public.builder_generations;
 create policy generations_read on public.builder_generations for select to authenticated using(user_id=auth.uid());
+drop policy if exists orders_read on public.builder_orders;
 create policy orders_read on public.builder_orders for select to authenticated using(user_id=auth.uid());
 create or replace function public.builder_reserve(uid uuid,pid uuid,gid uuid,brief text) returns jsonb language plpgsql security definer set search_path=public as $$
 declare job builder_generations; remaining integer; expired integer;

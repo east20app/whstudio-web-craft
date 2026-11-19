@@ -36,6 +36,7 @@ const ServicesPage = lazy(() => import("./dashboard/ServicesPage"));
 const MessagesPage = lazy(() => import("./dashboard/MessagesPage"));
 const SettingsPage = lazy(() => import("./dashboard/SettingsPage"));
 const FeedbacksPage = lazy(() => import("./dashboard/FeedbacksPage"));
+const ActivityPage = lazy(() => import("./dashboard/ActivityPage"));
 const TicketsPage = lazy(() => import("./dashboard/TicketsPage"));
 const PortfolioAdminPage = lazy(() => import("./dashboard/PortfolioAdminPage"));
 
@@ -96,6 +97,7 @@ const App = () => (
                 <Route path="projetos" element={<ProjectsPage />} />
                 <Route path="servicos" element={<ServicesPage />} />
                 <Route path="mensagens" element={<MessagesPage />} />
+                <Route path="atividades" element={<ActivityPage />} />
                 <Route path="tickets" element={<TicketsPage />} />
                 <Route path="portfolio" element={<PortfolioAdminPage />} />
                 <Route path="feedbacks" element={<FeedbacksPage />} />

@@ -39,7 +39,7 @@ const Overview = () => {
   const [activity, setActivity] = useState<ActivityEntry[]>([]);
 
   useEffect(() => {
-    fetchActivity(12).then(setActivity);
+    void fetchActivity(12).then(setActivity).catch(() => setActivity([]));
   }, []);
 
   const activeClients = clients.filter((c) => c.status === "ativo").length;

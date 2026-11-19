@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { MessageSquare, Send, Trash2, Loader2, ArrowLeft, FilePlus2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import EmptyState from "./components/EmptyState";
 import { useTickets, useTicketMessages } from "./ticketsStore";
 import { useBudgets } from "./store";
-import { ticketStatusLabel, type TicketStatus } from "@/lib/tickets";
+import { ticketStatusLabel, ticketPriorities, type TicketPriority, type TicketStatus } from "@/lib/tickets";
 import { toast } from "sonner";
 
 const statusDot: Record<TicketStatus, string> = {
@@ -26,11 +26,14 @@ const timeAgo = (iso: string) => {
 };
 
 const TicketsPage = () => {
-  const { tickets, loading, setStatus, markRead, reply, removeTicket, unread } = useTickets();
+  const { tickets, loading, setStatus, setPriority, markRead, reply, unread } = useTickets();
   const [selected, setSelected] = useState<string | null>(null);
   const [draft, setDraft] = useState("");
   const [sending, setSending] = useState(false);
   const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [priorityFilter, setPriorityFilter] = useState("");
+  const attempt = useRef<{ ticketId: string; body: string; messageId: string }>();
   const { addBudget } = useBudgets();
 
   const ticket = tickets.find((t) => t.id === selected) ?? null;
@@ -38,11 +41,12 @@ const TicketsPage = () => {
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    if (!q) return tickets;
     return tickets.filter((t) =>
-      [t.name, t.email, t.subject].some((v) => v.toLowerCase().includes(q))
+      (!statusFilter || t.status === statusFilter) &&
+      (!priorityFilter || t.priority === priorityFilter) &&
+      (!q || [t.id, t.name, t.email, t.subject].some((value) => value.toLowerCase().includes(q)))
     );
-  }, [tickets, search]);
+  }, [tickets, search, statusFilter, priorityFilter]);
 
   const openTicket = (id: string) => {
     setSelected(id);
@@ -52,18 +56,22 @@ const TicketsPage = () => {
 
   const send = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!ticket || !draft.trim()) return;
+    if (!ticket || ticket.status === "fechado" || !draft.trim() || sending) return;
     setSending(true);
-    const ok = await reply(ticket.id, draft);
+    const body = draft.trim();
+    if (attempt.current?.ticketId !== ticket.id || attempt.current.body !== body) {
+      attempt.current = { ticketId: ticket.id, body, messageId: crypto.randomUUID() };
+    }
+    const ok = await reply(ticket.id, attempt.current.messageId, body);
     setSending(false);
-    if (ok) setDraft("");
+    if (ok) { attempt.current = undefined; setDraft(""); }
     else toast.error("Não foi possível enviar a resposta");
   };
 
   const close = async () => {
     if (!ticket) return;
     const ok = await setStatus(ticket.id, "fechado");
-    if (!ok) return;
+    if (!ok) { toast.error("Não foi possível encerrar o ticket"); return; }
     toast.success("Ticket encerrado", {
       description: "Quer registrar um orçamento com esses dados?",
       action: {
@@ -88,7 +96,7 @@ const TicketsPage = () => {
     return (
       <div className="space-y-6 max-w-3xl">
         <button
-          onClick={() => setSelected(null)}
+          disabled={sending} onClick={() => setSelected(null)}
           className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground"
           aria-label="Voltar para a lista de tickets"
         >
@@ -100,6 +108,7 @@ const TicketsPage = () => {
             Atendimento / Ticket
           </p>
           <h2 className="text-2xl font-bold tracking-tight mt-2">{ticket.subject}</h2>
+          <p className="break-all font-mono text-xs text-muted-foreground">Protocolo {ticket.id}</p>
           <p className="text-sm text-muted-foreground mt-1">
             {ticket.name} ·{" "}
             <a href={`mailto:${ticket.email}`} className="hover:text-foreground">
@@ -111,24 +120,23 @@ const TicketsPage = () => {
               <span className={`h-1.5 w-1.5 rounded-full ${statusDot[ticket.status]}`} aria-hidden="true" />
               {ticketStatusLabel[ticket.status]}
             </span>
-            <Button size="sm" variant="outline" onClick={() => setStatus(ticket.id, "em-andamento")}>
-              Em andamento
+            <label className="text-sm">Prioridade
+              <select className="ml-2 border border-border bg-background p-2" value={ticket.priority} onChange={async (event) => {
+                const ok = await setPriority(ticket.id, event.target.value as TicketPriority);
+                if (!ok) toast.error("Não foi possível atualizar a prioridade");
+              }}>
+                {Object.entries(ticketPriorities).map(([key, label]) => <option key={key} value={key}>{label}</option>)}
+              </select>
+            </label>
+            <Button size="sm" variant="outline" disabled={sending} onClick={async () => {
+              const ok = await setStatus(ticket.id, ticket.status === "fechado" ? "aberto" : "em-andamento");
+              if (!ok) toast.error("Não foi possível atualizar o status");
+            }}>
+              {ticket.status === "fechado" ? "Reabrir" : "Em andamento"}
             </Button>
-            <Button size="sm" variant="outline" onClick={close}>
+            {ticket.status !== "fechado" && <Button size="sm" variant="outline" onClick={close} disabled={sending}>
               <FilePlus2 className="w-3.5 h-3.5 mr-1.5" aria-hidden="true" /> Encerrar
-            </Button>
-            <Button
-              size="sm"
-              variant="ghost"
-              aria-label="Excluir ticket"
-              onClick={async () => {
-                await removeTicket(ticket.id);
-                setSelected(null);
-                toast.success("Ticket removido");
-              }}
-            >
-              <Trash2 className="w-3.5 h-3.5" aria-hidden="true" />
-            </Button>
+            </Button>}
           </div>
         </header>
 
@@ -159,9 +167,11 @@ const TicketsPage = () => {
           )}
         </div>
 
-        <form onSubmit={send} className="flex items-end gap-2 border-t border-border pt-4">
+        {ticket.status === "fechado" ? <p className="text-sm text-muted-foreground">Este ticket foi encerrado.</p> : <form onSubmit={send} className="flex items-end gap-2 border-t border-border pt-4">
           <Textarea
             rows={2}
+            maxLength={5000}
+            disabled={sending}
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             placeholder="Responder como WH Studio…"
@@ -175,7 +185,7 @@ const TicketsPage = () => {
               <Send className="w-4 h-4" aria-hidden="true" />
             )}
           </Button>
-        </form>
+        </form>}
       </div>
     );
   }
@@ -195,14 +205,24 @@ const TicketsPage = () => {
         <p className="text-muted-foreground text-sm mt-1">Conversas abertas pelo site, com histórico completo.</p>
       </header>
 
+      <div className="flex flex-wrap gap-2">
       <Input
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        placeholder="Buscar por nome, e-mail ou assunto"
+        placeholder="Buscar por protocolo, nome ou assunto"
         aria-label="Buscar tickets"
         className="max-w-sm"
       />
 
+      <select aria-label="Filtrar por status" className="border border-border bg-background px-2" value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
+        <option value="">Todos os status</option>
+        {Object.entries(ticketStatusLabel).map(([key, label]) => <option key={key} value={key}>{label}</option>)}
+      </select>
+      <select aria-label="Filtrar por prioridade" className="border border-border bg-background px-2" value={priorityFilter} onChange={(event) => setPriorityFilter(event.target.value)}>
+        <option value="">Todas as prioridades</option>
+        {Object.entries(ticketPriorities).map(([key, label]) => <option key={key} value={key}>{label}</option>)}
+      </select>
+      </div>
       {loading ? (
         <p className="text-sm text-muted-foreground">Carregando…</p>
       ) : filtered.length === 0 ? (
@@ -233,7 +253,7 @@ const TicketsPage = () => {
               </div>
               <div className="text-right shrink-0">
                 <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-                  {ticketStatusLabel[t.status]}
+                  {ticketStatusLabel[t.status]} · {ticketPriorities[t.priority]}
                 </p>
                 <p className="text-xs text-muted-foreground/70 mt-0.5 tabular-nums">{timeAgo(t.lastMessageAt)}</p>
               </div>

@@ -46,6 +46,7 @@ $function$;
 GRANT EXECUTE ON FUNCTION public.is_admin() TO authenticated;
 
 -- 4) RPC de serviços: agora expõe ícone e ordenação controlada pelo painel.
+DROP FUNCTION IF EXISTS public.get_public_services();
 CREATE OR REPLACE FUNCTION public.get_public_services()
 RETURNS TABLE (id UUID, name TEXT, description TEXT, price TEXT, icon TEXT, sort_order INTEGER)
 LANGUAGE sql
@@ -63,6 +64,7 @@ REVOKE ALL ON FUNCTION public.get_public_services() FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION public.get_public_services() TO anon, authenticated;
 
 -- 5) RPC de portfólio: agora também expõe o destaque (thumb grande no grid).
+DROP FUNCTION IF EXISTS public.get_public_portfolio();
 CREATE OR REPLACE FUNCTION public.get_public_portfolio()
 RETURNS TABLE (
   id UUID,

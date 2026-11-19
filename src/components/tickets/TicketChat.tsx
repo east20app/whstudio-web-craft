@@ -214,6 +214,7 @@ export const TicketChatProvider = ({ children }: { children: React.ReactNode }) 
                     {statusText}
                   </span>
                 )}
+                {ticket && <p className="break-all text-xs text-muted-foreground">Protocolo {ticket.id}</p>}
               </div>
               <button
                 onClick={() => setOpen(false)}

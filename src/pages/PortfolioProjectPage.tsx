@@ -7,6 +7,7 @@ import CTAFinal from "@/components/CTAFinal";
 import Seo from "@/components/Seo";
 import { statusLabels } from "@/config/site";
 import { usePortfolio } from "@/hooks/usePortfolio";
+import { usePortfolioCover } from "@/hooks/usePortfolioCover";
 import { portfolioWebUrl } from "@/lib/portfolio-url";
 
 const PortfolioProjectPage = () => {
@@ -14,7 +15,7 @@ const PortfolioProjectPage = () => {
   const { data: projects, loading, error } = usePortfolio(true);
   const [reloadKey, setReloadKey] = useState(0);
   const project = projects.find((item) => item.id === projectId);
-  const cover = portfolioWebUrl(project?.coverUrl);
+  const cover = usePortfolioCover(project?.coverUrl);
   const liveUrl = project?.status === "privado" ? null : portfolioWebUrl(project?.url);
   const host = liveUrl ? new URL(liveUrl).host : "";
 

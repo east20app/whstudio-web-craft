@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { Archive, BriefcaseBusiness, CircleDollarSign, Image, LayoutDashboard, LogOut, Menu, MessageCircle, Settings, Star, Ticket, Users, X } from "lucide-react";
+import { Activity, Archive, BriefcaseBusiness, CircleDollarSign, Image, LayoutDashboard, LogOut, Menu, MessageCircle, Settings, Star, Ticket, Users, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { signOut, useAuth, useSettings } from "./store";
@@ -16,6 +16,7 @@ const items = [
   { to: "/dashboard/mensagens", label: "Mensagens", icon: MessageCircle },
   { to: "/dashboard/feedbacks", label: "Feedbacks", icon: Star },
   { to: "/dashboard/portfolio", label: "Portfólio", icon: Image },
+  { to: "/dashboard/atividades", label: "Atividades", icon: Activity },
   { to: "/dashboard/configuracoes", label: "Configurações", icon: Settings },
 ];
 

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import type { TicketStatus, TicketSender } from "@/lib/tickets";
+import type { TicketStatus, TicketSender, TicketPriority } from "@/lib/tickets";
 import type { Database } from "@/integrations/supabase/types";
 
 type TicketRow = Database["public"]["Tables"]["tickets"]["Row"];
@@ -12,6 +12,7 @@ export type AdminTicket = {
   email: string;
   subject: string;
   status: TicketStatus;
+  priority: TicketPriority;
   createdAt: string;
   lastMessageAt: string;
   adminUnread: number;
@@ -39,6 +40,7 @@ const mapTicket = (r: TicketRow): AdminTicket => ({
   email: r.email ?? "",
   subject: r.subject ?? "",
   status: (r.status ?? "aberto") as TicketStatus,
+  priority: (r.priority ?? "normal") as TicketPriority,
   createdAt: r.created_at,
   lastMessageAt: r.last_message_at ?? r.created_at,
   adminUnread: r.admin_unread ?? 0,
@@ -84,22 +86,18 @@ export const useTickets = () => {
     await refresh();
   };
 
-  const reply = async (id: string, body: string) => {
-    const { error } = await supabase.from("ticket_messages").insert({
-      ticket_id: id,
-      sender: "admin",
-      body: body.trim(),
+  const setPriority = async (id: string, priority: TicketPriority) => {
+    const { data, error } = await supabase.from("tickets").update({ priority }).eq("id", id).select("id").maybeSingle();
+    if (!error && data) await refresh();
+    return !error && !!data;
+  };
+
+  const reply = async (id: string, messageId: string, body: string) => {
+    const { data, error } = await supabase.rpc("reply_to_ticket", {
+      _ticket_id: id, _message_id: messageId, _body: body.trim(),
     });
-    if (error) {
-      console.error("useTickets.reply insert", error);
-      return false;
-    }
-    await supabase
-      .from("tickets")
-      .update({ status: "respondido", last_message_at: new Date().toISOString(), admin_unread: 0 })
-      .eq("id", id);
-    await refresh();
-    return true;
+    if (!error && data) await refresh();
+    return !error && data === true;
   };
 
   const removeTicket = async (id: string) => {
@@ -111,7 +109,7 @@ export const useTickets = () => {
   const unread = tickets.filter((t) => t.adminUnread > 0 && t.status !== "fechado").length;
   const openCount = tickets.filter((t) => t.status !== "fechado").length;
 
-  return { tickets, loading, refresh, setStatus, markRead, reply, removeTicket, unread, openCount };
+  return { tickets, loading, refresh, setStatus, setPriority, markRead, reply, removeTicket, unread, openCount };
 };
 
 /** Mensagens de um ticket específico (admin), com realtime. */
@@ -162,5 +160,5 @@ export const useTicketMessages = (ticketId: string | null) => {
     };
   }, [ticketId, refresh]);
 
-  return { messages, loading, refresh };
+  return { messages: messages.filter((message) => message.ticketId === ticketId), loading, refresh };
 };
