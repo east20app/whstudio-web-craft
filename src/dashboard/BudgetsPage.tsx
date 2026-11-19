@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Search, Trash2, MessageCircle } from "lucide-react";
+import { Search, Trash2, Mail } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -54,7 +54,7 @@ const BudgetsPage = () => {
   const filtered = useMemo(
     () =>
       budgets.filter((b) => {
-        const matchSearch = b.client.toLowerCase().includes(search.toLowerCase());
+        const matchSearch = [b.client, b.contact, b.service, b.id].some((value) => value.toLowerCase().includes(search.trim().toLowerCase()));
         const matchStatus = filter === "all" || b.status === filter;
         return matchSearch && matchStatus;
       }),
@@ -86,7 +86,7 @@ const BudgetsPage = () => {
         <div className="relative flex-1">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Buscar por cliente..."
+            placeholder="Buscar cliente, serviço ou protocolo…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="pl-9"
@@ -131,7 +131,14 @@ const BudgetsPage = () => {
               {filtered.map((b) => (
                 <TableRow key={b.id}>
                   <TableCell className="font-medium">{b.client}</TableCell>
-                  <TableCell>{b.service}</TableCell>
+                  <TableCell>
+                    {b.service}
+                    <details className="mt-2 text-xs text-muted-foreground">
+                      <summary className="cursor-pointer">Detalhes da solicitação</summary>
+                      <p className="mt-2 break-all font-mono">{b.id}</p>
+                      {b.notes && <p className="mt-2 max-w-sm whitespace-pre-wrap break-words">{b.notes}</p>}
+                    </details>
+                  </TableCell>
                   <TableCell className="hidden md:table-cell text-muted-foreground">{b.contact}</TableCell>
                   <TableCell className="hidden md:table-cell text-muted-foreground">
                     {new Date(b.date).toLocaleDateString("pt-BR")}
@@ -154,17 +161,11 @@ const BudgetsPage = () => {
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-1">
-                      <Button size="icon" variant="ghost" asChild title="Responder no WhatsApp">
-                        <a
-                          href={`https://wa.me/?text=${encodeURIComponent(
-                            `Olá ${b.client}, sobre seu orçamento de ${b.service}...`
-                          )}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <MessageCircle className="w-4 h-4" />
-                        </a>
-                      </Button>
+                      {/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(b.contact) && (
+                        <Button size="icon" variant="ghost" asChild>
+                          <a href={`mailto:${encodeURIComponent(b.contact)}?subject=${encodeURIComponent(`Orçamento WH Studio · ${b.id}`)}`} aria-label="Responder por e-mail"><Mail className="w-4 h-4" /></a>
+                        </Button>
+                      )}
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
                           <Button size="icon" variant="ghost" className="text-red-400 hover:text-red-300">

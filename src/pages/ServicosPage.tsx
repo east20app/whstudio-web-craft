@@ -25,12 +25,18 @@ const EXAMPLE_BY_TITLE: Record<string, string> = {
   "sistema de delivery": "Serra Delivery",
 };
 
-const anchorFor = (title: string) => `/portfolio#projeto-${title.toLowerCase().replace(/\s+/g, "-")}`;
+
 
 const ServicosPage = () => {
   const { data: portfolio } = usePortfolio(true);
   const live = usePublicServices();
-  const servicesToShow = live && live.length > 0 ? live : configServices.map(toPublicService);
+  const servicesToShow = [
+    ...configServices.map((service) => {
+      const configured = live?.find((entry) => normalize(entry.title) === normalize(service.title));
+      return { ...(configured ?? toPublicService(service)), key: service.id };
+    }),
+    ...(live ?? []).filter((entry) => !configServices.some((service) => normalize(service.title) === normalize(entry.title))),
+  ];
 
   return (
   <>
@@ -87,11 +93,12 @@ const ServicosPage = () => {
               return (
                 <motion.article
                   key={s.key}
+                  id={s.key}
                   initial={{ opacity: 0, y: 12 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.05, duration: 0.4 }}
-                  className="py-10 border-b border-border"
+                  className="scroll-mt-24 py-10 border-b border-border"
                 >
                   <div className="flex items-start gap-6 md:gap-8">
                     <div className="w-12 h-12 md:w-14 md:h-14 border border-border bg-card flex items-center justify-center shrink-0">
@@ -102,7 +109,7 @@ const ServicosPage = () => {
                         <h3 className="font-display text-2xl md:text-3xl">{s.title}</h3>
                         {example && (
                           <Link
-                            to={anchorFor(example.title)}
+                            to={`/portfolio/${example.id}`}
                             className="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-primary hover:underline shrink-0"
                           >
                             Exemplo real: {example.title}
@@ -110,7 +117,8 @@ const ServicosPage = () => {
                           </Link>
                         )}
                       </div>
-                      <p className="text-sm text-muted-foreground mb-5 max-w-[55ch]">{s.short}</p>
+                      <p className="text-sm text-muted-foreground mb-5 max-w-[55ch]">{s.desc}</p>
+                      <Link to={`/orcamento?servico=${encodeURIComponent(s.key)}`} className="wh-text-link mb-5">Solicitar orçamento <ArrowUpRight size={16} /></Link>
                       {s.benefits.length > 0 && (
                         <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-2.5">
                           {s.benefits.map((b) => (

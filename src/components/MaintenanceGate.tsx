@@ -1,6 +1,7 @@
 import { Loader2, MessageCircle, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useMaintenanceMode } from "@/hooks/useMaintenanceMode";
+import { useAdminAccess } from "@/dashboard/useAdminAccess";
 import { useAuth } from "@/dashboard/store";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import BrandLogo from "@/components/BrandLogo";
@@ -12,9 +13,10 @@ import BrandLogo from "@/components/BrandLogo";
 const MaintenanceGate = ({ children }: { children: React.ReactNode }) => {
   const { active, message, eta, loaded } = useMaintenanceMode();
   const { user, loading } = useAuth();
+  const { isAdmin, checking } = useAdminAccess(active ? user?.id : undefined);
   const settings = useSiteSettings();
 
-  if (!loaded || loading) {
+  if (!loaded || (active && (loading || checking))) {
     return (
       <div className="min-h-screen grid place-items-center bg-background">
         <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" aria-label="Carregando" />
@@ -22,7 +24,7 @@ const MaintenanceGate = ({ children }: { children: React.ReactNode }) => {
     );
   }
 
-  if (!active || user) return <>{children}</>;
+  if (!active || isAdmin) return <>{children}</>;
 
   return (
     <main className="min-h-screen grid place-items-center bg-background px-6 py-16">

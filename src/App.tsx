@@ -8,20 +8,19 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Index from "./pages/Index.tsx";
-import ServicosPage from "./pages/ServicosPage.tsx";
-import SistemasPage from "./pages/SistemasPage.tsx";
-import OrcamentoPage from "./pages/OrcamentoPage.tsx";
-import PortfolioPage from "./pages/PortfolioPage.tsx";
-import ContatoPage from "./pages/ContatoPage.tsx";
-import SobrePage from "./pages/SobrePage.tsx";
 import NotFound from "./pages/NotFound.tsx";
-import FeedbackPublicPage from "./pages/FeedbackPublicPage.tsx";
 import MaintenanceGate from "./components/MaintenanceGate";
-import CinematicEntrance from "./components/CinematicEntrance";
 import { TicketChatProvider } from "./components/tickets/TicketChat";
 
 // Dashboard e páginas pesadas só carregam quando a rota abre —
 // mantém o bundle do site público enxuto.
+const ServicosPage = lazy(() => import("./pages/ServicosPage"));
+const SistemasPage = lazy(() => import("./pages/SistemasPage"));
+const OrcamentoPage = lazy(() => import("./pages/OrcamentoPage"));
+const PortfolioPage = lazy(() => import("./pages/PortfolioPage"));
+const ContatoPage = lazy(() => import("./pages/ContatoPage"));
+const SobrePage = lazy(() => import("./pages/SobrePage"));
+const FeedbackPublicPage = lazy(() => import("./pages/FeedbackPublicPage"));
 const DashboardLayout = lazy(() => import("./dashboard/DashboardLayout"));
 const AIStudioPage = lazy(() => import("./pages/AIStudioPage"));
 const RequireAuth = lazy(() =>
@@ -61,11 +60,11 @@ const App = () => (
               <Route path="/ai/projetos/:id" element={<Suspense fallback={<PageLoader />}><AIStudioPage /></Suspense>} />
               <Route
                 element={
-                  <CinematicEntrance><MaintenanceGate>
+                  <MaintenanceGate>
                     <TicketChatProvider>
-                      <Outlet />
+                      <Suspense fallback={<PageLoader />}><Outlet /></Suspense>
                     </TicketChatProvider>
-                  </MaintenanceGate></CinematicEntrance>
+                  </MaintenanceGate>
                 }
               >
                 <Route path="/" element={<Index />} />

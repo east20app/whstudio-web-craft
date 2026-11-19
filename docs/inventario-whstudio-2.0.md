@@ -1,0 +1,356 @@
+# Inventário inicial da WH Studio
+
+Base Git `f5628f2aa7b2deaeba8d8012ae17da8854e7dd94`.
+
+## Rotas declaradas
+
+- `/ai`
+- `/ai/projetos/:id`
+- `/`
+- `/servicos`
+- `/sistemas`
+- `/orcamento`
+- `/planos`
+- `/portfolio/:projectId`
+- `/portfolio`
+- `/contato`
+- `/sobre`
+- `/feedback/:token`
+- `/dashboard/login`
+- `/dashboard`
+- `orcamentos` sob `/dashboard`
+- `clientes` sob `/dashboard`
+- `projetos` sob `/dashboard`
+- `servicos` sob `/dashboard`
+- `mensagens` sob `/dashboard`
+- `tickets` sob `/dashboard`
+- `portfolio` sob `/dashboard`
+- `feedbacks` sob `/dashboard`
+- `configuracoes` sob `/dashboard`
+- `*`
+- `*`
+
+## Componentes, páginas, hooks e bibliotecas
+
+- `src/App.tsx`
+- `src/assets/hero-bg.jpg`
+- `src/assets/wh-studio-logo.png`
+- `src/components/About.tsx`
+- `src/components/AvailabilityBanner.tsx`
+- `src/components/BrandLogo.tsx`
+- `src/components/BuilderBackend.tsx`
+- `src/components/BuilderFiles.tsx`
+- `src/components/BuilderPreview.tsx`
+- `src/components/CTAFinal.tsx`
+- `src/components/CinematicEntrance.tsx`
+- `src/components/Contact.tsx`
+- `src/components/Entregas.tsx`
+- `src/components/FAQ.tsx`
+- `src/components/Footer.tsx`
+- `src/components/Header.tsx`
+- `src/components/Hero.tsx`
+- `src/components/HowItWorks.tsx`
+- `src/components/MaintenanceGate.tsx`
+- `src/components/NavLink.tsx`
+- `src/components/Portfolio.tsx`
+- `src/components/ProjectInquiry.tsx`
+- `src/components/ProvaConfianca.tsx`
+- `src/components/Seo.tsx`
+- `src/components/Services.tsx`
+- `src/components/SignatureScribble.tsx`
+- `src/components/SocialProof.tsx`
+- `src/components/SolucoesEmpresas.tsx`
+- `src/components/Testimonials.tsx`
+- `src/components/ThemeToggle.tsx`
+- `src/components/TiposDeProjetos.tsx`
+- `src/components/WhAI.tsx`
+- `src/components/tickets/TicketChat.tsx`
+- `src/components/ui/accordion.tsx`
+- `src/components/ui/alert-dialog.tsx`
+- `src/components/ui/alert.tsx`
+- `src/components/ui/aspect-ratio.tsx`
+- `src/components/ui/avatar.tsx`
+- `src/components/ui/badge.tsx`
+- `src/components/ui/breadcrumb.tsx`
+- `src/components/ui/button.tsx`
+- `src/components/ui/calendar.tsx`
+- `src/components/ui/card.tsx`
+- `src/components/ui/carousel.tsx`
+- `src/components/ui/chart.tsx`
+- `src/components/ui/checkbox.tsx`
+- `src/components/ui/collapsible.tsx`
+- `src/components/ui/command.tsx`
+- `src/components/ui/context-menu.tsx`
+- `src/components/ui/dialog.tsx`
+- `src/components/ui/drawer.tsx`
+- `src/components/ui/dropdown-menu.tsx`
+- `src/components/ui/form.tsx`
+- `src/components/ui/hover-card.tsx`
+- `src/components/ui/hover-footer.tsx`
+- `src/components/ui/input-otp.tsx`
+- `src/components/ui/input.tsx`
+- `src/components/ui/label.tsx`
+- `src/components/ui/menubar.tsx`
+- `src/components/ui/navigation-menu.tsx`
+- `src/components/ui/pagination.tsx`
+- `src/components/ui/popover.tsx`
+- `src/components/ui/progress.tsx`
+- `src/components/ui/radio-group.tsx`
+- `src/components/ui/resizable.tsx`
+- `src/components/ui/scroll-area.tsx`
+- `src/components/ui/select.tsx`
+- `src/components/ui/separator.tsx`
+- `src/components/ui/sheet.tsx`
+- `src/components/ui/sidebar.tsx`
+- `src/components/ui/skeleton.tsx`
+- `src/components/ui/slider.tsx`
+- `src/components/ui/sonner.tsx`
+- `src/components/ui/switch.tsx`
+- `src/components/ui/table.tsx`
+- `src/components/ui/tabs.tsx`
+- `src/components/ui/textarea.tsx`
+- `src/components/ui/toast.tsx`
+- `src/components/ui/toaster.tsx`
+- `src/components/ui/toggle-group.tsx`
+- `src/components/ui/toggle.tsx`
+- `src/components/ui/tooltip.tsx`
+- `src/components/ui/use-toast.ts`
+- `src/config/site.ts`
+- `src/dashboard/BudgetsPage.tsx`
+- `src/dashboard/ClientsPage.tsx`
+- `src/dashboard/DashboardLayout.tsx`
+- `src/dashboard/FeedbacksPage.tsx`
+- `src/dashboard/LoginPage.tsx`
+- `src/dashboard/MessagesPage.tsx`
+- `src/dashboard/Overview.tsx`
+- `src/dashboard/PortfolioAdminPage.tsx`
+- `src/dashboard/ProjectsPage.tsx`
+- `src/dashboard/RequireAuth.tsx`
+- `src/dashboard/ServicesPage.tsx`
+- `src/dashboard/SettingsPage.tsx`
+- `src/dashboard/TicketsPage.tsx`
+- `src/dashboard/components/EmptyState.tsx`
+- `src/dashboard/components/StatCard.tsx`
+- `src/dashboard/components/StatusPill.tsx`
+- `src/dashboard/store.ts`
+- `src/dashboard/ticketsStore.ts`
+- `src/dashboard/types.ts`
+- `src/dashboard/useAdminAccess.ts`
+- `src/hooks/use-mobile.tsx`
+- `src/hooks/use-toast.ts`
+- `src/hooks/useAvailability.ts`
+- `src/hooks/useMaintenanceMode.ts`
+- `src/hooks/usePortfolio.ts`
+- `src/hooks/usePublicServices.ts`
+- `src/hooks/useSiteSettings.ts`
+- `src/index.css`
+- `src/integrations/lovable/index.ts`
+- `src/integrations/supabase/client.ts`
+- `src/integrations/supabase/previewAuthStorage.ts`
+- `src/integrations/supabase/types.ts`
+- `src/lib/activity.ts`
+- `src/lib/builder-backend.ts`
+- `src/lib/builder.ts`
+- `src/lib/csv.ts`
+- `src/lib/portfolio-url.ts`
+- `src/lib/serviceIcons.ts`
+- `src/lib/tickets.ts`
+- `src/lib/utils.ts`
+- `src/main.tsx`
+- `src/pages/AIStudioPage.tsx`
+- `src/pages/ContatoPage.tsx`
+- `src/pages/FeedbackPublicPage.tsx`
+- `src/pages/Index.tsx`
+- `src/pages/NotFound.tsx`
+- `src/pages/OrcamentoPage.tsx`
+- `src/pages/PortfolioPage.tsx`
+- `src/pages/PortfolioProjectPage.tsx`
+- `src/pages/ServicosPage.tsx`
+- `src/pages/SistemasPage.tsx`
+- `src/pages/SobrePage.tsx`
+- `src/test/admin-bootstrap.test.ts`
+- `src/test/builder-model.test.ts`
+- `src/test/builder.test.ts`
+- `src/test/example.test.ts`
+- `src/test/setup.ts`
+- `src/vite-env.d.ts`
+
+## Migrações e Edge Functions
+
+- `drizzle/migrations/0000_first_account_admin.sql`
+- `drizzle/migrations/0001_remove_unrestricted_portfolio_cover_reads.sql`
+- `drizzle/migrations/meta/0000_snapshot.json`
+- `drizzle/migrations/meta/0001_snapshot.json`
+- `drizzle/migrations/meta/_journal.json`
+- `drizzle/schema.ts`
+- `supabase/config.toml`
+- `supabase/functions/_shared/artifact.ts`
+- `supabase/functions/_shared/model.ts`
+- `supabase/functions/deno.json`
+- `supabase/functions/wh-builder-webhook/index.ts`
+- `supabase/functions/wh-builder/index.ts`
+- `supabase/migrations/20260503020827_fee68c8e-e34c-494a-b0b6-b621e217ce11.sql`
+- `supabase/migrations/20260503020856_8ea936f0-8163-465a-b2ad-eeec099388d1.sql`
+- `supabase/migrations/20260503020922_2a0da269-5715-4596-89f0-962fca525e92.sql`
+- `supabase/migrations/20260503021939_6263cfc4-ece4-424d-bd28-f889045d9c61.sql`
+- `supabase/migrations/20260609184855_59422d8d-6c90-486a-8130-98fa1f384ff3.sql`
+- `supabase/migrations/20260806131833_dad71bb5-d9fc-458f-a0b1-5137a2d95cc3.sql`
+- `supabase/migrations/20260806131911_103cbb77-cdca-4b9d-9d8b-93d0061a54eb.sql`
+- `supabase/migrations/20260807014731_8f2e1513-7f54-4cfb-8bf5-3f9c5e6b0cd7.sql`
+- `supabase/migrations/20260809142131_dc6aa21f-ac09-40e2-8d9a-fced2c076cf4.sql`
+- `supabase/migrations/20260809142357_8cb6c944-f004-4f92-8665-f4775adb0c4b.sql`
+- `supabase/migrations/20260809143000_91280648-2d27-4745-ad6d-60411c3014e1.sql`
+- `supabase/migrations/20260817194909_55023f0e-fa3c-4a27-b890-965cdca51920.sql`
+- `supabase/migrations/20260817195318_ddc6264d-49d7-4319-8d41-5176702ce3b0.sql`
+- `supabase/migrations/20260817195424_bdd73004-17c9-4054-a89d-c08304374d91.sql`
+- `supabase/migrations/20260820003300_426d8d74-21eb-4e89-ada0-acb6fc8a54e1.sql`
+- `supabase/migrations/20260912171855_77e577c3-bfbb-4f75-ac7f-1c7b981de656.sql`
+- `supabase/migrations/20260922120000_portfolio_covers_public_services.sql`
+- `supabase/migrations/20260923090000_admin_roles_services_sort_featured.sql`
+- `supabase/migrations/20261006035105_907df11d-7529-4aed-8ea5-f6092defcfc8.sql`
+- `supabase/migrations/20261006090000_builder.sql`
+- `supabase/migrations/20261007004803_fc310457-8403-4791-bc4e-de754b13ffb7.sql`
+
+## Tabelas declaradas
+
+- `activity_log` · `supabase/migrations/20260809142357_8cb6c944-f004-4f92-8665-f4775adb0c4b.sql`
+- `admin_bootstrap` · `drizzle/migrations/0000_first_account_admin.sql`
+- `budgets` · `supabase/migrations/20260503020827_fee68c8e-e34c-494a-b0b6-b621e217ce11.sql`
+- `builder_generations` · `supabase/migrations/20261006090000_builder.sql`, `supabase/migrations/20261007004803_fc310457-8403-4791-bc4e-de754b13ffb7.sql`
+- `builder_orders` · `supabase/migrations/20261006090000_builder.sql`, `supabase/migrations/20261007004803_fc310457-8403-4791-bc4e-de754b13ffb7.sql`
+- `builder_projects` · `supabase/migrations/20261006090000_builder.sql`, `supabase/migrations/20261007004803_fc310457-8403-4791-bc4e-de754b13ffb7.sql`
+- `builder_wallets` · `supabase/migrations/20261006090000_builder.sql`, `supabase/migrations/20261007004803_fc310457-8403-4791-bc4e-de754b13ffb7.sql`
+- `clients` · `supabase/migrations/20260503020827_fee68c8e-e34c-494a-b0b6-b621e217ce11.sql`
+- `feedbacks` · `supabase/migrations/20260503021939_6263cfc4-ece4-424d-bd28-f889045d9c61.sql`
+- `messages` · `supabase/migrations/20260503020827_fee68c8e-e34c-494a-b0b6-b621e217ce11.sql`
+- `portfolio_projects` · `supabase/migrations/20260817194909_55023f0e-fa3c-4a27-b890-965cdca51920.sql`
+- `projects` · `supabase/migrations/20260503020827_fee68c8e-e34c-494a-b0b6-b621e217ce11.sql`
+- `services` · `supabase/migrations/20260503020827_fee68c8e-e34c-494a-b0b6-b621e217ce11.sql`
+- `settings` · `supabase/migrations/20260503020827_fee68c8e-e34c-494a-b0b6-b621e217ce11.sql`
+- `ticket_messages` · `supabase/migrations/20260807014731_8f2e1513-7f54-4cfb-8bf5-3f9c5e6b0cd7.sql`
+- `tickets` · `supabase/migrations/20260807014731_8f2e1513-7f54-4cfb-8bf5-3f9c5e6b0cd7.sql`
+- `user_roles` · `drizzle/migrations/0000_first_account_admin.sql`
+- `whia_conversations` · `supabase/migrations/20260912171855_77e577c3-bfbb-4f75-ac7f-1c7b981de656.sql`
+- `whia_files` · `supabase/migrations/20260912171855_77e577c3-bfbb-4f75-ac7f-1c7b981de656.sql`
+- `whia_messages` · `supabase/migrations/20260912171855_77e577c3-bfbb-4f75-ac7f-1c7b981de656.sql`
+- `whia_plans` · `supabase/migrations/20260912171855_77e577c3-bfbb-4f75-ac7f-1c7b981de656.sql`
+- `whia_profiles` · `supabase/migrations/20260912171855_77e577c3-bfbb-4f75-ac7f-1c7b981de656.sql`
+- `whia_subscriptions` · `supabase/migrations/20260912171855_77e577c3-bfbb-4f75-ac7f-1c7b981de656.sql`
+- `whia_usage_logs` · `supabase/migrations/20260912171855_77e577c3-bfbb-4f75-ac7f-1c7b981de656.sql`
+- `whia_user_roles` · `supabase/migrations/20260912171855_77e577c3-bfbb-4f75-ac7f-1c7b981de656.sql`
+
+## Funções SQL declaradas
+
+- `admin_signup_available` · `drizzle/migrations/0000_first_account_admin.sql`
+- `builder_finish` · `supabase/migrations/20261006090000_builder.sql`, `supabase/migrations/20261007004803_fc310457-8403-4791-bc4e-de754b13ffb7.sql`
+- `builder_pay` · `supabase/migrations/20261006090000_builder.sql`, `supabase/migrations/20261007004803_fc310457-8403-4791-bc4e-de754b13ffb7.sql`
+- `builder_reserve` · `supabase/migrations/20261006090000_builder.sql`, `supabase/migrations/20261007004803_fc310457-8403-4791-bc4e-de754b13ffb7.sql`
+- `claim_first_admin` · `drizzle/migrations/0000_first_account_admin.sql`
+- `create_ticket` · `supabase/migrations/20260807014731_8f2e1513-7f54-4cfb-8bf5-3f9c5e6b0cd7.sql`
+- `ensure_whia_account` · `supabase/migrations/20260912171855_77e577c3-bfbb-4f75-ac7f-1c7b981de656.sql`
+- `get_feedback_by_token` · `supabase/migrations/20260609184855_59422d8d-6c90-486a-8130-98fa1f384ff3.sql`
+- `get_public_portfolio` · `supabase/migrations/20260922120000_portfolio_covers_public_services.sql`, `supabase/migrations/20260923090000_admin_roles_services_sort_featured.sql`, `supabase/migrations/20261006035105_907df11d-7529-4aed-8ea5-f6092defcfc8.sql`
+- `get_public_services` · `supabase/migrations/20260922120000_portfolio_covers_public_services.sql`, `supabase/migrations/20260923090000_admin_roles_services_sort_featured.sql`, `supabase/migrations/20261006035105_907df11d-7529-4aed-8ea5-f6092defcfc8.sql`
+- `get_public_settings` · `supabase/migrations/20260817195318_ddc6264d-49d7-4319-8d41-5176702ce3b0.sql`
+- `get_published_feedbacks` · `supabase/migrations/20260817195424_bdd73004-17c9-4054-a89d-c08304374d91.sql`
+- `get_ticket_by_token` · `supabase/migrations/20260807014731_8f2e1513-7f54-4cfb-8bf5-3f9c5e6b0cd7.sql`
+- `get_ticket_messages` · `supabase/migrations/20260807014731_8f2e1513-7f54-4cfb-8bf5-3f9c5e6b0cd7.sql`
+- `is_admin` · `drizzle/migrations/0000_first_account_admin.sql`, `supabase/migrations/20260809143000_91280648-2d27-4745-ad6d-60411c3014e1.sql`, `supabase/migrations/20260820003300_426d8d74-21eb-4e89-ada0-acb6fc8a54e1.sql`, `supabase/migrations/20260923090000_admin_roles_services_sort_featured.sql`
+- `post_ticket_message` · `supabase/migrations/20260807014731_8f2e1513-7f54-4cfb-8bf5-3f9c5e6b0cd7.sql`
+- `set_updated_at` · `supabase/migrations/20260503020827_fee68c8e-e34c-494a-b0b6-b621e217ce11.sql`, `supabase/migrations/20260503020856_8ea936f0-8163-465a-b2ad-eeec099388d1.sql`
+- `submit_feedback` · `supabase/migrations/20260609184855_59422d8d-6c90-486a-8130-98fa1f384ff3.sql`
+- `touch_portfolio_updated_at` · `supabase/migrations/20260817194909_55023f0e-fa3c-4a27-b890-965cdca51920.sql`
+- `whia_create_conversation` · `supabase/migrations/20260912171855_77e577c3-bfbb-4f75-ac7f-1c7b981de656.sql`
+- `whia_touch_updated_at` · `supabase/migrations/20260912171855_77e577c3-bfbb-4f75-ac7f-1c7b981de656.sql`
+
+## Dependências
+
+- `@codesandbox/sandpack-react ^2.20.0`
+- `@hookform/resolvers ^3.10.0`
+- `@lovable.dev/cloud-auth-js ^1.1.2`
+- `@radix-ui/react-accordion ^1.2.11`
+- `@radix-ui/react-alert-dialog ^1.1.14`
+- `@radix-ui/react-aspect-ratio ^1.1.7`
+- `@radix-ui/react-avatar ^1.1.10`
+- `@radix-ui/react-checkbox ^1.3.2`
+- `@radix-ui/react-collapsible ^1.1.11`
+- `@radix-ui/react-context-menu ^2.2.15`
+- `@radix-ui/react-dialog ^1.1.14`
+- `@radix-ui/react-dropdown-menu ^2.1.15`
+- `@radix-ui/react-hover-card ^1.1.14`
+- `@radix-ui/react-label ^2.1.7`
+- `@radix-ui/react-menubar ^1.1.15`
+- `@radix-ui/react-navigation-menu ^1.2.13`
+- `@radix-ui/react-popover ^1.1.14`
+- `@radix-ui/react-progress ^1.1.7`
+- `@radix-ui/react-radio-group ^1.3.7`
+- `@radix-ui/react-scroll-area ^1.2.9`
+- `@radix-ui/react-select ^2.2.5`
+- `@radix-ui/react-separator ^1.1.7`
+- `@radix-ui/react-slider ^1.3.5`
+- `@radix-ui/react-slot ^1.2.3`
+- `@radix-ui/react-switch ^1.2.5`
+- `@radix-ui/react-tabs ^1.1.12`
+- `@radix-ui/react-toast ^1.2.14`
+- `@radix-ui/react-toggle ^1.1.9`
+- `@radix-ui/react-toggle-group ^1.1.10`
+- `@radix-ui/react-tooltip ^1.2.7`
+- `@supabase/supabase-js ^2.105.1`
+- `@tanstack/react-query ^5.83.0`
+- `class-variance-authority ^0.7.1`
+- `clsx ^2.1.1`
+- `cmdk ^1.1.1`
+- `date-fns ^3.6.0`
+- `embla-carousel-react ^8.6.0`
+- `fflate ^0.8.3`
+- `framer-motion ^12.38.0`
+- `input-otp ^1.4.2`
+- `lucide-react ^0.462.0`
+- `next-themes ^0.3.0`
+- `react ^18.3.1`
+- `react-day-picker ^8.10.1`
+- `react-dom ^18.3.1`
+- `react-helmet-async ^3.0.0`
+- `react-hook-form ^7.61.1`
+- `react-resizable-panels ^2.1.9`
+- `react-router-dom ^6.30.1`
+- `recharts ^2.15.4`
+- `sonner ^1.7.4`
+- `tailwind-merge ^2.6.0`
+- `tailwindcss-animate ^1.0.7`
+- `vaul ^0.9.9`
+- `zod ^3.25.76`
+
+## Dependências de desenvolvimento
+
+- `@eslint/js ^9.32.0`
+- `@lovable.dev/vite-plugin-dev-server-bridge ^1.0.2`
+- `@lovable.dev/vite-plugin-hmr-gate ^1.8.0`
+- `@playwright/test ^1.57.0`
+- `@tailwindcss/typography ^0.5.16`
+- `@testing-library/jest-dom ^6.6.0`
+- `@testing-library/react ^16.0.0`
+- `@types/node ^22.16.5`
+- `@types/react ^18.3.23`
+- `@types/react-dom ^18.3.7`
+- `@vitejs/plugin-react-swc ^3.11.0`
+- `autoprefixer ^10.4.21`
+- `drizzle-kit 0.x`
+- `drizzle-orm 0.x`
+- `eslint ^9.32.0`
+- `eslint-plugin-react-hooks ^5.2.0`
+- `eslint-plugin-react-refresh ^0.4.20`
+- `globals ^15.15.0`
+- `jsdom ^20.0.3`
+- `lovable-tagger ^1.3.5`
+- `postcss ^8.5.6`
+- `postgres ^4.0.0`
+- `tailwindcss ^3.4.17`
+- `typescript ^5.8.3`
+- `typescript-eslint ^8.38.0`
+- `vite ^5.4.19`
+- `vitest ^3.2.4`
+
+## Limites da auditoria inicial
+
+A análise usa as migrações e o schema Drizzle versionados. O ambiente não tem credenciais de banco de homologação nem chaves Stripe de teste. O inventário remoto, a ordem efetivamente aplicada das migrações e as integrações externas precisam de verificação em homologação.

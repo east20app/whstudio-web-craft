@@ -1,6 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import ProjectInquiry from "@/components/ProjectInquiry";
+import QuoteWizard from "@/components/QuoteWizard";
 import CTAFinal from "@/components/CTAFinal";
 import Seo, { pageSeo, orgJsonLd } from "@/components/Seo";
 
@@ -8,7 +8,7 @@ const OrcamentoPage = () => (
   <>
     <Seo {...pageSeo.orcamento} jsonLd={orgJsonLd} />
     <Header />
-    <main id="main-content" tabIndex={-1} className="pt-20">
+    <main id="main-content" tabIndex={-1} >
       <section className="py-20 md:py-28 border-b border-border">
         <div className="container max-w-4xl">
           <p className="eyebrow mb-6">Orçamento sob medida</p>
@@ -22,7 +22,7 @@ const OrcamentoPage = () => (
         </div>
       </section>
 
-      <ProjectInquiry />
+      <QuoteWizard />
       <CTAFinal />
     </main>
     <Footer />

@@ -46,6 +46,7 @@ import {
   ShoppingCart,
   Rocket,
   Plug,
+  Sparkles,
   type LucideIcon,
 } from "lucide-react";
 
@@ -85,7 +86,7 @@ export const services: Service[] = [
   {
     id: "apis-sistemas",
     icon: Settings,
-    title: "APIs e Sistemas",
+    title: "Desenvolvimento de APIs",
     short: "Sistemas web e APIs para cadastros, pedidos, financeiro e controle interno. Funcionalidades definidas a partir dos processos da sua empresa.",
     benefits: [
       "Banco de dados próprio e seguro",
@@ -129,6 +130,34 @@ export const services: Service[] = [
       "Frete calculado por bairro",
       "Painel pra você aceitar e acompanhar",
     ],
+  },
+  {
+    id: "lojas-virtuais",
+    icon: ShoppingCart,
+    title: "Lojas virtuais",
+    short: "Vendas online com catálogo, carrinho e checkout integrados. Uma aplicação possível é uma loja com estoque separado por variante e retirada local.",
+    benefits: ["Busca e filtros de catálogo", "Integração com pagamentos e frete", "Gestão de pedidos e estoque"],
+  },
+  {
+    id: "sistemas-empresariais",
+    icon: Server,
+    title: "Sistemas empresariais",
+    short: "Centralize a operação em uma plataforma sob medida. Por exemplo, uma equipe pode aprovar pedidos e acompanhar entregas no mesmo painel.",
+    benefits: ["Fluxos de aprovação", "Perfis com controle de acesso", "Histórico de mudanças e relatórios"],
+  },
+  {
+    id: "inteligencia-artificial",
+    icon: Sparkles,
+    title: "Inteligência artificial",
+    short: "Adicione recursos de IA a um produto ou processo, como uma busca interna que referencia os documentos usados na resposta.",
+    benefits: ["Integração com provedores de modelos", "Avaliação com exemplos reais", "Revisão humana e controle de consumo"],
+  },
+  {
+    id: "integracoes-personalizadas",
+    icon: Plug,
+    title: "Integrações personalizadas",
+    short: "Conecte ferramentas com APIs e webhooks. Por exemplo, leve pedidos da loja ao ERP e devolva o status de envio ao atendimento.",
+    benefits: ["Sincronização entre sistemas", "Retentativas e rastreamento de falhas", "Monitoramento de eventos"],
   },
 ];
 

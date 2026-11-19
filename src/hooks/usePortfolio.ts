@@ -59,8 +59,10 @@ const toRow = (p: Partial<PortfolioItem>) => {
 export const usePortfolio = (onlyPublished = false) => {
   const [data, setData] = useState<PortfolioItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   const refresh = useCallback(async () => {
+    setError(false);
     // 1) Público: prefere a função protegida (nenhum dado não-publicado vaza).
     if (onlyPublished) {
       const rpc = supabase.rpc.bind(supabase) as (fn: string) => Promise<{ data: unknown }>;
@@ -80,6 +82,7 @@ export const usePortfolio = (onlyPublished = false) => {
     if (onlyPublished) query = query.eq("published", true);
     const { data: rows, error } = await query;
     if (!error && rows) setData((rows as PortfolioRow[]).map(mapPorfolioRow));
+    setError(Boolean(error));
     setLoading(false);
   }, [onlyPublished]);
 
@@ -110,5 +113,5 @@ export const usePortfolio = (onlyPublished = false) => {
     return !error;
   };
 
-  return { data, loading, refresh, addProject, updateProject, removeProject };
+  return { data, loading, error, refresh, addProject, updateProject, removeProject };
 };

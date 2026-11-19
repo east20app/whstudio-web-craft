@@ -106,20 +106,14 @@ const PortfolioAdminPage = () => {
     return pub.publicUrl;
   };
 
-  const removeOldCover = async (coverUrl?: string) => {
-    if (!coverUrl) return;
-    const marker = "/portfolio-covers/";
-    const idx = coverUrl.indexOf(marker);
-    if (idx === -1) return;
-    const path = coverUrl.slice(idx + marker.length).split("?")[0];
-    if (!path) return;
-    await supabase.storage.from("portfolio-covers").remove([path]);
-  };
-
   const onFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     e.target.value = "";
     if (!file) return;
+    if (!["image/jpeg", "image/png", "image/webp", "image/avif"].includes(file.type) || file.size > 5 * 1024 * 1024) {
+      toast.error("Use JPG, PNG, WebP ou AVIF com até 5 MB.");
+      return;
+    }
     setUploading(true);
     try {
       const url = await uploadCover(file);
@@ -135,7 +129,6 @@ const PortfolioAdminPage = () => {
   };
 
   const removeCover = () => {
-    removeOldCover(draft.coverUrl);
     setDraft((d) => ({ ...d, coverUrl: "", removeCover: true }));
   };
 
@@ -144,7 +137,6 @@ const PortfolioAdminPage = () => {
       toast.error("Informe o nome do projeto.");
       return;
     }
-    if (draft.removeCover) await removeOldCover(editing?.coverUrl ?? draft.coverUrl);
 
     const payload = {
       title: draft.title.trim(),
@@ -182,7 +174,6 @@ const PortfolioAdminPage = () => {
 
   const confirmDelete = async () => {
     if (!toDelete) return;
-    removeOldCover(toDelete.coverUrl);
     const ok = await removeProject(toDelete.id);
     if (!ok) {
       toast.error("Não foi possível excluir.");

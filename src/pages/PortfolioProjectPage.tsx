@@ -11,9 +11,10 @@ import { portfolioWebUrl } from "@/lib/portfolio-url";
 
 const PortfolioProjectPage = () => {
   const { projectId } = useParams();
-  const { data: projects, loading } = usePortfolio(true);
+  const { data: projects, loading, error } = usePortfolio(true);
   const [reloadKey, setReloadKey] = useState(0);
   const project = projects.find((item) => item.id === projectId);
+  const cover = portfolioWebUrl(project?.coverUrl);
   const liveUrl = project?.status === "privado" ? null : portfolioWebUrl(project?.url);
   const host = liveUrl ? new URL(liveUrl).host : "";
 
@@ -35,8 +36,8 @@ const PortfolioProjectPage = () => {
         ) : !project ? (
           <section className="container grid min-h-[60vh] content-center py-20">
             <p className="eyebrow mb-4">Portfólio</p>
-            <h1 className="display-huge max-w-2xl text-4xl md:text-6xl">Não encontramos esse projeto.</h1>
-            <p className="mt-5 max-w-lg text-muted-foreground">Ele pode ter sido removido ou não estar publicado.</p>
+            <h1 className="display-huge max-w-2xl text-4xl md:text-6xl">{error ? "Falha ao carregar o projeto." : "Não encontramos esse projeto."}</h1>
+            <p className="mt-5 max-w-lg text-muted-foreground">{error ? "Tente novamente em alguns instantes." : "Ele pode ter sido removido ou não estar publicado."}</p>
             <Link to="/portfolio" className="mt-8 inline-flex min-h-11 w-fit items-center gap-2 text-sm text-primary hover:underline"><ArrowLeft className="h-4 w-4" />Voltar ao portfólio</Link>
           </section>
         ) : (
@@ -70,12 +71,12 @@ const PortfolioProjectPage = () => {
                       <a href={liveUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-8 items-center gap-2 text-xs text-primary transition-colors hover:text-primary/80">Abrir fora <ArrowUpRight className="h-3.5 w-3.5" /></a>
                     </div>
                   </div>
-                  <iframe key={reloadKey} src={liveUrl} title={`Site real do projeto ${project.title}`} referrerPolicy="strict-origin-when-cross-origin" loading="eager" className="h-[72svh] min-h-[480px] w-full bg-white" />
+                  <iframe key={reloadKey} src={liveUrl} title={`Site real do projeto ${project.title}`} referrerPolicy="no-referrer" sandbox="allow-scripts allow-forms" loading="lazy" className="h-[72svh] min-h-[480px] w-full bg-white" />
                   <p className="border-t border-border px-4 py-3 text-xs leading-relaxed text-muted-foreground">Esta prévia carrega o site publicado. Se o servidor do projeto bloquear exibição incorporada, use “Abrir fora” para visualizar o site original.</p>
                 </div>
-              ) : project.coverUrl ? (
+              ) : cover ? (
                 <figure className="overflow-hidden rounded-2xl border border-border bg-card">
-                  <img src={project.coverUrl} alt={`Imagem do projeto ${project.title}`} className="max-h-[75svh] w-full object-cover object-top" />
+                  <img src={cover} loading="lazy" decoding="async" alt={`Imagem do projeto ${project.title}`} className="max-h-[75svh] w-full object-cover object-top" />
                   <figcaption className="border-t border-border px-4 py-3 text-xs text-muted-foreground">Imagem de apresentação. O site original não está publicado publicamente.</figcaption>
                 </figure>
               ) : (

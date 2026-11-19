@@ -863,6 +863,19 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      submit_budget_request: {
+        Args: {
+          request_id: string
+          client_name: string
+          contact_email: string
+          project_type: string
+          features: string
+          requirements: string
+          deadline: string
+          investment: string
+        }
+        Returns: string
+      }
       admin_signup_available: { Args: never; Returns: boolean }
       builder_finish: {
         Args: {

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Star } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
-import SocialProof from "@/components/SocialProof";
 
 type Item = {
   id: string;
@@ -32,8 +31,6 @@ function Stars({ rating }: { rating: number }) {
 
 /**
  * Depoimentos reais aprovados no painel (feedbacks publicados).
- * Se ainda não houver nenhum publicado, cai no conteúdo fixo do SocialProof
- * — visualmente distinto, pra não fingir que é avaliação verificada.
  */
 const Testimonials = () => {
   const [items, setItems] = useState<Item[]>([]);
@@ -48,7 +45,7 @@ const Testimonials = () => {
   }, []);
 
   if (loading) return null;
-  if (items.length === 0) return <SocialProof />;
+  if (items.length === 0) return null;
 
   const [featured, ...rest] = items;
 

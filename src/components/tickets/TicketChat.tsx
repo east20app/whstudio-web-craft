@@ -175,7 +175,7 @@ export const TicketChatProvider = ({ children }: { children: React.ReactNode }) 
             className="flex items-center gap-2 rounded-full bg-primary px-5 h-12 text-sm font-semibold text-primary-foreground shadow-lg transition-colors hover:bg-primary/90"
           >
             <MessageSquare className="w-4 h-4" aria-hidden="true" />
-            {ticket ? "Minha conversa" : "Solicitar orçamento"}
+            {ticket ? "Minha conversa" : "Atendimento"}
           </button>
         )}
       </div>

@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import type {
@@ -61,14 +61,19 @@ function useTable<TRow, TItem>(
   const [data, setData] = useState<TItem[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const mapRow = useRef(mapper);
+  useEffect(() => {
+    mapRow.current = mapper;
+  }, [mapper]);
+
   const refresh = useCallback(async () => {
     const { data, error } = await supabase
       .from(table as never)
       .select("*")
       .order(orderColumn, { ascending });
-    if (!error && data) setData((data as TRow[]).map(mapper));
+    if (!error && data) setData((data as TRow[]).map(mapRow.current));
     setLoading(false);
-  }, [table, orderColumn, ascending, mapper]);
+  }, [table, orderColumn, ascending]);
 
   useEffect(() => {
     refresh();
