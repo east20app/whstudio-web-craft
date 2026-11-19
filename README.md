@@ -12,7 +12,7 @@ npm run dev
 ```
 
 ## Comandos
-
+.
 ```sh
 npm run build
 npm run lint
