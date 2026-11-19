@@ -10,5 +10,5 @@ A navegação por teclado tem foco visível e links semânticos. Animações cur
 
 - [Basement](https://basement.studio/) e [Lusion](https://lusion.co/) orientam a sequência editorial de trabalhos e a centralidade de uma peça tridimensional.
 - [Linear](https://linear.app/) inspira a hierarquia entre navegação lateral, trabalho atual e propriedades no painel.
-- [Designshot](https://www.designshot.co/), [Singularis](https://singularis-olive.vercel.app/), [Awwwards](https://www.awwwards.com/) e [Godly](https://godly.website/) orientam ritmo, curadoria e navegação por categorias.
-- [Vibemode Claude Code](https://www.vibemode.site/tools/claude-code) e [Vibemode Codex](https://www.vibemode.site/tools/codex) são referências de organização de ferramentas técnicas.
+- [Designshot](https://www.designshot.co/) orienta o ritmo tipográfico e as entradas editoriais.
+- [Singularis](https://singularis-olive.vercel.app/), [Awwwards](https://www.awwwards.com/), [Godly](https://godly.website/), [Vibemode Claude Code](https://www.vibemode.site/tools/claude-code) e [Vibemode Codex](https://www.vibemode.site/tools/codex) foram consultados. A inspeção visual integral ficou limitada por falhas de acesso no ambiente.

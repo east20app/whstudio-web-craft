@@ -354,3 +354,17 @@ Base Git `f5628f2aa7b2deaeba8d8012ae17da8854e7dd94`.
 ## Limites da auditoria inicial
 
 A análise usa as migrações e o schema Drizzle versionados. O ambiente não tem credenciais de banco de homologação nem chaves Stripe de teste. O inventário remoto, a ordem efetivamente aplicada das migrações e as integrações externas precisam de verificação em homologação.
+
+## Correções identificadas na execução
+
+- A introdução inicial capturava foco, tornava o conteúdo inerte e bloqueava a rolagem. O monograma agora entra junto com o conteúdo.
+- A galeria gerava telas ilustrativas mesmo para projetos com capa cadastrada. O novo componente mostra a imagem publicada e usa um estado explícito quando ela falta.
+- Orçamentos não tinham um fluxo independente de atendimento. O formulário novo grava no módulo existente por uma função SQL com validação, protocolo, idempotência e limite por e-mail.
+- As políticas históricas de orçamentos, mensagens e feedbacks permitiam acesso amplo a usuários autenticados. A migração passa a usar a função administrativa existente. A validação da fonte de papéis na instância remota continua necessária. Supabase e Drizzle versionam definições históricas diferentes de `is_admin()`.
+- O painel recriava as funções de mapeamento a cada renderização, disparando novas consultas. A atualização da tabela agora usa uma referência estável.
+- Uma resposta pública de ticket podia concorrer com o fechamento. A função agora bloqueia a linha enquanto insere a mensagem.
+- O builder podia receber consultas atrasadas após trocar de conta ou abrir outro projeto. As leituras são filtradas por conta, as versões por projeto, e o estado ignora resultados de consultas substituídas.
+
+## Verificação das migrações
+
+Em PostgreSQL local isolado, foram verificados inserção, rejeição de e-mail inválido, repetição idempotente, limite de três novos pedidos por hora por e-mail, leitura por função administrativa e rejeição de resposta para ticket encerrado. A validação usou o esquema versionado relevante e uma função de papéis de teste. A aplicação das migrações e os testes com o esquema integral da instância dependem de homologação.
