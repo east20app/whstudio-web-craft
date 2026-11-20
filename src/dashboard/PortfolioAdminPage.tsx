@@ -1,3 +1,5 @@
+import AdminCover from "./components/AdminCover";
+import { portfolioStoragePath, publicPortfolioCover } from "@/lib/portfolio-url";
 import { useRef, useState } from "react";
 import { Plus, Pencil, Trash2, Eye, EyeOff, ExternalLink, Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -41,6 +43,7 @@ type Draft = {
   status: ProjectStatus;
   tech: string;
   coverUrl: string;
+  gallery: string;
   removeCover: boolean;
   published: boolean;
   sortOrder: number;
@@ -55,6 +58,7 @@ const emptyDraft: Draft = {
   status: "online",
   tech: "",
   coverUrl: "",
+  gallery: "",
   removeCover: false,
   published: true,
   sortOrder: 0,
@@ -86,6 +90,7 @@ const PortfolioAdminPage = () => {
       status: p.status,
       tech: p.tech.join(", "),
       coverUrl: p.coverUrl ?? "",
+      gallery: p.galleryUrls.join("\n"),
       removeCover: false,
       published: p.published,
       sortOrder: p.sortOrder,
@@ -100,18 +105,14 @@ const PortfolioAdminPage = () => {
     const path = `${crypto.randomUUID()}.${safeExt}`;
     const { error } = await supabase.storage
       .from("portfolio-covers")
-      .upload(path, file, { cacheControl: "31536000", upsert: false, contentType: file.type });
+      .upload(path, file, { cacheControl: "60", upsert: false, contentType: file.type });
     if (error) return null;
     const { data: pub } = supabase.storage.from("portfolio-covers").getPublicUrl(path);
     return pub.publicUrl;
   };
 
   const removeOldCover = async (coverUrl?: string) => {
-    if (!coverUrl) return;
-    const marker = "/portfolio-covers/";
-    const idx = coverUrl.indexOf(marker);
-    if (idx === -1) return;
-    const path = coverUrl.slice(idx + marker.length).split("?")[0];
+    const path = portfolioStoragePath(coverUrl);
     if (!path) return;
     await supabase.storage.from("portfolio-covers").remove([path]);
   };
@@ -135,7 +136,7 @@ const PortfolioAdminPage = () => {
   };
 
   const removeCover = () => {
-    removeOldCover(draft.coverUrl);
+    if (draft.coverUrl !== editing?.coverUrl) void removeOldCover(draft.coverUrl);
     setDraft((d) => ({ ...d, coverUrl: "", removeCover: true }));
   };
 
@@ -144,9 +145,16 @@ const PortfolioAdminPage = () => {
       toast.error("Informe o nome do projeto.");
       return;
     }
-    if (draft.removeCover) await removeOldCover(editing?.coverUrl ?? draft.coverUrl);
+
+
+    const gallery = [...new Set(draft.gallery.split("\n").map(url => url.trim()).filter(Boolean))];
+    if (gallery.length > 12 || gallery.some(url => !publicPortfolioCover(url))) {
+      toast.error("Informe até 12 URLs HTTPS de imagens aprovadas para publicação.");
+      return;
+    }
 
     const payload = {
+      galleryUrls: gallery,
       title: draft.title.trim(),
       category: draft.category.trim(),
       desc: draft.desc.trim(),
@@ -170,6 +178,7 @@ const PortfolioAdminPage = () => {
       toast.error("Não foi possível salvar.");
       return;
     }
+    if (editing?.coverUrl && editing.coverUrl !== payload.coverUrl) await removeOldCover(editing.coverUrl);
     await logActivity({
       action: editing ? "portfolio.update" : "portfolio.create",
       entity: "portfolio_projects",
@@ -182,12 +191,13 @@ const PortfolioAdminPage = () => {
 
   const confirmDelete = async () => {
     if (!toDelete) return;
-    removeOldCover(toDelete.coverUrl);
+
     const ok = await removeProject(toDelete.id);
     if (!ok) {
       toast.error("Não foi possível excluir.");
       return;
     }
+    await removeOldCover(toDelete.coverUrl);
     await logActivity({
       action: "portfolio.delete",
       entity: "portfolio_projects",
@@ -235,11 +245,9 @@ const PortfolioAdminPage = () => {
           {data.map((p, i) => (
             <div key={p.id} className="px-5 py-4 flex flex-wrap items-start gap-4">
               {p.coverUrl ? (
-                <img
-                  src={p.coverUrl}
+                <AdminCover value={p.coverUrl}
                   alt=""
                   className="w-24 h-16 object-cover border border-border hidden sm:block"
-                  loading="lazy"
                 />
               ) : (
                 <span className="w-24 h-16 border border-border bg-secondary items-center justify-center font-display text-2xl hidden sm:flex" aria-hidden="true">
@@ -323,9 +331,11 @@ const PortfolioAdminPage = () => {
             {/* Capa */}
             <div className="space-y-2">
               <span className="field-label">Capa do projeto</span>
+              <Label htmlFor="portfolio-gallery">Capturas públicas (uma URL HTTPS por linha)</Label>
+              <Textarea id="portfolio-gallery" rows={3} value={draft.gallery} onChange={event => setDraft(previous => ({ ...previous, gallery: event.target.value }))} />
               {draft.coverUrl ? (
                 <div className="relative border border-border overflow-hidden">
-                  <img src={draft.coverUrl} alt="Prévia da capa" className="w-full aspect-[4/3] object-cover object-top" />
+                  <AdminCover value={draft.coverUrl} alt="Prévia da capa" className="w-full aspect-[4/3] object-cover object-top" />
                   <button
                     type="button"
                     onClick={removeCover}

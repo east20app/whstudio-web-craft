@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { MessageSquare, Send, X, Loader2, MessageCircle } from "lucide-react";
+import { MessageSquare, Send, X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -156,29 +156,14 @@ export const TicketChatProvider = ({ children }: { children: React.ReactNode }) 
     <TicketChatContext.Provider value={{ requestQuote, close: () => setOpen(false), open }}>
       {children}
 
-      {/* Ações flutuantes */}
-      <div className="fixed bottom-4 right-4 z-50 flex items-center gap-2 sm:bottom-6 sm:right-6 sm:flex-col sm:items-end sm:gap-3">
-        <a
-          href={whatsappLink()}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Prefiro falar no WhatsApp"
-          className="flex h-12 items-center gap-2 rounded-full border border-[#25D366]/30 bg-background px-4 text-xs font-medium text-[#25D366] transition-colors hover:bg-secondary sm:h-10"
-        >
-          <MessageCircle className="w-4 h-4" aria-hidden="true" /><span className="sr-only sm:not-sr-only">Prefiro WhatsApp</span>
-        </a>
-
-        {!open && (
-          <button
-            onClick={() => setOpen(true)}
-            aria-label="Abrir central de atendimento"
-            className="flex items-center gap-2 rounded-full bg-primary px-5 h-12 text-sm font-semibold text-primary-foreground shadow-lg transition-colors hover:bg-primary/90"
-          >
-            <MessageSquare className="w-4 h-4" aria-hidden="true" />
-            {ticket ? "Minha conversa" : "Solicitar orçamento"}
-          </button>
-        )}
-      </div>
+      {!open && (
+        <button type="button" onClick={() => setOpen(true)}
+          aria-label={ticket ? "Abrir minha conversa" : "Abrir central de atendimento"}
+          title={ticket ? "Minha conversa" : "Atendimento"}
+          className="fixed bottom-4 right-4 z-50 grid h-12 w-12 place-items-center border border-[#2960ff] bg-[#050505] text-white transition-colors hover:bg-[#0047ff] sm:bottom-6 sm:right-6">
+          <MessageSquare className="h-5 w-5" aria-hidden="true" />
+        </button>
+      )}
 
       <AnimatePresence>
         {open && (

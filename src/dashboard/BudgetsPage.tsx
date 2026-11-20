@@ -1,5 +1,6 @@
+import BudgetDetails from "./components/BudgetDetails";
 import { useMemo, useState } from "react";
-import { Search, Trash2, MessageCircle } from "lucide-react";
+import { Search, Trash2, Mail, MessageCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -130,7 +131,7 @@ const BudgetsPage = () => {
             <TableBody>
               {filtered.map((b) => (
                 <TableRow key={b.id}>
-                  <TableCell className="font-medium">{b.client}</TableCell>
+                  <TableCell className="font-medium"><BudgetDetails budget={b} /></TableCell>
                   <TableCell>{b.service}</TableCell>
                   <TableCell className="hidden md:table-cell text-muted-foreground">{b.contact}</TableCell>
                   <TableCell className="hidden md:table-cell text-muted-foreground">
@@ -154,17 +155,20 @@ const BudgetsPage = () => {
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-1">
-                      <Button size="icon" variant="ghost" asChild title="Responder no WhatsApp">
-                        <a
-                          href={`https://wa.me/?text=${encodeURIComponent(
-                            `Olá ${b.client}, sobre seu orçamento de ${b.service}...`
-                          )}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <MessageCircle className="w-4 h-4" />
-                        </a>
-                      </Button>
+                      {b.contact.includes("@") ? (
+                        <Button size="icon" variant="ghost" asChild>
+                          <a href={`mailto:${encodeURIComponent(b.contact)}?subject=${encodeURIComponent(`Orçamento WH Studio: ${b.service}`)}`} aria-label="Responder por e-mail">
+                            <Mail className="w-4 h-4" aria-hidden="true" />
+                          </a>
+                        </Button>
+                      ) : (
+                        <Button size="icon" variant="ghost" asChild>
+                          <a href={`https://wa.me/?text=${encodeURIComponent(`Olá ${b.client}, sobre seu orçamento de ${b.service}...`)}`}
+                            target="_blank" rel="noopener noreferrer" aria-label="Responder no WhatsApp">
+                            <MessageCircle className="w-4 h-4" aria-hidden="true" />
+                          </a>
+                        </Button>
+                      )}
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
                           <Button size="icon" variant="ghost" className="text-red-400 hover:text-red-300">

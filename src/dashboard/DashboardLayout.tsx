@@ -1,22 +1,23 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { LogOut, Menu, X } from "lucide-react";
+import { BriefcaseBusiness, CircleHelp, FolderKanban, Image, LayoutDashboard, LogOut, Mail, Menu, Receipt, Settings, Star, Users, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { signOut, useAuth, useSettings } from "./store";
 import { useTickets } from "./ticketsStore";
 import { toast } from "sonner";
+import BrandLogo from "@/components/BrandLogo";
 
 const items = [
-  { to: "/dashboard", label: "Visão geral", code: "00", end: true },
-  { to: "/dashboard/orcamentos", label: "Orçamentos", code: "01" },
-  { to: "/dashboard/clientes", label: "Clientes", code: "02" },
-  { to: "/dashboard/projetos", label: "Projetos", code: "03" },
-  { to: "/dashboard/servicos", label: "Serviços", code: "04" },
-  { to: "/dashboard/tickets", label: "Tickets", code: "05", badge: "tickets" as const },
-  { to: "/dashboard/mensagens", label: "Mensagens", code: "06" },
-  { to: "/dashboard/feedbacks", label: "Feedbacks", code: "07" },
-  { to: "/dashboard/portfolio", label: "Portfólio", code: "08" },
-  { to: "/dashboard/configuracoes", label: "Configurações", code: "09" },
+  { to: "/dashboard", label: "Visão geral", icon: LayoutDashboard, end: true },
+  { to: "/dashboard/orcamentos", label: "Orçamentos", icon: Receipt },
+  { to: "/dashboard/clientes", label: "Clientes", icon: Users },
+  { to: "/dashboard/projetos", label: "Projetos", icon: FolderKanban },
+  { to: "/dashboard/servicos", label: "Serviços", icon: BriefcaseBusiness },
+  { to: "/dashboard/tickets", label: "Tickets", icon: CircleHelp, badge: "tickets" as const },
+  { to: "/dashboard/mensagens", label: "Mensagens", icon: Mail },
+  { to: "/dashboard/feedbacks", label: "Feedbacks", icon: Star },
+  { to: "/dashboard/portfolio", label: "Portfólio", icon: Image },
+  { to: "/dashboard/configuracoes", label: "Configurações", icon: Settings },
 ];
 
 const DashboardLayout = () => {
@@ -40,11 +41,9 @@ const DashboardLayout = () => {
         }`}
       >
         <div className="h-20 flex items-center justify-between px-5 border-b border-border">
-          <div className="flex items-baseline gap-2">
-            <span className="font-mono text-[13px] font-semibold tracking-[0.14em] uppercase">
-              {settings.siteName}
-            </span>
-            <span className="font-mono text-[10px] text-muted-foreground/60">/adm</span>
+          <div className="flex items-center gap-2">
+            <BrandLogo className="h-8 w-32" />
+            <span className="border-l border-border pl-2 font-mono text-xs text-muted-foreground">Gestão</span>
           </div>
           <button className="lg:hidden p-1 text-muted-foreground" onClick={() => setOpen(false)} aria-label="Fechar menu">
             <X className="w-4 h-4" />
@@ -59,15 +58,15 @@ const DashboardLayout = () => {
               end={it.end}
               onClick={() => setOpen(false)}
               className={({ isActive }) =>
-                `relative mx-3 flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] transition-[background-color,color] duration-200 ${
+                `relative mx-3 flex items-center gap-3 border border-transparent px-3 py-2.5 text-sm transition-[background-color,color] duration-200 ${
                   isActive
-                    ? "text-primary bg-primary/[0.08] before:absolute before:left-0 before:top-2 before:h-[calc(100%-1rem)] before:w-[2px] before:rounded-full before:bg-primary before:content-['']"
+                    ? "border-[#0047ff] bg-[#0047ff] text-white"
                     : "text-muted-foreground hover:text-foreground hover:bg-secondary/70"
                 }`
               }
             >
-              <span className="font-mono text-[10px] text-muted-foreground/50 tabular-nums">{it.code}</span>
-              <span className="font-medium">{it.label}</span>
+              <it.icon className="h-4 w-4 shrink-0" aria-hidden="true" />
+              <span className="font-medium tracking-tight">{it.label}</span>
               {"badge" in it && it.badge === "tickets" && unread > 0 && (
                 <span className="ml-auto font-mono text-[9px] px-1.5 py-0.5 border bg-primary/15 text-primary border-primary/30 tabular-nums">
                   {unread}
@@ -93,7 +92,7 @@ const DashboardLayout = () => {
       )}
 
       <div className="flex-1 flex flex-col min-w-0">
-        <header className="h-20 sticky top-0 z-20 bg-background/85 backdrop-blur-xl border-b border-border/80 flex items-center justify-between px-4 md:px-8 shadow-[0_6px_24px_hsl(var(--foreground)/0.025)]">
+        <header className="h-20 sticky top-0 z-20 bg-background/85 backdrop-blur-xl border-b border-border/80 flex items-center justify-between px-4 md:px-8">
           <div className="flex items-center gap-3">
             <button className="lg:hidden p-2 -ml-2 text-foreground" onClick={() => setOpen(true)} aria-label="Abrir menu">
               <Menu className="w-5 h-5" />

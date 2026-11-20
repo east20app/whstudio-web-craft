@@ -35,17 +35,17 @@ export default function BuilderFiles({
     }
   }
   return (
-    <div className="grid h-[650px] w-full grid-cols-[155px_1fr] sm:grid-cols-[220px_1fr]">
+    <div className="grid min-h-[520px] w-full grid-rows-[auto_minmax(0,1fr)] sm:h-[650px] sm:grid-cols-[minmax(120px,.28fr)_minmax(0,1fr)] sm:grid-rows-1">
       <nav
         aria-label="Arquivos do projeto"
-        className="overflow-auto border-r border-white/10 p-2"
+        className="flex max-h-36 gap-1 overflow-auto border-b border-white/10 p-2 sm:max-h-none sm:flex-col sm:border-b-0 sm:border-r"
       >
         {files.map((f, i) => (
           <button
             key={f.path}
             title={f.path}
             onClick={() => setPath(f.path)}
-            className={`mb-1 block w-full truncate rounded p-2 text-left font-mono text-xs ${selected.path === f.path ? "bg-blue-500/15 text-blue-300" : "text-slate-400 hover:bg-white/5"}`}
+            className={`block max-w-52 shrink-0 truncate p-2 sm:w-full sm:max-w-none text-left font-mono text-xs ${selected.path === f.path ? "bg-blue-500/15 text-blue-300" : "text-slate-400 hover:bg-white/5"}`}
           >
             {f.content !== artifact.files[i]?.content ? "● " : ""}
             {f.path}
@@ -53,7 +53,7 @@ export default function BuilderFiles({
         ))}
       </nav>
       <div className="flex min-w-0 flex-col">
-        <div className="flex items-center justify-between gap-2 border-b border-white/10 p-2 pl-3">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 p-2 pl-3">
           <p className="truncate font-mono text-xs text-slate-400">
             {selected.path}
           </p>
@@ -88,7 +88,7 @@ export default function BuilderFiles({
               ),
             )
           }
-          className="flex-1 resize-none bg-transparent p-4 font-mono text-xs leading-relaxed text-slate-300 outline-none"
+          className="min-h-80 flex-1 resize-none bg-transparent p-4 font-mono text-xs leading-relaxed text-slate-300 outline-none"
         />
       </div>
     </div>

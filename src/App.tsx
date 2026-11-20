@@ -1,6 +1,6 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes, Navigate, Outlet } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate, Outlet, useLocation, useNavigationType } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { MotionConfig } from "framer-motion";
 import { Loader2 } from "lucide-react";
@@ -8,20 +8,21 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Index from "./pages/Index.tsx";
-import ServicosPage from "./pages/ServicosPage.tsx";
-import SistemasPage from "./pages/SistemasPage.tsx";
-import OrcamentoPage from "./pages/OrcamentoPage.tsx";
-import PortfolioPage from "./pages/PortfolioPage.tsx";
-import ContatoPage from "./pages/ContatoPage.tsx";
-import SobrePage from "./pages/SobrePage.tsx";
 import NotFound from "./pages/NotFound.tsx";
-import FeedbackPublicPage from "./pages/FeedbackPublicPage.tsx";
+
 import MaintenanceGate from "./components/MaintenanceGate";
 import CinematicEntrance from "./components/CinematicEntrance";
 import { TicketChatProvider } from "./components/tickets/TicketChat";
 
 // Dashboard e páginas pesadas só carregam quando a rota abre —
 // mantém o bundle do site público enxuto.
+const ServicosPage = lazy(() => import("./pages/ServicosPage"));
+const SistemasPage = lazy(() => import("./pages/SistemasPage"));
+const OrcamentoPage = lazy(() => import("./pages/OrcamentoPage"));
+const PortfolioPage = lazy(() => import("./pages/PortfolioPage"));
+const ContatoPage = lazy(() => import("./pages/ContatoPage"));
+const SobrePage = lazy(() => import("./pages/SobrePage"));
+const FeedbackPublicPage = lazy(() => import("./pages/FeedbackPublicPage"));
 const DashboardLayout = lazy(() => import("./dashboard/DashboardLayout"));
 const AIStudioPage = lazy(() => import("./pages/AIStudioPage"));
 const RequireAuth = lazy(() =>
@@ -48,14 +49,29 @@ const PageLoader = () => (
   </div>
 );
 
+function RouteScroll() {
+  const { pathname, hash } = useLocation();
+  const navigationType = useNavigationType();
+
+  useEffect(() => {
+    if (navigationType === "POP") return;
+    if (!hash) window.scrollTo({ top: 0, behavior: "instant" });
+    else document.getElementById(hash.slice(1))?.scrollIntoView();
+  }, [pathname, hash, navigationType]);
+
+  return null;
+}
+
 const App = () => (
-  <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+  <ThemeProvider attribute="class" forcedTheme="dark" disableTransitionOnChange>
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
         <Sonner />
         <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <MotionConfig reducedMotion="user">
+            <RouteScroll />
+            <Suspense fallback={<PageLoader />}>
             <Routes>
               <Route path="/ai" element={<Suspense fallback={<PageLoader />}><AIStudioPage /></Suspense>} />
               <Route path="/ai/projetos/:id" element={<Suspense fallback={<PageLoader />}><AIStudioPage /></Suspense>} />
@@ -106,6 +122,7 @@ const App = () => (
 
               <Route path="*" element={<NotFound />} />
             </Routes>
+            </Suspense>
           </MotionConfig>
         </BrowserRouter>
       </TooltipProvider>

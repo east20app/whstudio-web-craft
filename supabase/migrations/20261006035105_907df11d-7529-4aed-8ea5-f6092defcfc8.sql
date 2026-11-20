@@ -1,6 +1,5 @@
 ALTER TABLE public.portfolio_projects ADD COLUMN IF NOT EXISTS cover_url TEXT;
 ALTER TABLE public.portfolio_projects ADD COLUMN IF NOT EXISTS featured BOOLEAN NOT NULL DEFAULT false;
-ALTER TABLE public.portfolio_projects ALTER COLUMN color SET DEFAULT '';
 ALTER TABLE public.services ADD COLUMN IF NOT EXISTS sort_order INTEGER NOT NULL DEFAULT 0;
 ALTER TABLE public.services ADD COLUMN IF NOT EXISTS icon TEXT NOT NULL DEFAULT '';
 

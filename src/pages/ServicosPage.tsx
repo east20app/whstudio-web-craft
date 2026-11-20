@@ -19,18 +19,16 @@ const EXAMPLE_BY_TITLE: Record<string, string> = {
   "criacao de site": "Peixe Store",
   "bots para discord": "DroxBot",
   "bots discord": "DroxBot",
-  "apis e sistemas": "Copa Ativa",
+  "sistemas empresariais": "Copa Ativa",
   "dashboards": "DroxBot",
   "sistemas de delivery": "Serra Delivery",
   "sistema de delivery": "Serra Delivery",
 };
 
-const anchorFor = (title: string) => `/portfolio#projeto-${title.toLowerCase().replace(/\s+/g, "-")}`;
-
 const ServicosPage = () => {
   const { data: portfolio } = usePortfolio(true);
   const live = usePublicServices();
-  const servicesToShow = live && live.length > 0 ? live : configServices.map(toPublicService);
+  const servicesToShow = live ?? configServices.map(toPublicService);
 
   return (
   <>
@@ -102,7 +100,7 @@ const ServicosPage = () => {
                         <h3 className="font-display text-2xl md:text-3xl">{s.title}</h3>
                         {example && (
                           <Link
-                            to={anchorFor(example.title)}
+                            to={`/portfolio/${example.id}`}
                             className="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-primary hover:underline shrink-0"
                           >
                             Exemplo real: {example.title}

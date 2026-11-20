@@ -26,7 +26,8 @@ const normalize = (s: string) =>
 
 /** Casa o serviço do banco com a entrada visual do site.ts (ícone/benefícios). */
 function matchConfig(title: string) {
-  const t = normalize(title);
+  const normalized = normalize(title);
+  const t = normalized === "apis e sistemas" ? "sistemas empresariais" : normalized;
   return configServices.find((c) => {
     const id = normalize(c.id);
     const name = normalize(c.title);
@@ -58,7 +59,7 @@ function fetchServices(): Promise<PublicService[] | null> {
           return null;
         }
         const rows = data as DbServiceRow[] | null;
-        if (!Array.isArray(rows) || rows.length === 0) return null;
+        if (!Array.isArray(rows)) return null;
         return rows
           .filter((r) => r.name)
           .map((r) => {
@@ -96,5 +97,5 @@ export function usePublicServices(): PublicService[] | null {
     };
   }, []);
 
-  return services === null ? null : (services ?? null);
+  return services ?? null;
 }

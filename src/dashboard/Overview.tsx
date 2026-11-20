@@ -3,7 +3,15 @@ import { Link } from "react-router-dom";
 import { fetchActivity, type ActivityEntry } from "@/lib/activity";
 import StatCard from "./components/StatCard";
 import StatusPill from "./components/StatusPill";
+import type { BudgetStatus } from "./types";
 import { useBudgets, useClients, useProjects, useMessages, useSettings } from "./store";
+
+const budgetStatusLabels: Record<BudgetStatus, string> = {
+  novo: "Novos",
+  "em-analise": "Em análise",
+  aprovado: "Aprovados",
+  recusado: "Recusados",
+};
 
 const stageTone = {
   planejamento: "gray" as const,
@@ -19,7 +27,7 @@ const stageLabel = {
 };
 
 const Panel = ({ title, href, children }: { title: string; href: string; children: React.ReactNode }) => (
-  <section className="overflow-hidden rounded-2xl border border-border/80 bg-card/80 shadow-[0_12px_36px_hsl(var(--foreground)/0.035)]">
+  <section className="overflow-hidden border border-border bg-card">
     <header className="flex items-center justify-between px-5 h-12 border-b border-border">
       <h3 className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">{title}</h3>
       <Link to={href} className="font-mono text-[10px] uppercase tracking-[0.14em] text-primary hover:underline">
@@ -31,7 +39,7 @@ const Panel = ({ title, href, children }: { title: string; href: string; childre
 );
 
 const Overview = () => {
-  const { data: budgets } = useBudgets();
+  const { data: budgets, loading: budgetsLoading } = useBudgets();
   const { data: clients } = useClients();
   const { data: projects } = useProjects();
   const { data: messages } = useMessages();
@@ -46,13 +54,13 @@ const Overview = () => {
   const ongoing = projects.filter((p) => p.stage !== "entregue").length;
   const delivered = projects.filter((p) => p.stage === "entregue").length;
   const unread = messages.filter((m) => !m.read).length;
-  const newBudgets = budgets.filter((b) => b.status === "novo").length;
+  const budgetCounts: Record<BudgetStatus, number> = { novo: 0, "em-analise": 0, aprovado: 0, recusado: 0 };
+  for (const { status } of budgets) budgetCounts[status] += 1;
 
   return (
     <div className="space-y-10">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">Sys / Overview</p>
           <h2 className="text-2xl md:text-3xl font-bold tracking-tight mt-2">Visão geral</h2>
         </div>
         <Link
@@ -69,11 +77,29 @@ const Overview = () => {
       </header>
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <StatCard label="Orçamentos" value={budgets.length} trend={`${newBudgets} novos`} />
+        <StatCard label="Orçamentos" value={budgets.length} trend={`${budgetCounts.novo} novos`} />
         <StatCard label="Clientes ativos" value={activeClients} trend={`${clients.length} no total`} />
         <StatCard label="Em andamento" value={ongoing} trend={`${delivered} entregues`} />
         <StatCard label="Mensagens" value={messages.length} trend={`${unread} não lidas`} />
       </div>
+
+      <Panel title="Distribuição dos orçamentos" href="/dashboard/orcamentos">
+        {budgetsLoading ? <p role="status" className="px-5 py-6 text-sm text-muted-foreground">Carregando distribuição…</p> : (
+          <ul className="grid gap-4 px-5 py-6 sm:grid-cols-2 lg:grid-cols-4">
+            {(Object.keys(budgetStatusLabels) as BudgetStatus[]).map((status) => (
+              <li key={status} className="space-y-2">
+                <div className="flex justify-between gap-2 text-sm">
+                  <span>{budgetStatusLabels[status]}</span>
+                  <strong className="tabular-nums">{budgetCounts[status]}</strong>
+                </div>
+                <div className="h-2 bg-secondary" aria-hidden="true">
+                  <div className="h-full bg-[#0047ff]" style={{ width: `${budgetCounts[status] / Math.max(1, budgets.length) * 100}%` }} />
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Panel>
 
       <div className="grid lg:grid-cols-2 gap-6">
         <Panel title="Últimos orçamentos" href="/dashboard/orcamentos">
@@ -125,7 +151,7 @@ const Overview = () => {
         </Panel>
       </div>
 
-      <section className="overflow-hidden rounded-2xl border border-border/80 bg-card/80 shadow-[0_12px_36px_hsl(var(--foreground)/0.035)]">
+      <section className="overflow-hidden border border-border bg-card">
         <header className="flex items-center justify-between px-5 h-12 border-b border-border">
           <h3 className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
             Atividade recente

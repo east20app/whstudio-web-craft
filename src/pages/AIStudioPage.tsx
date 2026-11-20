@@ -1,3 +1,4 @@
+import BrandLogo from "@/components/BrandLogo";
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import type { User } from "@supabase/supabase-js";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -390,40 +391,40 @@ export default function AIStudioPage() {
     }
   }
   return (
-    <div className="min-h-screen bg-[#0b0d12] text-slate-100">
-      <header className="sticky top-0 z-40 flex min-h-[68px] flex-wrap items-center justify-between gap-3 border-b border-white/[.08] bg-[#0b0d12]/95 px-4 py-3 backdrop-blur-xl sm:px-5">
+    <div className="min-h-screen bg-black text-slate-100">
+      <header className="sticky top-0 z-40 flex min-h-[68px] flex-wrap items-center justify-between gap-3 border-b border-white/[.08] bg-black/95 px-4 py-3 backdrop-blur-xl sm:px-5">
         <div className="flex min-w-0 items-center gap-3">
-          <Link to="/" className="font-display text-xl font-bold tracking-tight">
-            WH<span className="text-blue-400">/</span><span className="text-base font-medium text-slate-300">studio</span>
+          <Link to="/" aria-label="WH Studio, início">
+            <BrandLogo className="h-8 w-32" />
           </Link>
           <span className="h-5 w-px bg-white/10" aria-hidden="true" />
           <span className="text-sm font-medium text-slate-200">AI Studio</span>
-          <span className="hidden rounded-full border border-blue-400/20 bg-blue-400/[.08] px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider text-blue-200 sm:inline-flex">Beta</span>
+          <span className="hidden rounded-none border border-blue-400/20 bg-blue-400/[.08] px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider text-blue-200 sm:inline-flex">Beta</span>
         </div>
         <div className="flex min-w-0 flex-wrap items-center justify-end gap-2 text-sm sm:gap-3">
-          <span className="rounded-full border border-white/10 bg-white/[.04] px-3 py-2 text-xs text-slate-300" aria-live="polite">
+          <span className="rounded-none border border-white/10 bg-white/[.04] px-3 py-2 text-xs text-slate-300" aria-live="polite">
             {!user ? "Entre para salvar" : walletLoading && !walletAvailable ? "Carregando saldo…" : walletAvailable ? `${balance} créditos` : "Saldo indisponível"}
           </span>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" disabled={busy} className="h-10 gap-2 rounded-xl border-white/10 bg-[#11151d] px-3 text-xs text-slate-200 hover:bg-white/[.06] sm:text-sm">
+              <Button variant="outline" disabled={busy} className="h-10 gap-2 rounded-none border-white/10 bg-[#121212] px-3 text-xs text-slate-200 hover:bg-white/[.06] sm:text-sm">
                 <Coins className="h-4 w-4 text-blue-300" aria-hidden="true" />
                 <span>Créditos</span>
                 <ChevronDown className="h-3.5 w-3.5 text-slate-500" aria-hidden="true" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-64 rounded-xl border-white/10 bg-[#11151d] p-2 text-slate-100 shadow-2xl">
+            <DropdownMenuContent align="end" className="w-64 rounded-none border-white/10 bg-[#121212] p-2 text-slate-100 shadow-2xl">
               <DropdownMenuLabel className="px-3 py-2 text-xs font-normal text-slate-400">1 crédito por versão gerada</DropdownMenuLabel>
               <DropdownMenuSeparator className="bg-white/10" />
-              <DropdownMenuItem className="cursor-pointer rounded-lg px-3 py-3 focus:bg-white/[.07]" onSelect={() => void purchase("inicial")}>
+              <DropdownMenuItem className="cursor-pointer rounded-none px-3 py-3 focus:bg-white/[.07]" onSelect={() => void purchase("inicial")}>
                 <span>Inicial <span className="ml-1 text-xs text-slate-500">5 créditos</span></span>
                 <span className="ml-auto font-medium">R$ 10</span>
               </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer rounded-lg px-3 py-3 focus:bg-white/[.07]" onSelect={() => void purchase("criador")}>
+              <DropdownMenuItem className="cursor-pointer rounded-none px-3 py-3 focus:bg-white/[.07]" onSelect={() => void purchase("criador")}>
                 <span>Criador <span className="ml-1 text-xs text-slate-500">15 créditos</span></span>
                 <span className="ml-auto font-medium">R$ 25</span>
               </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer rounded-lg px-3 py-3 focus:bg-white/[.07]" onSelect={() => void purchase("pro")}>
+              <DropdownMenuItem className="cursor-pointer rounded-none px-3 py-3 focus:bg-white/[.07]" onSelect={() => void purchase("pro")}>
                 <span>Pro <span className="ml-1 text-xs text-slate-500">40 créditos</span></span>
                 <span className="ml-auto font-medium">R$ 59</span>
               </DropdownMenuItem>
@@ -431,7 +432,7 @@ export default function AIStudioPage() {
           </DropdownMenu>
           <Button
             variant="outline"
-            className="h-10 rounded-xl border-white/10 px-4"
+            className="h-10 rounded-none border-white/10 px-4"
             onClick={() => (user ? supabase.auth.signOut() : setLogin(true))}
           >
             {user ? "Sair" : "Entrar"}
@@ -451,7 +452,7 @@ export default function AIStudioPage() {
       )}
       {new URLSearchParams(location.search).get("checkout") === "success" && (
         <p className="px-5 py-3 text-sm text-blue-300">
-          Pagamento recebido pelo checkout. Os créditos aparecem após a
+          Você voltou do checkout. Os créditos aparecem após a
           confirmação do provedor.{" "}
           <button className="underline" onClick={() => void refresh()}>
             Atualizar saldo
@@ -459,7 +460,7 @@ export default function AIStudioPage() {
         </p>
       )}
       <main className="grid min-h-[calc(100dvh-68px)] grid-cols-1 min-[640px]:grid-cols-[minmax(250px,0.38fr)_minmax(0,0.62fr)] lg:grid-cols-[370px_minmax(0,1fr)]">
-        <aside className="flex min-h-[620px] flex-col border-b border-white/[.08] bg-[#0d1017] p-4 sm:p-5 min-[640px]:h-[calc(100dvh-68px)] min-[640px]:min-h-0 min-[640px]:max-h-[calc(100dvh-68px)] min-[640px]:overflow-hidden lg:border-b-0 lg:border-r">
+        <aside className="flex min-h-[620px] flex-col border-b border-white/[.08] bg-[#0a0a0a] p-4 sm:p-5 min-[640px]:h-[calc(100dvh-68px)] min-[640px]:min-h-0 min-[640px]:max-h-[calc(100dvh-68px)] min-[640px]:overflow-hidden lg:border-b-0 lg:border-r">
           <div className="flex shrink-0 items-center justify-between gap-3">
             <div>
               <p className="eyebrow mb-1.5 text-blue-300">WH Studio AI <span className="text-slate-600">/</span> novo projeto</p>
@@ -470,7 +471,7 @@ export default function AIStudioPage() {
               variant="ghost"
               aria-label="Novo projeto"
               title="Começar um projeto novo"
-              className="rounded-xl border border-white/10 bg-white/[.03] hover:bg-white/[.08]"
+              className="rounded-none border border-white/10 bg-white/[.03] hover:bg-white/[.08]"
               onClick={() => {
                 navigate("/ai");
                 setSelected("");
@@ -484,13 +485,13 @@ export default function AIStudioPage() {
             Descreva o que você precisa. A IA cria a primeira versão e você continua pedindo ajustes por aqui.
           </p>
           {!id && (
-            <div className="my-3 flex shrink-0 gap-1.5 rounded-xl border border-white/[.08] bg-[#090c12] p-1" role="group" aria-label="Tipo de projeto">
+            <div className="my-3 flex shrink-0 gap-1.5 rounded-none border border-white/[.08] bg-black p-1" role="group" aria-label="Tipo de projeto">
               {(["site", "system"] as const).map((k) => (
                 <Button
                   key={k}
                   variant={kind === k ? "default" : "outline"}
                   aria-pressed={kind === k}
-                  className={`h-9 flex-1 rounded-lg ${kind === k ? "shadow-[0_3px_14px_rgba(59,130,246,.22)]" : "border-transparent bg-transparent text-slate-400 hover:bg-white/[.05] hover:text-white"}`}
+                  className={`h-9 flex-1 rounded-none ${kind === k ? "shadow-[0_3px_14px_rgba(59,130,246,.22)]" : "border-transparent bg-transparent text-slate-400 hover:bg-white/[.05] hover:text-white"}`}
                   onClick={() => setKind(k)}
                 >
                   {k === "site" ? "Site" : "Sistema"}
@@ -509,7 +510,7 @@ export default function AIStudioPage() {
                     e.target.value ? `/ai/projetos/${e.target.value}` : "/ai",
                   )
                 }
-                className="mt-2 h-11 w-full rounded-xl border border-white/10 bg-[#151923] px-3 text-sm text-white outline-none transition-colors hover:border-white/20 focus-visible:ring-2 focus-visible:ring-blue-400"
+                className="mt-2 h-11 w-full rounded-none border border-white/10 bg-[#171717] px-3 text-sm text-white outline-none transition-colors hover:border-white/20 focus-visible:ring-2 focus-visible:ring-blue-400"
               >
                 <option value="">Novo projeto</option>
                 {projects.map((p) => (
@@ -523,12 +524,12 @@ export default function AIStudioPage() {
           <div className="min-h-0 flex-1 space-y-2 overflow-y-auto py-3 [scrollbar-color:rgba(148,163,184,.25)_transparent] [scrollbar-width:thin]" aria-label="Histórico e sugestões">
             {versions.length ? (
               <>
-                <p className="eyebrow sticky top-0 z-10 rounded-lg bg-[#0d1017]/95 px-2 py-2 backdrop-blur">Conversa do projeto</p>
+                <p className="eyebrow sticky top-0 z-10 rounded-none bg-[#0a0a0a]/95 px-2 py-2 backdrop-blur">Conversa do projeto</p>
                 {[...versions].reverse().map((v) => {
                   const viewing = current?.id === v.id;
                   return (
                     <article
-                      className={`rounded-xl border p-3 text-sm ${viewing ? "border-blue-400/40 bg-blue-400/[.06]" : "border-white/10 bg-white/[.015]"}`}
+                      className={`rounded-none border p-3 text-sm ${viewing ? "border-blue-400/40 bg-blue-400/[.06]" : "border-white/10 bg-white/[.015]"}`}
                       key={v.id}
                     >
                       <div className="mb-2 flex items-center justify-between gap-2">
@@ -577,9 +578,9 @@ export default function AIStudioPage() {
                       setPrompt(s.prompt);
                       setKind(s.kind);
                     }}
-                    className="group flex w-full items-center gap-3 rounded-xl border border-white/[.08] bg-white/[.02] px-3 py-2.5 text-left transition-colors hover:border-blue-400/40 hover:bg-blue-400/[.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
+                    className="group flex w-full items-center gap-3 rounded-none border border-white/[.08] bg-white/[.02] px-3 py-2.5 text-left transition-colors hover:border-blue-400/40 hover:bg-blue-400/[.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
                   >
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/[.08] bg-white/[.035] text-blue-300"><Sparkles className="h-4 w-4" aria-hidden="true" /></span>
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-none border border-white/[.08] bg-white/[.035] text-blue-300"><Sparkles className="h-4 w-4" aria-hidden="true" /></span>
                     <span className="min-w-0 flex-1"><span className="block text-[13px] font-medium text-slate-200">{s.title}</span><span className="mt-0.5 block truncate text-[11px] text-slate-500">{s.detail}</span></span>
                     <Plus className="h-4 w-4 shrink-0 text-slate-600 transition-colors group-hover:text-blue-300" aria-hidden="true" />
                   </button>
@@ -588,14 +589,14 @@ export default function AIStudioPage() {
             )}
           </div>
           <form
-            className="relative z-20 mt-auto shrink-0 rounded-2xl border border-white/[.12] bg-[#11151d] p-3 shadow-[0_12px_35px_rgba(0,0,0,.24)]"
+            className="relative z-20 mt-auto shrink-0 rounded-none border border-white/[.12] bg-[#121212] p-3 shadow-[0_12px_35px_rgba(0,0,0,.24)]"
             onSubmit={(event) => {
               event.preventDefault();
               void generate();
             }}
           >
             {user && walletAvailable && balance < 1 && (
-              <div role="status" className="mb-2 flex items-center justify-between gap-2 rounded-lg border border-amber-300/20 bg-amber-300/[.06] px-2.5 py-2 text-[11px] text-amber-100">
+              <div role="status" className="mb-2 flex items-center justify-between gap-2 rounded-none border border-amber-300/20 bg-amber-300/[.06] px-2.5 py-2 text-[11px] text-amber-100">
                 <span>Sem créditos disponíveis</span>
                 <button type="button" disabled={busy} onClick={() => void purchase("inicial")} className="shrink-0 font-medium text-amber-200 underline underline-offset-2 hover:text-white disabled:opacity-50">Comprar créditos</button>
               </div>
@@ -626,7 +627,7 @@ export default function AIStudioPage() {
               <Button
                 type="submit"
                 size="sm"
-                className="h-9 shrink-0 rounded-lg px-3"
+                className="h-9 shrink-0 rounded-none px-3"
                 disabled={pending || prompt.trim().length < 10 || (Boolean(user) && !walletAvailable)}
                 aria-label={pending ? "Criando versão" : "Enviar solicitação para gerar versão"}
               >
@@ -711,12 +712,12 @@ export default function AIStudioPage() {
             </div>
           </div>
           {pending && (
-            <div className="mb-3 flex items-center gap-3 rounded-xl border border-blue-400/20 bg-blue-400/[.07] px-4 py-3 text-sm text-blue-100" role="status">
+            <div className="mb-3 flex items-center gap-3 rounded-none border border-blue-400/20 bg-blue-400/[.07] px-4 py-3 text-sm text-blue-100" role="status">
               <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
               <span>Preparando sua versão. Você pode acompanhar o progresso no histórico.</span>
             </div>
           )}
-          <div className="grid min-h-[420px] place-items-center overflow-hidden rounded-2xl border border-white/10 bg-[#11151d] sm:min-h-[650px]">
+          <div className="grid min-h-[420px] place-items-center overflow-hidden rounded-none border border-white/10 bg-[#121212] sm:min-h-[650px]">
             {current?.artifact?.files ? (
               backend ? (
                 <BuilderBackend
@@ -758,7 +759,7 @@ export default function AIStudioPage() {
             )}
           </div>
           {previewError && current && !code && !backend && (
-            <div role="alert" className="mt-4 rounded-xl border border-red-400/30 p-4 text-sm text-red-200">
+            <div role="alert" className="mt-4 rounded-none border border-red-400/30 p-4 text-sm text-red-200">
               <p className="mb-2 font-medium">A prévia encontrou um erro</p>
               <pre className="max-h-40 overflow-auto whitespace-pre-wrap font-mono text-xs">{previewError}</pre>
               <Button size="sm" className="mt-3" disabled={pending || (Boolean(user) && (!walletAvailable || balance < 1))} onClick={fixWithAI}>
@@ -767,7 +768,7 @@ export default function AIStudioPage() {
             </div>
           )}
           {current?.artifact?.backend_requirements.length > 0 && (
-            <div className="mt-4 rounded-xl border border-amber-400/20 p-4 text-sm text-amber-200">
+            <div className="mt-4 rounded-none border border-amber-400/20 p-4 text-sm text-amber-200">
               <p className="mb-2 font-medium">Para colocar em produção</p>
               <ul className="list-inside list-disc">
                 {current.artifact.backend_requirements.map((r, i) => (
@@ -780,7 +781,7 @@ export default function AIStudioPage() {
       </main>
       {login && (
         <Dialog open={login} onOpenChange={setLogin}>
-          <DialogContent closeLabel="Fechar janela" className="max-h-[90dvh] max-w-md overflow-y-auto border-white/10 bg-[#11151d] p-7 text-slate-100 sm:rounded-2xl">
+          <DialogContent closeLabel="Fechar janela" className="max-h-[90dvh] max-w-md overflow-y-auto border-white/10 bg-[#121212] p-7 text-slate-100 sm:rounded-none">
             <form onSubmit={authenticate} className="space-y-1">
               <DialogTitle className="pr-8 font-display text-2xl text-slate-100">
                 {recovery

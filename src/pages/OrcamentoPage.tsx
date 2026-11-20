@@ -1,7 +1,7 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import ProjectInquiry from "@/components/ProjectInquiry";
-import CTAFinal from "@/components/CTAFinal";
+import BudgetRequest from "@/components/BudgetRequest";
+
 import Seo, { pageSeo, orgJsonLd } from "@/components/Seo";
 
 const OrcamentoPage = () => (
@@ -22,8 +22,8 @@ const OrcamentoPage = () => (
         </div>
       </section>
 
-      <ProjectInquiry />
-      <CTAFinal />
+      <BudgetRequest />
+
     </main>
     <Footer />
   </>

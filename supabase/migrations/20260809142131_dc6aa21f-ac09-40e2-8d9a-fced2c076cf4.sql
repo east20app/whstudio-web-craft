@@ -1,3 +1,14 @@
+-- A fresh database needs this function before the historical policies can bind
+-- to it. The subsequent administration migrations replace its implementation.
+do $migration$
+begin
+  if to_regprocedure('public.is_admin()') is null then
+    execute $create$create function public.is_admin() returns boolean
+      language sql stable set search_path = '' as 'select false'$create$;
+  end if;
+end;
+$migration$;
+
 -- Remove policies permissivas (qualquer authenticated tinha acesso total)
 DROP POLICY IF EXISTS "admin full access tickets" ON public.tickets;
 DROP POLICY IF EXISTS "admin full access ticket_messages" ON public.ticket_messages;

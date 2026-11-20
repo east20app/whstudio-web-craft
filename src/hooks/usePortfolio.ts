@@ -20,6 +20,7 @@ export type PortfolioItem = {
   published: boolean;
   sortOrder: number;
   featured: boolean;
+  galleryUrls: string[];
 };
 
 export const mapPorfolioRow = (r: PortfolioRow): PortfolioItem => ({
@@ -34,6 +35,7 @@ export const mapPorfolioRow = (r: PortfolioRow): PortfolioItem => ({
   published: !!r.published,
   sortOrder: r.sort_order ?? 0,
   featured: !!r.featured,
+  galleryUrls: r.gallery_urls ?? [],
 });
 
 const toRow = (p: Partial<PortfolioItem>) => {
@@ -47,6 +49,7 @@ const toRow = (p: Partial<PortfolioItem>) => {
   if (p.coverUrl !== undefined) row.cover_url = p.coverUrl?.trim() ? p.coverUrl.trim() : null;
   if (p.published !== undefined) row.published = p.published;
   if (p.sortOrder !== undefined) row.sort_order = p.sortOrder;
+  if (p.galleryUrls !== undefined) row.gallery_urls = p.galleryUrls;
   if (p.featured !== undefined) row.featured = p.featured;
   return row;
 };

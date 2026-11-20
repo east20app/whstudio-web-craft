@@ -40,11 +40,11 @@ import {
   Globe,
   Bot,
   Settings,
-  Server,
+  Network,
   Zap,
   LayoutDashboard,
   ShoppingCart,
-  Rocket,
+  Sparkles,
   Plug,
   type LucideIcon,
 } from "lucide-react";
@@ -85,7 +85,7 @@ export const services: Service[] = [
   {
     id: "apis-sistemas",
     icon: Settings,
-    title: "APIs e Sistemas",
+    title: "Sistemas empresariais",
     short: "Sistemas web e APIs para cadastros, pedidos, financeiro e controle interno. Funcionalidades definidas a partir dos processos da sua empresa.",
     benefits: [
       "Banco de dados próprio e seguro",
@@ -129,6 +129,27 @@ export const services: Service[] = [
       "Frete calculado por bairro",
       "Painel pra você aceitar e acompanhar",
     ],
+  },
+  {
+    id: "inteligencia-artificial",
+    icon: Sparkles,
+    title: "Inteligência artificial",
+    short: "Fluxos com modelos de IA para trabalhar com texto, organizar informações e apoiar tarefas da sua operação.",
+    benefits: ["Escolha do modelo conforme a tarefa", "Integração com processos existentes"],
+  },
+  {
+    id: "lojas-virtuais",
+    icon: ShoppingCart,
+    title: "Lojas virtuais",
+    short: "Catálogo, carrinho e pagamentos em uma loja responsiva, com gestão de produtos e pedidos.",
+    benefits: ["Catálogo gerenciável", "Integração de pagamentos"],
+  },
+  {
+    id: "apis-integracoes",
+    icon: Network,
+    title: "APIs e integrações",
+    short: "Conectamos ferramentas internas e serviços externos com APIs documentadas e sincronização de dados.",
+    benefits: ["Integração com serviços externos", "Documentação dos endpoints"],
   },
 ];
 

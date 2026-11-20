@@ -1,41 +1,48 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
-import ProvaConfianca from "@/components/ProvaConfianca";
-import TiposDeProjetos from "@/components/TiposDeProjetos";
+import Services from "@/components/Services";
 import Portfolio from "@/components/Portfolio";
 import HowItWorks from "@/components/HowItWorks";
-import SolucoesEmpresas from "@/components/SolucoesEmpresas";
-import Entregas from "@/components/Entregas";
 import WhAI from "@/components/WhAI";
-import ProjectInquiry from "@/components/ProjectInquiry";
-import Testimonials from "@/components/Testimonials";
-import FAQ, { faqJsonLd } from "@/components/FAQ";
-import About from "@/components/About";
-import CTAFinal from "@/components/CTAFinal";
 import Footer from "@/components/Footer";
 import Seo, { pageSeo, orgJsonLd } from "@/components/Seo";
 
-const Index = () => (
-  <>
-    <Seo {...pageSeo.home} jsonLd={{ ...faqJsonLd, ...orgJsonLd }} />
-    <Header />
-    <main id="main-content" tabIndex={-1}>
-      <Hero />
-      <ProvaConfianca />
-      <TiposDeProjetos />
-      <SolucoesEmpresas />
-      <Entregas />
-      <Portfolio />
-      <HowItWorks />
-      <WhAI />
-      <ProjectInquiry />
-      <Testimonials />
-      <About />
-      <FAQ />
-      <CTAFinal />
-    </main>
-    <Footer />
-  </>
-);
+const stack = [
+  ["Interface", "React", "TypeScript", "Vite"],
+  ["Dados e autenticação", "Supabase", "PostgreSQL"],
+  ["Inteligência artificial", "OpenAI", "Gemini"],
+  ["Pagamentos", "Stripe"],
+];
 
-export default Index;
+export default function Index() {
+  return (
+    <>
+      <Seo {...pageSeo.home} jsonLd={orgJsonLd} />
+      <Header />
+      <main id="main-content" tabIndex={-1}>
+        <Hero />
+        <Services />
+        <Portfolio />
+        <section className="wh-section">
+          <div className="container">
+            <p className="eyebrow mb-5">Tecnologia</p>
+            <h2 className="wh-heading">O que usamos.</h2>
+            <div className="wh-service-grid">
+              {stack.map(([area, ...tools]) => (
+                <details key={area} className="wh-service">
+                  <summary className="cursor-pointer font-medium">{area}</summary>
+                  <ul className="mt-4 space-y-2 text-muted-foreground">
+                    {tools.map(tool => <li key={tool}>{tool}</li>)}
+                  </ul>
+                </details>
+              ))}
+            </div>
+          </div>
+        </section>
+        <HowItWorks />
+        <WhAI />
+      </main>
+      <Footer />
+    </>
+  );
+}
