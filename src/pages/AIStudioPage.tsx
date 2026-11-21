@@ -7,6 +7,7 @@ import {
   Coins,
   ChevronDown,
   Download,
+  Globe2,
   Loader2,
   Monitor,
   Plus,
@@ -398,10 +399,26 @@ export default function AIStudioPage() {
             <BrandLogo className="h-8 w-32" />
           </Link>
           <span className="h-5 w-px bg-white/10" aria-hidden="true" />
-          <span className="text-sm font-medium text-slate-200">AI Studio</span>
-          <span className="hidden rounded-none border border-blue-400/20 bg-blue-400/[.08] px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider text-blue-200 sm:inline-flex">Beta</span>
+          <div className="min-w-0">
+            <p className="truncate text-sm font-medium text-slate-100">
+              {activeProject?.title || "Novo projeto"}
+            </p>
+            <p className="hidden text-[10px] uppercase tracking-[0.16em] text-slate-500 sm:block">
+              WH Studio AI
+            </p>
+          </div>
         </div>
         <div className="flex min-w-0 flex-wrap items-center justify-end gap-2 text-sm sm:gap-3">
+          <Button
+            size="sm"
+            variant="outline"
+            className="h-10 gap-2 rounded-none border-blue-400/25 bg-blue-400/[.08] px-3 text-blue-100 hover:bg-blue-400/[.14]"
+            disabled={!current?.artifact}
+            onClick={hireStudio}
+          >
+            <Globe2 className="h-4 w-4" aria-hidden="true" />
+            Solicitar publicação
+          </Button>
           <span className="rounded-none border border-white/10 bg-white/[.04] px-3 py-2 text-xs text-slate-300" aria-live="polite">
             {!user ? "Entre para salvar" : walletLoading && !walletAvailable ? "Carregando saldo…" : walletAvailable ? `${balance} créditos` : "Saldo indisponível"}
           </span>
@@ -640,8 +657,8 @@ export default function AIStudioPage() {
             </div>
           </form>
         </aside>
-        <section className="min-w-0 p-4 lg:p-6">
-          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <section className="min-w-0 bg-[#090909] p-3 sm:p-4 lg:p-5">
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-3 rounded-none border border-white/[.08] bg-[#111111] p-2">
             <div className="flex flex-wrap gap-2">
               <Button
                 size="sm"
@@ -717,7 +734,7 @@ export default function AIStudioPage() {
               <span>Preparando sua versão. Você pode acompanhar o progresso no histórico.</span>
             </div>
           )}
-          <div className="grid min-h-[420px] place-items-center overflow-hidden rounded-none border border-white/10 bg-[#121212] sm:min-h-[650px]">
+          <div className="grid min-h-[420px] place-items-center overflow-hidden rounded-none border border-white/[.10] bg-[#161616] shadow-[0_24px_80px_rgba(0,0,0,.28)] sm:min-h-[650px]">
             {current?.artifact?.files ? (
               backend ? (
                 <BuilderBackend
@@ -738,18 +755,34 @@ export default function AIStudioPage() {
                 </Suspense>
               )
             ) : (
-              <div className="max-w-md p-8 text-center">
-                <Sparkles className="mx-auto mb-8 text-blue-400" size={40} />
-                <h2 className="font-display text-4xl leading-tight">
-                  O próximo projeto
-                  <br />
-                  começa com você.
+              <div className="max-w-xl p-6 text-center sm:p-10">
+                <div className="mx-auto mb-6 flex h-12 w-12 items-center justify-center rounded-full border border-blue-400/20 bg-blue-400/[.08]">
+                  <Sparkles className="text-blue-300" size={22} aria-hidden="true" />
+                </div>
+                <h2 className="font-display text-3xl leading-tight sm:text-4xl">
+                  O que você quer construir?
                 </h2>
-                <p className="mt-5 leading-relaxed text-slate-400">
-                  Crie sites e sistemas em React, com páginas, componentes e
-                  código organizado. Conecte o backend para usar autenticação e
-                  dados persistentes.
+                <p className="mx-auto mt-4 max-w-md leading-relaxed text-slate-400">
+                  Descreva sua ideia ao lado. A WH Studio AI cria uma prévia real,
+                  você conversa para ajustar e pode solicitar a publicação.
                 </p>
+                <div className="mt-7 grid gap-2 sm:grid-cols-3">
+                  {suggestions.map((suggestion) => (
+                    <button
+                      key={suggestion.title}
+                      type="button"
+                      onClick={() => {
+                        setPrompt(suggestion.prompt);
+                        setKind(suggestion.kind);
+                        document.getElementById("ai-project-prompt")?.focus();
+                      }}
+                      className="rounded-none border border-white/[.09] bg-white/[.025] px-3 py-3 text-left transition-colors hover:border-blue-400/35 hover:bg-blue-400/[.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
+                    >
+                      <span className="block text-sm font-medium text-slate-200">{suggestion.title}</span>
+                      <span className="mt-1 block text-xs leading-relaxed text-slate-500">{suggestion.detail}</span>
+                    </button>
+                  ))}
+                </div>
                   {!user ? (
                     <Button className="mt-6" onClick={() => setLogin(true)}>Entrar para começar</Button>
                   ) : !current ? (

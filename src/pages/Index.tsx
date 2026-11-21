@@ -10,7 +10,7 @@ import Seo, { pageSeo, orgJsonLd } from "@/components/Seo";
 const stack = [
   ["Interface", "React", "TypeScript", "Vite"],
   ["Dados e autenticação", "Supabase", "PostgreSQL"],
-  ["Inteligência artificial", "OpenAI", "Gemini"],
+  ["Inteligência artificial", "OpenAI", "Google Gemini", "Anthropic Claude"],
   ["Pagamentos", "Stripe"],
 ];
 
