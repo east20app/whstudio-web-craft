@@ -62,12 +62,6 @@ export type Database = {
         }
         Relationships: []
       }
-      budget_attachments: {
-        Row: { id: string; budget_id: string; filename: string; payload: string }
-        Insert: { id?: string; budget_id: string; filename: string; payload: string }
-        Update: { id?: string; budget_id?: string; filename?: string; payload?: string }
-        Relationships: []
-      }
       budgets: {
         Row: {
           client: string
@@ -324,7 +318,6 @@ export type Database = {
       }
       portfolio_projects: {
         Row: {
-          gallery_urls: string[]
           category: string
           color: string
           cover_url: string | null
@@ -341,7 +334,6 @@ export type Database = {
           url: string | null
         }
         Insert: {
-          gallery_urls?: string[]
           category?: string
           color?: string
           cover_url?: string | null
@@ -358,7 +350,6 @@ export type Database = {
           url?: string | null
         }
         Update: {
-          gallery_urls?: string[]
           category?: string
           color?: string
           cover_url?: string | null
@@ -872,19 +863,6 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      submit_budget_request: {
-        Args: {
-          request_id: string
-          client_name: string
-          contact_email: string
-          selected_services: string[]
-          requirements: string
-          budget_range: string
-          deadline: string
-          attachments: Json
-        }
-        Returns: undefined
-      }
       admin_signup_available: { Args: never; Returns: boolean }
       builder_finish: {
         Args: {
