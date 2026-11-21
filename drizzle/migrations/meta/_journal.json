@@ -15,6 +15,27 @@
       "when": 1794493038286,
       "tag": "0001_remove_unrestricted_portfolio_cover_reads",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1795225308219,
+      "tag": "0002_apply_existing_budget_requests",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1795225323262,
+      "tag": "0003_apply_existing_portfolio_gallery",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1795225430058,
+      "tag": "0004_builder_credit_audit_and_publication",
+      "breakpoints": true
     }
   ]
 }

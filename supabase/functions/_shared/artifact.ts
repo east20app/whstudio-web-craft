@@ -32,8 +32,11 @@ export function validateArtifact(value: unknown): Artifact {
         .split("/")
         .some(
           (p) =>
-            p === ".." || p === "." || p === "node_modules" || p === ".git",
+            ["..", ".", "node_modules", ".git", ".jj", "dist", "build", ".cache", "tmp"].includes(p),
         ) ||
+      (file.path.split("/").some((p) => p === ".env" || (p.startsWith(".env.") && p !== ".env.example"))) ||
+      /\.(?:log|tsbuildinfo|tmp|bak)$/.test(file.path) ||
+      /(?:sb_secret_[a-zA-Z0-9_-]+|sk_live_[a-zA-Z0-9]+|AIza[a-zA-Z0-9_-]{30,})/.test(file.content) ||
       paths.has(file.path)
     )
       throw new Error("Nome de arquivo inválido ou repetido");
@@ -52,9 +55,9 @@ export function validateArtifact(value: unknown): Artifact {
   ])
     if (!paths.has(required))
       throw new Error(`Arquivo obrigatório ausente: ${required}`);
-  const pkg = JSON.parse(
-    a.files.find((f) => f.path === "package.json")!.content,
-  );
+  const packageFile = a.files.find((f) => f.path === "package.json");
+  if (!packageFile) throw new Error("package.json ausente");
+  const pkg = JSON.parse(packageFile.content);
   if (
     !pkg.dependencies?.react ||
     !pkg.dependencies?.["react-dom"] ||

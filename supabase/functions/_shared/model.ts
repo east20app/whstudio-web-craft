@@ -57,17 +57,20 @@ export async function generateProject(
           { role: "user", content: prompt },
         ],
       };
-  let response!: Response;
+  let response: Response | undefined;
+  const signal = AbortSignal.timeout(110000);
   for (let attempt = 0; attempt < 5; attempt++) {
     response = await request(url, {
       method: "POST",
       headers,
       body: JSON.stringify(body),
+      signal,
     });
     if (response.status !== 503 && response.status !== 429) break;
     if (attempt < 4) await new Promise((r) => setTimeout(r, 2000 * (attempt + 1) + Math.random() * 1000));
   }
   // Provider errors can include credential fragments. Never forward raw bodies.
+  if (!response) throw new Error("Não foi possível acessar o provedor de IA.");
   if (!response.ok) {
     console.error("provider status", response.status);
     throw new Error(

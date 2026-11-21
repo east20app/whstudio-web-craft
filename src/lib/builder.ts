@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { zipSync, strToU8 } from "fflate";
 import type { Artifact } from "../../supabase/functions/_shared/artifact";
 import { validPublicBackend } from "@/lib/builder-backend";
+import { validateArtifact } from "../../supabase/functions/_shared/artifact";
 export type { Artifact };
 export type Project = {
   id: string;
@@ -57,7 +58,7 @@ export async function builderRequest(body: Record<string, unknown>) {
     throw new Error(message);
   }
   if (data.error) throw new Error(data.error);
-  return data as { generation?: Generation; url?: string };
+  return data as { generation?: Generation; url?: string; balance?: number; paymentsAvailable?: boolean; generationAvailable?: boolean; requestId?: string; project?: Project };
 }
 export function backendModule(url = "", key = "") {
   if (!validPublicBackend(url, key)) {
@@ -67,12 +68,18 @@ export function backendModule(url = "", key = "") {
   return `import { createClient } from '@supabase/supabase-js';\nconst url=${JSON.stringify(url)};\nconst key=${JSON.stringify(key)};\nexport const supabase = url && key ? createClient(url,key) : null;\nexport const backendConfigured = Boolean(supabase);\n`;
 }
 export function projectArchive(artifact: Artifact, project?: Project) {
+  validateArtifact(artifact);
+  void project; // Export never includes the user's real connection credentials.
   const entries = Object.fromEntries(
     artifact.files.map((f) => [f.path, strToU8(f.content)]),
   );
   entries["src/lib/supabase.ts"] = strToU8(
-    backendModule(project?.backend_url || "", project?.backend_key || ""),
+    "import { createClient } from '@supabase/supabase-js';\nconst url = import.meta.env.VITE_BACKEND_URL;\nconst key = import.meta.env.VITE_BACKEND_PUBLIC_KEY;\nexport const supabase = url && key ? createClient(url, key) : null;\nexport const backendConfigured = Boolean(supabase);\n",
   );
+  entries[".env.example"] = strToU8("VITE_BACKEND_URL=\nVITE_BACKEND_PUBLIC_KEY=\n");
+  entries["src/vite-env.d.ts"] = strToU8('/// <reference types="vite/client" />\n');
+  entries["public/.gitkeep"] = strToU8("");
+  entries["README.md"] = strToU8((artifact.files.find((file) => file.path === "README.md")?.content || "") + "\n\n## Configuração local\nInstale as dependências com npm install, copie .env.example para .env.local e preencha apenas a URL e a chave pública do seu backend. Nunca use chaves privadas. Execute npm run dev. Para validar e preparar a publicação, execute npm run build. Aplique as migrações e revise as políticas de acesso antes de publicar.\n");
   return zipSync(entries);
 }
 export function downloadProject(artifact: Artifact, project?: Project) {

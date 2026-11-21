@@ -31,6 +31,8 @@ Deno.serve(async (req: Request) => {
         env("SUPABASE_URL"),
         env("SUPABASE_SERVICE_ROLE_KEY"),
       );
+      const { data: checkout } = await db.from("builder_checkout_sessions").select("order_id,user_id").eq("provider_session_id", session.id).maybeSingle();
+      if (!checkout || checkout.order_id !== session.metadata.order_id || checkout.user_id !== session.client_reference_id) return new Response("Session mismatch", { status: 400 });
       const { error } = await db.rpc("builder_pay", {
         oid: session.metadata.order_id,
         paid_amount: session.amount_total,

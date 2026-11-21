@@ -62,6 +62,35 @@ export type Database = {
         }
         Relationships: []
       }
+      budget_attachments: {
+        Row: {
+          budget_id: string
+          filename: string
+          id: string
+          payload: string
+        }
+        Insert: {
+          budget_id: string
+          filename: string
+          id?: string
+          payload: string
+        }
+        Update: {
+          budget_id?: string
+          filename?: string
+          id?: string
+          payload?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "budget_attachments_budget_id_fkey"
+            columns: ["budget_id"]
+            isOneToOne: false
+            referencedRelation: "budgets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       budgets: {
         Row: {
           client: string
@@ -94,6 +123,41 @@ export type Database = {
           status?: string
         }
         Relationships: []
+      }
+      builder_checkout_sessions: {
+        Row: {
+          created_at: string
+          id: string
+          order_id: string
+          provider_session_id: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          order_id: string
+          provider_session_id: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          order_id?: string
+          provider_session_id?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "builder_checkout_sessions_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: true
+            referencedRelation: "builder_orders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       builder_generations: {
         Row: {
@@ -195,6 +259,81 @@ export type Database = {
           id?: string
           kind?: string
           title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      builder_publication_requests: {
+        Row: {
+          created_at: string
+          generation_id: string | null
+          id: string
+          project_id: string
+          status: string
+          summary: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          generation_id?: string | null
+          id?: string
+          project_id: string
+          status?: string
+          summary: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          generation_id?: string | null
+          id?: string
+          project_id?: string
+          status?: string
+          summary?: Json
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "builder_publication_requests_generation_id_fkey"
+            columns: ["generation_id"]
+            isOneToOne: false
+            referencedRelation: "builder_generations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "builder_publication_requests_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "builder_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      builder_wallet_transactions: {
+        Row: {
+          balance_after: number
+          created_at: string
+          delta: number
+          id: string
+          kind: string
+          reference_id: string
+          user_id: string
+        }
+        Insert: {
+          balance_after: number
+          created_at?: string
+          delta: number
+          id?: string
+          kind: string
+          reference_id: string
+          user_id: string
+        }
+        Update: {
+          balance_after?: number
+          created_at?: string
+          delta?: number
+          id?: string
+          kind?: string
+          reference_id?: string
           user_id?: string
         }
         Relationships: []
@@ -324,6 +463,7 @@ export type Database = {
           created_at: string
           description: string
           featured: boolean
+          gallery_urls: string[]
           id: string
           published: boolean
           sort_order: number
@@ -340,6 +480,7 @@ export type Database = {
           created_at?: string
           description?: string
           featured?: boolean
+          gallery_urls?: string[]
           id?: string
           published?: boolean
           sort_order?: number
@@ -356,6 +497,7 @@ export type Database = {
           created_at?: string
           description?: string
           featured?: boolean
+          gallery_urls?: string[]
           id?: string
           published?: boolean
           sort_order?: number
@@ -878,6 +1020,7 @@ export type Database = {
         Args: { oid: string; paid_amount: number; paid_currency: string }
         Returns: undefined
       }
+      builder_recover: { Args: { uid: string }; Returns: number }
       builder_reserve: {
         Args: { brief: string; gid: string; pid: string; uid: string }
         Returns: Json
@@ -985,6 +1128,19 @@ export type Database = {
       post_ticket_message: {
         Args: { _body: string; _token: string }
         Returns: boolean
+      }
+      submit_budget_request: {
+        Args: {
+          attachments: Json
+          budget_range: string
+          client_name: string
+          contact_email: string
+          deadline: string
+          request_id: string
+          requirements: string
+          selected_services: string[]
+        }
+        Returns: undefined
       }
       submit_feedback: {
         Args: {

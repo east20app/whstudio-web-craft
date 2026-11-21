@@ -2,6 +2,7 @@ import { createClient } from "npm:@supabase/supabase-js@2.105.1";
 import Stripe from "npm:stripe@18.5.0";
 import { validateArtifact } from "../_shared/artifact.ts";
 import { generateProject, modelConfig } from "../_shared/model.ts";
+import { validPublicBackend } from "../_shared/backend.ts";
 
 const env = (key: string) => Deno.env.get(key) || "";
 const db = createClient(env("SUPABASE_URL"), env("SUPABASE_SERVICE_ROLE_KEY"));
@@ -65,12 +66,55 @@ Deno.serve(async (req: Request) => {
     } = await auth.auth.getUser();
     if (authError || !user)
       return respond({ error: "Entre na sua conta para continuar" }, 401);
-    if (Number(req.headers.get("content-length") || 0) > 40000)
+    if (Number(req.headers.get("content-length") || 0) > 750000)
       return respond({ error: "Pedido muito grande" }, 413);
     const raw = await req.text();
-    if (raw.length > 40000)
+    if (raw.length > 750000)
       return respond({ error: "Pedido muito grande" }, 413);
     const body = JSON.parse(raw);
+    if (body.action === "status") {
+      const { error: recoverError } = await db.rpc("builder_recover", { uid: user.id });
+      if (recoverError) throw new Error("Não foi possível conferir os créditos.");
+      const { data: wallet, error: walletError } = await db.from("builder_wallets").select("balance").eq("user_id", user.id).single();
+      if (walletError) throw new Error("Saldo indisponível.");
+      return respond({ balance: wallet.balance, paymentsAvailable: Boolean(env("STRIPE_SECRET_KEY") && env("STRIPE_WEBHOOK_SECRET")), generationAvailable: Boolean(modelConfig(env)) });
+    }
+    if (["rename", "delete", "backend", "publish"].includes(body.action)) {
+      const { data: project } = await db.from("builder_projects").select("*").eq("id", body.projectId).eq("user_id", user.id).maybeSingle();
+      if (!project) return respond({ error: "Projeto indisponível" }, 404);
+      if (body.action === "delete") {
+        const { count } = await db.from("builder_generations").select("id", { count: "exact", head: true }).eq("project_id", project.id).eq("status", "pending");
+        if (count) return respond({ error: "Aguarde a geração terminar antes de excluir." }, 409);
+        const { error } = await db.from("builder_projects").delete().eq("id", project.id).eq("user_id", user.id);
+        if (error) throw new Error("Não foi possível excluir o projeto.");
+        return respond({ deleted: true });
+      }
+      if (body.action === "rename") {
+        if (typeof body.title !== "string" || !body.title.trim() || body.title.length > 100) return respond({ error: "Use um nome de até 100 caracteres." }, 400);
+        const { error } = await db.from("builder_projects").update({ title: body.title.trim() }).eq("id", project.id).eq("user_id", user.id);
+        if (error) throw new Error("Não foi possível renomear o projeto.");
+        return respond({ saved: true });
+      }
+      if (body.action === "backend") {
+        if (typeof body.url !== "string" || typeof body.key !== "string" || !validPublicBackend(body.url, body.key)) return respond({ error: "Use apenas uma URL válida e uma chave pública do backend." }, 400);
+        let valid = false;
+        try {
+          const check = await fetch(`${body.url.replace(/\/$/, "")}/auth/v1/settings`, { headers: { apikey: body.key }, redirect: "error", signal: AbortSignal.timeout(10000) });
+          valid = check.ok;
+          await check.body?.cancel();
+        } catch { /* Do not expose credentials or remote responses. */ }
+        if (!valid) return respond({ error: "O backend não confirmou essa chave pública. Confira a conexão." }, 400);
+        const { error } = await db.from("builder_projects").update({ backend_url: body.url.replace(/\/$/, ""), backend_key: body.key }).eq("id", project.id).eq("user_id", user.id);
+        if (error) throw new Error("Não foi possível salvar a conexão.");
+        return respond({ saved: true });
+      }
+      const { data: version } = await db.from("builder_generations").select("artifact,id").eq("id", body.generationId).eq("project_id", project.id).eq("user_id", user.id).eq("status", "complete").maybeSingle();
+      if (!version) return respond({ error: "Escolha uma versão concluída." }, 400);
+      const artifact = validateArtifact(version.artifact);
+      const { data: request, error } = await db.from("builder_publication_requests").upsert({ user_id: user.id, project_id: project.id, generation_id: version.id, summary: { title: project.title, kind: project.kind, summary: artifact.summary, file_count: artifact.files.length, requirements: artifact.backend_requirements } }, { onConflict: "user_id,project_id,generation_id" }).select("id").single();
+      if (error) throw new Error("Não foi possível registrar a solicitação.");
+      return respond({ requestId: request.id });
+    }
     if (body.action === "save") {
       const uuid = /^[0-9a-f-]{36}$/i;
       if (!uuid.test(body.projectId))
@@ -88,6 +132,8 @@ Deno.serve(async (req: Request) => {
       } catch (e) {
         return respond({ error: e instanceof Error ? e.message : "Projeto inválido" }, 400);
       }
+      const { count } = await db.from("builder_generations").select("id", { head: true, count: "exact" }).eq("user_id", user.id).eq("model", "manual").gte("created_at", new Date(Date.now()-60000).toISOString());
+      if ((count || 0) >= 10) return respond({ error: "Aguarde um minuto antes de salvar novamente." }, 429);
       const { data: saved, error } = await db
         .from("builder_generations")
         .insert({
@@ -107,7 +153,7 @@ Deno.serve(async (req: Request) => {
     }
     if (body.action === "checkout") {
       checkout = true;
-      if (!env("STRIPE_SECRET_KEY"))
+      if (!env("STRIPE_SECRET_KEY") || !env("STRIPE_WEBHOOK_SECRET"))
         return respond(
           { error: "A compra de créditos ainda não foi configurada" },
           503,
@@ -153,8 +199,11 @@ Deno.serve(async (req: Request) => {
         },
         { idempotencyKey: order.id },
       );
+      const { error: sessionError } = await db.from("builder_checkout_sessions").insert({ user_id: user.id, order_id: order.id, provider_session_id: session.id });
+      if (sessionError) throw new Error("Não foi possível registrar o checkout.");
       return respond({ url: session.url });
     }
+    if (raw.length > 40000) return respond({ error: "Pedido muito grande" }, 413);
     const config = modelConfig(env);
     if (!config)
       return respond(
