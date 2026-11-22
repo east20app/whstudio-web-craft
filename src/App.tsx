@@ -25,6 +25,7 @@ const SobrePage = lazy(() => import("./pages/SobrePage"));
 const FeedbackPublicPage = lazy(() => import("./pages/FeedbackPublicPage"));
 const DashboardLayout = lazy(() => import("./dashboard/DashboardLayout"));
 const AIStudioPage = lazy(() => import("./pages/AIStudioPage"));
+const ResetPasswordPage = lazy(() => import("./pages/ResetPasswordPage"));
 const RequireAuth = lazy(() =>
   import("./dashboard/RequireAuth").then((m) => ({ default: m.RequireAuth }))
 );
@@ -73,6 +74,7 @@ const App = () => (
             <RouteScroll />
             <Suspense fallback={<PageLoader />}>
             <Routes>
+              <Route path="/reset-password" element={<ResetPasswordPage />} />
               <Route path="/ai" element={<Suspense fallback={<PageLoader />}><AIStudioPage /></Suspense>} />
               <Route path="/ai/projetos/:id" element={<Suspense fallback={<PageLoader />}><AIStudioPage /></Suspense>} />
               <Route

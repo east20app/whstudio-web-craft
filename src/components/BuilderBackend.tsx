@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { builderDb, type Artifact, type Project } from "@/lib/builder";
+import { builderRequest, type Artifact, type Project } from "@/lib/builder";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { validPublicBackend } from "@/lib/builder-backend";
@@ -25,35 +25,30 @@ export default function BuilderBackend({
     if (!project) return;
     if (!validPublicBackend(url, key)) {
       setNotice(
-        "Use a URL HTTPS do seu projeto Supabase e uma chave pública publishable/anon. Chaves secretas não são aceitas.",
+        "Use a URL HTTPS do seu projeto backend e uma chave pública publishable/anon. Chaves secretas não são aceitas.",
       );
       return;
     }
     setSaving(true);
-    const { error } = await builderDb
-      .from("builder_projects")
-      .update({ backend_url: url.replace(/\/$/, ""), backend_key: key })
-      .eq("id", project.id);
-    setNotice(
-      error
-        ? "Não foi possível salvar a conexão."
-        : "Conexão salva. Aplique as migrações e configure o Auth no seu Supabase para usar o sistema.",
-    );
-    setSaving(false);
-    if (!error) onSaved();
+    try {
+      await builderRequest({ action: "backend", projectId: project.id, url, key });
+      setNotice("Conexão verificada e salva. Revise as migrações e os métodos de acesso antes de publicar.");
+      onSaved();
+    } catch (error) { setNotice(error instanceof Error ? error.message : "Não foi possível verificar a conexão."); }
+    finally { setSaving(false); }
   }
   return (
-    <div className="h-[650px] w-full overflow-auto p-6">
+    <div className="h-full min-h-[420px] w-full overflow-auto p-6">
       <h2 className="font-display text-2xl">Backend do seu projeto</h2>
-      <p className="my-4 max-w-2xl text-sm leading-relaxed text-slate-400">
-        Conecte um projeto Supabase exclusivo para este sistema. Ele fornece
+      <p className="my-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+        Conecte um projeto backend exclusivo para este sistema. Ele fornece
         banco PostgreSQL, autenticação e API reais. A chave pública pode ser
         usada no navegador; a proteção dos dados depende das políticas RLS das
         migrações.
       </p>
       <div className="max-w-xl space-y-4">
         <label className="block text-sm">
-          URL do Supabase
+          URL do backend
           <Input
             className="mt-2"
             placeholder="https://seu-projeto.supabase.co"
@@ -75,13 +70,13 @@ export default function BuilderBackend({
           {saving ? "Salvando…" : "Salvar conexão"}
         </Button>
         {notice && (
-          <p role="status" className="text-sm text-blue-300">
+          <p role="status" className="text-sm text-primary">
             {notice}
           </p>
         )}
       </div>
-      <p className="my-5 text-sm text-slate-400">
-        Revise e aplique os arquivos SQL no editor do seu Supabase. Depois
+      <p className="my-5 text-sm text-muted-foreground">
+        Revise e aplique os arquivos SQL no editor do seu backend. Depois
         habilite e configure os métodos de login e URLs de redirecionamento. As
         instruções completas estão no README do projeto.
       </p>
@@ -89,12 +84,12 @@ export default function BuilderBackend({
         sql.map((f) => (
           <details
             key={f.path}
-            className="mb-3 rounded-lg border border-white/10 p-4"
+            className="mb-3 rounded-lg border border-border p-4"
           >
             <summary className="cursor-pointer font-mono text-xs">
               {f.path}
             </summary>
-            <pre className="mt-4 overflow-auto whitespace-pre text-xs text-slate-300">
+            <pre className="mt-4 overflow-auto whitespace-pre text-xs text-foreground">
               {f.content}
             </pre>
             <Button
@@ -115,7 +110,7 @@ export default function BuilderBackend({
           </details>
         ))
       ) : (
-        <p className="text-sm text-slate-500">
+        <p className="text-sm text-muted-foreground">
           Este projeto não contém migrações SQL. Peça à IA para adicionar o
           backend necessário.
         </p>

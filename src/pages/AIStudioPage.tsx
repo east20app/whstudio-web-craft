@@ -2,931 +2,278 @@ import BrandLogo from "@/components/BrandLogo";
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import type { User } from "@supabase/supabase-js";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import {
-  Code2,
-  Coins,
-  ChevronDown,
-  Download,
-  Globe2,
-  Loader2,
-  Monitor,
-  Plus,
-  Smartphone,
-  Sparkles,
-  X,
-} from "lucide-react";
+import { Helmet } from "react-helmet-async";
+import { ArrowUp, ArrowUpRight, Check, ChevronDown, Code2, Coins, Database, Download, Globe2, History, Loader2, MessageSquare, Monitor, MoreHorizontal, Pencil, Plus, RefreshCw, Smartphone, Sparkles, Trash2, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable/index";
-import {
-  builderDb,
-  builderRequest,
-  downloadProject,
-  type Generation,
-  type Project,
-} from "@/lib/builder";
+import { builderDb, builderRequest, downloadProject, type Artifact, type Generation, type Project } from "@/lib/builder";
+import { canGenerate, CREDIT_PACKAGES } from "../../supabase/functions/_shared/builder-rules";
+import BuilderAccess from "@/components/BuilderAccess";
 import BuilderFiles from "@/components/BuilderFiles";
 import BuilderBackend from "@/components/BuilderBackend";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { whatsappLink } from "@/config/site";
 
-const suggestions = [
-  {
-    title: "Site para cafeteria",
-    detail: "Cardápio, localização e contato",
-    prompt: "Crie um site responsivo para uma cafeteria, com cardápio, endereço, horário de funcionamento e botão de contato.",
-    kind: "site" as const,
-  },
-  {
-    title: "Gestão de tarefas",
-    detail: "Cadastro, filtros e status",
-    prompt: "Crie um sistema de tarefas com cadastro, responsáveis, filtros por status e uma tela de acompanhamento.",
-    kind: "system" as const,
-  },
-  {
-    title: "Controle de estoque",
-    detail: "Produtos, quantidades e alertas",
-    prompt: "Crie um painel de estoque com cadastro de produtos, busca, quantidade disponível e alertas de reposição.",
-    kind: "system" as const,
-  },
-];
-const dateLabel = (value: string) =>
-  new Intl.DateTimeFormat("pt-BR", {
-    day: "2-digit",
-    month: "short",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(new Date(value));
 const BuilderPreview = lazy(() => import("@/components/BuilderPreview"));
+const suggestions = [
+  { title: "Site para cafeteria", detail: "Cardápio e contato", kind: "site" as const, prompt: "Crie um site responsivo para uma cafeteria com cardápio, endereço, horário de funcionamento e contato. Indique os dados que preciso fornecer, sem inventar informações reais." },
+  { title: "Gestão de tarefas", detail: "Equipe e acompanhamento", kind: "system" as const, prompt: "Crie um sistema de gestão de tarefas com login, cadastro, responsáveis, filtros por status e acompanhamento. Use banco real e políticas para cada usuário acessar apenas seus dados." },
+  { title: "Controle de estoque", detail: "Produtos e quantidades", kind: "system" as const, prompt: "Crie um sistema de controle de estoque com login, cadastro de produtos, busca, quantidades e alertas de reposição. Use persistência real e acesso protegido por usuário." },
+];
+const dateLabel = (value: string) => new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }).format(new Date(value));
+type Transaction = { id: string; kind: string; delta: number; balance_after: number; created_at: string };
 export default function AIStudioPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [user, setUser] = useState<User | null>(null),
-    [projects, setProjects] = useState<Project[]>([]),
-    [versions, setVersions] = useState<Generation[]>([]);
-  const [selected, setSelected] = useState<string>(""),
-    [prompt, setPrompt] = useState(""),
-    [kind, setKind] = useState<"site" | "system">("site");
-  const [balance, setBalance] = useState(0),
-    [walletLoading, setWalletLoading] = useState(true),
-    [walletAvailable, setWalletAvailable] = useState(false),
-    [busy, setBusy] = useState(false),
-    [notice, setNotice] = useState(""),
-    [mobile, setMobile] = useState(false),
-    [code, setCode] = useState(false);
-  const [backend, setBackend] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [versions, setVersions] = useState<Generation[]>([]);
+  const [selected, setSelected] = useState("");
+  const [prompt, setPrompt] = useState("");
+  const [kind, setKind] = useState<"site" | "system">("site");
+  const [balance, setBalance] = useState(0);
+  const [walletAvailable, setWalletAvailable] = useState(false);
+  const [walletLoading, setWalletLoading] = useState(false);
+  const [paymentsAvailable, setPaymentsAvailable] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [notice, setNotice] = useState("");
+  const [mobile, setMobile] = useState(false);
+  const [tab, setTab] = useState<"preview" | "files" | "backend">("preview");
   const [previewError, setPreviewError] = useState<string | null>(null);
-  const [login, setLogin] = useState(false),
-    [signup, setSignup] = useState(false),
-    [email, setEmail] = useState(""),
-    [password, setPassword] = useState(""),
-    [authBusy, setAuthBusy] = useState(false),
-    [recovery, setRecovery] = useState(false);
-  const walletOwner = useRef<string | null>(null);
+  const [previewKey, setPreviewKey] = useState(0);
+  const [login, setLogin] = useState(false);
+  const [conversationOpen, setConversationOpen] = useState(false);
+  const [creditsOpen, setCreditsOpen] = useState(false);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [renameOpen, setRenameOpen] = useState(false);
+  const [title, setTitle] = useState("");
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [publishOpen, setPublishOpen] = useState(false);
+  const [fixOpen, setFixOpen] = useState(false);
+  const [operationBusy, setOperationBusy] = useState(false);
+  const submitting = useRef(false);
+  const requestRef = useRef<{ id: string; prompt: string; projectId: string } | null>(null);
+  const latestUser = useRef<string | null>(null);
+  const current = versions.find(v => v.id === selected && v.status === "complete") || versions.find(v => v.status === "complete");
+  const activeProject = projects.find(p => p.id === id);
+  const pending = busy || versions.some(v => v.status === "pending");
   const refresh = useCallback(async () => {
-    if (!user) {
-      walletOwner.current = null;
-      setWalletAvailable(false);
-      setWalletLoading(false);
-      return;
-    }
-    const firstLoadForUser = walletOwner.current !== user.id;
-    if (firstLoadForUser) {
-      setWalletAvailable(false);
-      setWalletLoading(true);
-    }
+    if (!user) return;
     try {
-      const [p, w] = await Promise.all([
-        builderDb
-          .from("builder_projects")
-          .select("*")
-          .order("created_at", { ascending: false }),
-        builderDb
-          .from("builder_wallets")
-          .select("balance")
-          .eq("user_id", user.id)
-          .maybeSingle(),
+      const [p, v, w] = await Promise.all([
+        builderDb.from("builder_projects").select("*").eq("user_id", user.id).order("created_at", { ascending: false }),
+        id ? builderDb.from("builder_generations").select("*").eq("project_id", id).eq("user_id", user.id).order("created_at", { ascending: false }) : Promise.resolve({ data: [], error: null }),
+        builderDb.from("builder_wallets").select("balance").eq("user_id", user.id).maybeSingle(),
       ]);
-      if (p.error) {
-        setWalletAvailable(false);
-        setNotice("O serviço ainda precisa da instalação do banco da WH Studio AI.");
-        return;
-      }
-      if (w.error) {
-        setWalletAvailable(false);
-        setNotice("Não foi possível consultar seu saldo de créditos.");
-        return;
-      }
-      setProjects(p.data || []);
-      setBalance(w.data?.balance || 0);
-      walletOwner.current = user.id;
-      setWalletAvailable(true);
-      if (id) {
-        const { data, error } = await builderDb
-          .from("builder_generations")
-          .select("*")
-          .eq("project_id", id)
-          .order("created_at", { ascending: false });
-        if (error) setNotice("Não foi possível carregar as versões.");
-        else setVersions(data || []);
-      } else setVersions([]);
-    } catch {
-      setWalletAvailable(false);
-      setNotice("Não foi possível carregar seus projetos agora. Tente novamente.");
-    } finally {
-      if (firstLoadForUser) setWalletLoading(false);
-    }
+      if (latestUser.current !== user.id) return;
+      if (p.error || v.error || w.error) throw new Error("Impossible de carregar");
+      setProjects(p.data || []); setVersions(v.data || []); setBalance(w.data?.balance || 0); setWalletAvailable(Boolean(w.data));
+      if (id && !p.data?.some(project => project.id === id)) setNotice("Este projeto não está disponível para sua conta.");
+    } catch { setNotice("Não foi possível carregar seus projetos e créditos. Tente atualizar."); }
   }, [user, id]);
+  const syncWallet = useCallback(async () => {
+    if (!user) return;
+    setWalletLoading(true);
+    try {
+      const status = await builderRequest({ action: "status" });
+      if (latestUser.current !== user.id) return;
+      setBalance(status.balance || 0); setWalletAvailable(true); setPaymentsAvailable(Boolean(status.paymentsAvailable));
+      await refresh();
+    } catch (error) { setWalletAvailable(false); setNotice(error instanceof Error ? error.message : "Não foi possível conferir o saldo."); }
+    finally { setWalletLoading(false); }
+  }, [user, refresh]);
   useEffect(() => {
-    supabase.auth
-      .getSession()
-      .then(({ data }) => setUser(data.session?.user || null));
     const { data } = supabase.auth.onAuthStateChange((event, session) => {
+      latestUser.current = session?.user.id || null;
       setUser(session?.user || null);
-      if (event === "PASSWORD_RECOVERY") {
-        setRecovery(true);
-        setLogin(true);
-      }
+      if (session?.user) setLogin(false);
+      if (event === "SIGNED_OUT") { setProjects([]); setVersions([]); setBalance(0); setWalletAvailable(false); requestRef.current = null; }
     });
+    void supabase.auth.getUser().then(({ data }) => { latestUser.current = data.user?.id || null; setUser(data.user); });
     return () => data.subscription.unsubscribe();
   }, []);
+  useEffect(() => { void syncWallet(); }, [syncWallet]);
+  useEffect(() => { setVersions([]); setSelected(""); setPreviewError(null); setTab("preview"); }, [id]);
   useEffect(() => {
-    void refresh();
-  }, [refresh]);
-  useEffect(() => {
-    if (!user) {
-      setProjects([]);
-      setVersions([]);
-      setBalance(0);
-      setWalletAvailable(false);
-      setWalletLoading(false);
-    }
-  }, [user]);
-  useEffect(() => {
-    setSelected("");
-    setPreviewError(null);
-    setCode(false);
-    setBackend(false);
-  }, [id]);
-  useEffect(() => {
-    if (!versions.some((v) => v.status === "pending")) return;
-    const timer = setInterval(() => void refresh(), 4000);
-    return () => clearInterval(timer);
-  }, [versions, refresh]);
-  const current =
-    versions.find((v) => v.id === selected && v.status === "complete") ||
-    versions.find((v) => v.status === "complete");
-  const activeProject = projects.find((p) => p.id === id);
-  const pending =
-    busy ||
-    versions.some(
-      (v) =>
-        v.status === "pending" &&
-        Date.now() - new Date(v.created_at).getTime() < 900000,
-    );
-  async function authenticate(event: React.FormEvent) {
-    event.preventDefault();
-    setAuthBusy(true);
-    setNotice("");
-    try {
-      if (recovery) {
-        const { error } = await supabase.auth.updateUser({ password });
-        if (error) throw error;
-        setRecovery(false);
-        setLogin(false);
-        setNotice("Senha atualizada.");
-      } else if (signup) {
-        const { data, error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: { emailRedirectTo: `${location.origin}/ai` },
-        });
-        if (error) throw error;
-        if (data.session) setLogin(false);
-        else setNotice("Confira seu e-mail para confirmar a conta.");
-      } else {
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-        if (error) throw error;
-        setLogin(false);
+    if (!user) return;
+    const timer = setInterval(() => {
+      if (document.visibilityState === "visible") {
+        if (versions.some(v => v.status === "pending" && Date.now() - new Date(v.created_at).getTime() > 900000)) void syncWallet();
+        else void refresh();
       }
-      setPassword("");
-    } catch (error) {
-      setNotice(
-        error instanceof Error ? error.message : "Não foi possível entrar.",
-      );
-    } finally {
-      setAuthBusy(false);
-    }
-  }
-  async function signInWithGoogle() {
-    setAuthBusy(true);
-    setNotice("");
-    try {
-      const result = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: `${location.origin}/ai`,
-      });
-      if (result.error) {
-        setNotice(result.error.message || "Não foi possível entrar com o Google.");
-      } else if (!result.redirected) {
-        setLogin(false);
-      }
-    } catch (error) {
-      setNotice(error instanceof Error ? error.message : "Não foi possível entrar com o Google.");
-    } finally {
-      setAuthBusy(false);
-    }
+    }, pending ? 4000 : 20000);
+    const focus = () => void syncWallet();
+    window.addEventListener("focus", focus);
+    return () => { clearInterval(timer); window.removeEventListener("focus", focus); };
+  }, [user, pending, refresh, syncWallet, versions]);
+  useEffect(() => {
+    if (!creditsOpen || !user) return;
+    setTransactions([]);
+    void supabase.from("builder_wallet_transactions").select("id,kind,delta,balance_after,created_at").eq("user_id", user.id).order("created_at", { ascending: false }).limit(30).then(({ data, error }) => {
+      if (error) setNotice("Não foi possível consultar as movimentações."); else setTransactions(data || []);
+    });
+  }, [creditsOpen, user, balance]);
+  function chooseSuggestion(suggestion: typeof suggestions[number]) {
+    setPrompt(suggestion.prompt); setKind(suggestion.kind); setConversationOpen(false);
+    requestAnimationFrame(() => document.getElementById("builder-prompt")?.focus());
   }
   async function generate(override?: string) {
-    const text = override ?? prompt;
-    if (!user) {
-      setLogin(true);
-      return;
-    }
-    if (text.trim().length < 10) {
-      setNotice(
-        "Conte um pouco mais sobre seu projeto (mínimo de 10 caracteres).",
-      );
-      return;
-    }
-    if (!walletAvailable) {
-      setNotice("Não foi possível consultar seu saldo. Atualize a página e tente novamente.");
-      return;
-    }
-    if (balance < 1) {
-      setNotice("Você está sem créditos. Escolha um pacote no topo para continuar.");
-      return;
-    }
-    setBusy(true);
-    setNotice("");
+    const text = override || prompt;
+    if (!user) { setLogin(true); return; }
+    if (submitting.current || !canGenerate(text, pending, true, walletAvailable, balance)) return;
+    submitting.current = true; setBusy(true); setNotice("");
+    let projectId = id;
     try {
-      let projectId = id;
+      const { data: identity } = await supabase.auth.getUser();
+      if (!identity.user) { setLogin(true); throw new Error("Sua sessão expirou. Entre novamente."); }
       if (!projectId) {
-        const { data, error } = await builderDb
-          .from("builder_projects")
-          .insert({ user_id: user.id, kind, title: text.slice(0, 60) })
-          .select()
-          .single();
-        if (error)
-          throw new Error("O banco da WH Studio AI ainda precisa ser ativado.");
-        projectId = data.id;
-        setProjects((items) => [data, ...items.filter((project) => project.id !== data.id)]);
-        navigate(`/ai/projetos/${projectId}`);
+        const { data, error } = await builderDb.from("builder_projects").insert({ user_id: identity.user.id, kind, title: text.trim().slice(0, 60) }).select().single();
+        if (error || !data) throw new Error("Não foi possível criar o projeto.");
+        projectId = data.id; setProjects(items => [data, ...items]); navigate(`/ai/projetos/${data.id}`);
       }
-      const response = await builderRequest({
-        projectId,
-        requestId: crypto.randomUUID(),
-        prompt: text,
-        ...(current ? { baseGenerationId: current.id } : {}),
-      });
-      if (response.generation?.status === "error")
-        throw new Error(response.generation.error || "A geração falhou.");
-      if (response.generation) {
-        const generatedTitle = response.generation.artifact?.title;
-        if (generatedTitle) {
-          setProjects((items) => items.map((project) =>
-            project.id === projectId ? { ...project, title: generatedTitle } : project,
-          ));
-        }
-        setVersions((v) => [
-          response.generation!,
-          ...v.filter((x) => x.id !== response.generation!.id),
-        ]);
-        setSelected(response.generation.id);
-        setPreviewError(null);
-      }
-      setPrompt("");
-      const { data: wallet, error: walletError } = await builderDb
-        .from("builder_wallets")
-        .select("balance")
-        .eq("user_id", user.id)
-        .maybeSingle();
-      if (walletError) {
-        setWalletAvailable(false);
-        setNotice("Versão criada, mas não foi possível atualizar seu saldo. Atualize para conferir.");
-      } else {
-        setBalance(wallet?.balance || 0);
-        setWalletAvailable(true);
-      }
+      const previousRequest = requestRef.current;
+      const requestId = previousRequest?.projectId === projectId && previousRequest.prompt === text ? previousRequest.id : crypto.randomUUID();
+      requestRef.current = { id: requestId, prompt: text, projectId };
+      const response = await builderRequest({ projectId, requestId, prompt: text, ...(current ? { baseGenerationId: current.id } : {}) });
+      if (!response.generation) throw new Error("A geração não foi confirmada. Atualize o histórico antes de repetir.");
+      if (response.generation.status === "error") { requestRef.current = null; throw new Error(response.generation.error || "A geração não foi concluída."); }
+      const generation = response.generation;
+      setVersions(items => [generation, ...items.filter(item => item.id !== generation.id)]);
+      setSelected(generation.id); setPreviewError(null); setPrompt(""); setConversationOpen(false);
+      if (generation.status === "complete") requestRef.current = null;
+      if (generation.artifact?.title) setProjects(items => items.map(project => project.id === projectId ? { ...project, title: generation.artifact?.title || project.title } : project));
+      await syncWallet();
     } catch (error) {
-      setNotice(error instanceof Error ? error.message : "A geração falhou.");
-      void refresh();
-    } finally {
-      setBusy(false);
-    }
+      // Confirmed failures allow a fresh request; ambiguous network errors retain the same id.
+      if (projectId) {
+        const requestId = requestRef.current?.id;
+        if (requestId) {
+          const { data } = await builderDb.from("builder_generations").select("status").eq("id", requestId).maybeSingle();
+          if (data?.status === "error" || data?.status === "complete") requestRef.current = null;
+        }
+      }
+      setNotice(error instanceof Error ? error.message : "Não foi possível gerar esta versão."); void syncWallet();
+    } finally { submitting.current = false; setBusy(false); }
   }
-  async function saveFiles(artifact: NonNullable<Generation["artifact"]>) {
-    if (!id) return;
+  async function saveFiles(artifact: Artifact) {
+    if (!id) throw new Error("Selecione um projeto.");
     const response = await builderRequest({ action: "save", projectId: id, artifact });
-    if (response.generation?.status === "error") {
-      throw new Error(response.generation.error || "Não foi possível salvar esta versão.");
-    }
-    if (!response.generation) throw new Error("O servidor não confirmou o salvamento.");
-    if (response.generation) {
-      setVersions((v) => [response.generation!, ...v]);
-      setSelected(response.generation.id);
-      setPreviewError(null);
-    }
+    if (!response.generation) throw new Error("O salvamento não foi confirmado.");
+    const generation = response.generation;
+    setVersions(items => [generation, ...items]); setSelected(generation.id); setPreviewError(null);
   }
-  function fixWithAI() {
-    if (!previewError) return;
-    if (
-      !window.confirm(
-        `Corrigir com a IA gasta 1 crédito (saldo atual: ${balance}). Se a correção falhar, o crédito volta. Continuar?`,
-      )
-    )
-      return;
-    void generate(
-      `Corrija este erro de compilação/execução da prévia sem mudar o restante do projeto:\n${previewError.slice(0, 3000)}`,
-    );
+  function hireStudio(requestId?: string) {
+    const lines = ["Olá! Quero solicitar a publicação ou continuação do meu projeto com a WH Studio.", `Projeto: ${activeProject?.title || "Novo projeto"}`, `Tipo: ${activeProject?.kind === "system" ? "Sistema" : "Site"}`, current?.artifact ? `Resumo: ${current.artifact.summary}\nArquivos: ${current.artifact.files.length}\nPendências: ${current.artifact.backend_requirements.join("; ") || "Revisão para publicação"}` : prompt, id ? `Referência do projeto: ${id}` : "", requestId ? `Solicitação: ${requestId}` : ""].filter(Boolean);
+    window.open(whatsappLink(lines.join("\n").slice(0, 3500)), "_blank", "noopener,noreferrer");
   }
-  function hireStudio() {
-    const lines = [
-      "Olá! Quero contratar a WH Studio para continuar este projeto criado na WH Studio AI.",
-      `Projeto: ${activeProject?.title || prompt || "novo projeto"}`,
-      `Tipo: ${activeProject?.kind === "system" ? "Sistema" : "Site"}`,
-      current?.artifact?.summary ? `Resumo: ${current.artifact.summary}` : "",
-      current?.artifact ? `Arquivos: ${current.artifact.files.length}` : "",
-      current?.artifact?.backend_requirements.length
-        ? `Pendências: ${current.artifact.backend_requirements.join("; ")}`
-        : "",
-      id ? `Referência: ${id}` : "",
-    ].filter(Boolean);
-    window.open(whatsappLink(lines.join("\n").slice(0, 1500)), "_blank", "noopener");
+  async function projectOperation(action: "rename" | "delete" | "publish") {
+    if (!id || operationBusy) return;
+    setOperationBusy(true);
+    try {
+      const response = await builderRequest({ action, projectId: id, title, generationId: current?.id });
+      if (action === "delete") { navigate("/ai"); setPrompt(""); setDeleteOpen(false); }
+      else if (action === "rename") { setProjects(items => items.map(project => project.id === id ? { ...project, title: title.trim() } : project)); setRenameOpen(false); }
+      else { setPublishOpen(false); setNotice(`Solicitação registrada: ${response.requestId}. Nenhuma publicação automática foi realizada.`); }
+      void refresh();
+    } catch (error) { setNotice(error instanceof Error ? error.message : "Não foi possível concluir a ação."); }
+    finally { setOperationBusy(false); }
   }
   async function purchase(pack: string) {
-    if (!pack) return;
-    if (!user) {
-      setLogin(true);
-      return;
-    }
-    setBusy(true);
+    if (!user) { setCreditsOpen(false); setLogin(true); return; }
+    if (!paymentsAvailable || operationBusy) return;
+    setOperationBusy(true);
     try {
       const result = await builderRequest({ action: "checkout", package: pack });
-      if (result.url && new URL(result.url).hostname === "checkout.stripe.com")
-        location.assign(result.url);
-      else throw new Error("Checkout indisponível.");
-    } catch (error) {
-      setNotice(
-        error instanceof Error ? error.message : "Compra indisponível.",
-      );
-    } finally {
-      setBusy(false);
-    }
+      if (!result.url || new URL(result.url).hostname !== "checkout.stripe.com") throw new Error("Checkout indisponível.");
+      location.assign(result.url);
+    } catch (error) { setNotice(error instanceof Error ? error.message : "Compra indisponível."); }
+    finally { setOperationBusy(false); }
   }
-  return (
-    <div className="min-h-screen bg-black text-slate-100">
-      <header className="sticky top-0 z-40 flex min-h-[68px] flex-wrap items-center justify-between gap-3 border-b border-white/[.08] bg-black/95 px-4 py-3 backdrop-blur-xl sm:px-5">
-        <div className="flex min-w-0 items-center gap-3">
-          <Link to="/" aria-label="WH Studio, início">
-            <BrandLogo className="h-8 w-32" />
-          </Link>
-          <span className="h-5 w-px bg-white/10" aria-hidden="true" />
-          <div className="min-w-0">
-            <p className="truncate text-sm font-medium text-slate-100">
-              {activeProject?.title || "Novo projeto"}
-            </p>
-            <p className="hidden text-[10px] uppercase tracking-[0.16em] text-slate-500 sm:block">
-              WH Studio AI
-            </p>
-          </div>
+  function composer(central = false) {
+    return <form className={`builder-composer ${central ? "w-full" : "shrink-0"}`} onSubmit={event => { event.preventDefault(); void generate(); }}>
+      <Textarea id="builder-prompt" aria-label="Descreva seu projeto" placeholder={current ? "O que vamos ajustar nesta versão?" : "Descreva sua ideia, as páginas e o que as pessoas precisam fazer…"} value={prompt} maxLength={6000} onChange={event => setPrompt(event.target.value)} onKeyDown={event => { if ((event.ctrlKey || event.metaKey) && event.key === "Enter") { event.preventDefault(); void generate(); } }} className={`resize-none border-0 bg-transparent p-3 text-sm shadow-none focus-visible:ring-0 ${central ? "min-h-32" : "min-h-24"}`} />
+      <div className="flex items-center justify-between gap-2 px-3 pb-3">
+        <span className="text-[11px] text-muted-foreground">{prompt.length}/6000 · 1 crédito</span>
+        <Button type="submit" size="sm" disabled={!canGenerate(prompt, pending, Boolean(user), walletAvailable, balance)} aria-label="Gerar versão"><span>{pending ? "Criando" : "Gerar"}</span>{pending ? <Loader2 className="animate-spin"/> : <ArrowUp/>}</Button>
+      </div>
+      {user && walletAvailable && balance < 1 && <p role="status" className="border-t border-border px-3 py-2 text-xs text-warning">Sem créditos disponíveis.</p>}
+      <p className="border-t border-border px-3 py-2 text-[10px] text-muted-foreground">Não envie senhas ou dados sensíveis.</p>
+    </form>;
+  }
+  function sidebar() {
+    return <div className="flex h-full min-h-0 flex-col gap-4 p-4">
+      <div className="flex items-center justify-between"><span className="text-sm font-medium">Seus projetos</span><Button variant="ghost" size="icon" title="Novo projeto" aria-label="Novo projeto" onClick={() => { navigate("/ai"); setPrompt(""); setConversationOpen(false); }}><Plus/></Button></div>
+      {projects.length ? <DropdownMenu><DropdownMenuTrigger asChild><Button variant="outline" className="w-full justify-between"><span className="truncate">{activeProject?.title || "Escolher projeto"}</span><ChevronDown/></Button></DropdownMenuTrigger><DropdownMenuContent className="builder-theme w-64 max-w-[90vw]" align="start">{projects.map(project => <DropdownMenuItem key={project.id} onSelect={() => { navigate(`/ai/projetos/${project.id}`); setConversationOpen(false); }} className="gap-2"><Code2/><span className="truncate">{project.title}</span>{project.id === id && <Check className="ml-auto"/>}</DropdownMenuItem>)}</DropdownMenuContent></DropdownMenu> : <p className="text-xs leading-relaxed text-muted-foreground">{user ? "Seus projetos aparecerão aqui após a primeira solicitação." : "Entre para acessar seus projetos."}</p>}
+      <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-auto pr-1">
+        {versions.length > 0 ? <><p className="flex items-center gap-2 text-[11px] text-muted-foreground"><History size={14}/>Conversa e versões</p>{[...versions].reverse().map((version, index) => <article key={version.id} className={`border-l-2 py-2 pl-3 ${current?.id === version.id ? "border-primary" : "border-border"}`}>
+          <div className="mb-2 flex items-center justify-between gap-2 text-[10px] text-muted-foreground"><span>VERSÃO {index+1}</span><time dateTime={version.created_at}>{dateLabel(version.created_at)}</time></div>
+          <p className="whitespace-pre-wrap break-words text-xs leading-relaxed">{version.prompt}</p>
+          <p role="status" className={`mt-3 flex items-center gap-2 text-[11px] ${version.status === "error" ? "text-destructive" : "text-primary"}`}>{version.status === "pending" ? <Loader2 size={13} className="animate-spin"/> : <Sparkles size={13}/>} {version.status === "pending" ? "Criando" : version.status === "error" ? "Não concluída" : "Concluída"}</p>
+          <p className="mt-2 break-words text-xs leading-relaxed text-muted-foreground">{version.status === "error" ? version.error : version.artifact?.summary}</p>
+          {version.status === "complete" && <Button variant="link" size="sm" className="mt-1 h-8 p-0 text-xs" onClick={() => { setSelected(version.id); setPreviewError(null); setConversationOpen(false); }}>{current?.id === version.id ? "Versão aberta" : "Abrir versão"}</Button>}
+          {version.status === "error" && <Button variant="link" size="sm" className="mt-1 h-8 p-0 text-xs" disabled={pending || balance < 1} onClick={() => { setPrompt(version.prompt); requestRef.current = null; }}>Retomar pedido</Button>}
+          {version.status === "pending" && <Button variant="link" size="sm" className="mt-1 h-8 p-0 text-xs" onClick={() => void syncWallet()}>Verificar andamento</Button>}
+        </article>)}</> : <div className="mt-3 space-y-2"><p className="mb-3 text-[11px] text-muted-foreground">PONTO DE PARTIDA</p>{suggestions.map(suggestion => <Button variant="ghost" key={suggestion.title} className="h-auto w-full justify-start gap-3 whitespace-normal py-3 text-left" onClick={() => chooseSuggestion(suggestion)}><Plus/><span><span className="block text-xs">{suggestion.title}</span><span className="mt-1 block text-[11px] text-muted-foreground">{suggestion.detail}</span></span></Button>)}</div>}
+      </div>
+      {id && composer()}
+      <Button variant="ghost" size="sm" className="shrink-0 justify-start text-xs text-muted-foreground" onClick={() => hireStudio()}><ArrowUpRight/>Contratar a WH Studio</Button>
+    </div>;
+  }
+  return <div className="builder-theme builder-workspace bg-background text-foreground">
+    <Helmet><title>WH Studio AI — Seu projeto por conversa</title><meta name="description" content="Crie sites e sistemas React com a WH Studio AI. Converse, revise arquivos e acompanhe versões dos seus projetos."/></Helmet>
+    <header className="builder-header flex flex-wrap items-center justify-between gap-2 border-b border-border px-3 py-3 sm:px-5">
+      <div className="flex min-w-0 items-center gap-3"><Link to="/" aria-label="WH Studio, início"><BrandLogo className="h-7 w-24 sm:w-28"/></Link><span className="hidden h-5 w-px bg-border sm:block"/><div className="min-w-0"><p className="text-[10px] text-muted-foreground">WH Studio AI</p><p className="max-w-[150px] truncate text-xs font-medium sm:max-w-64">{activeProject?.title || "Novo projeto"}</p></div>
+        {activeProject && <DropdownMenu><DropdownMenuTrigger asChild><Button variant="ghost" size="icon" aria-label="Opções do projeto"><MoreHorizontal/></Button></DropdownMenuTrigger><DropdownMenuContent className="builder-theme"><DropdownMenuItem onSelect={() => { setTitle(activeProject.title); setRenameOpen(true); }}><Pencil className="mr-2"/>Renomear</DropdownMenuItem><DropdownMenuItem disabled={pending} onSelect={() => setDeleteOpen(true)} className="text-destructive"><Trash2 className="mr-2"/>Excluir projeto</DropdownMenuItem></DropdownMenuContent></DropdownMenu>}
+      </div>
+      <div className="flex items-center gap-1 sm:gap-2">
+        <Button variant="ghost" size="icon" className="lg:hidden" aria-label="Abrir conversa e projetos" title="Conversa e projetos" onClick={() => setConversationOpen(true)}><MessageSquare/></Button>
+        <Button variant="outline" size="sm" onClick={() => setCreditsOpen(true)} className="gap-2"><Coins/><span className="hidden sm:inline">Créditos</span><span className="font-mono text-xs" aria-live="polite">{user ? walletLoading ? "…" : walletAvailable ? balance : "—" : "—"}</span></Button>
+        <Button size="sm" disabled={!current} onClick={() => setPublishOpen(true)} className="hidden sm:inline-flex"><Globe2/>Publicar</Button>
+        <Button variant="ghost" size="sm" onClick={async () => { if (!user) setLogin(true); else { const { error } = await supabase.auth.signOut(); if (error) setNotice("Não foi possível sair. Tente novamente."); } }}>{user ? "Sair" : "Entrar"}</Button>
+      </div>
+    </header>
+    {notice && <div role="status" className="flex items-start justify-between gap-2 border-b border-border bg-accent px-4 py-2 text-xs"><p className="break-words">{notice}</p><Button variant="ghost" size="icon" className="h-6 w-6 shrink-0" aria-label="Fechar aviso" onClick={() => setNotice("")}><X/></Button></div>}
+    {new URLSearchParams(location.search).has("checkout") && <div role="status" className="flex flex-wrap items-center gap-2 border-b border-border px-4 py-2 text-xs text-muted-foreground">{new URLSearchParams(location.search).get("checkout") === "success" ? "Pagamento aguardando confirmação segura. Os créditos não são liberados pelo retorno do checkout." : "Compra cancelada. Nenhum crédito foi concedido."}<Button variant="link" size="sm" onClick={() => void syncWallet()}>Atualizar saldo</Button></div>}
+    <div className="builder-body grid min-h-0 lg:grid-cols-[300px_minmax(0,1fr)]">
+      <aside className="hidden min-h-0 border-r border-border bg-card lg:block">{sidebar()}</aside>
+      <main className="flex min-h-0 min-w-0 flex-col overflow-auto">
+        <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b border-border px-3 py-2 sm:px-4">
+          <div className="flex gap-1" role="tablist" aria-label="Áreas do projeto">{([{ value: "preview", label: "Prévia", icon: Monitor }, { value: "files", label: "Arquivos", icon: Code2 }, { value: "backend", label: "Backend", icon: Database }] as const).map(item => <Button key={item.value} role="tab" aria-selected={tab === item.value} variant="ghost" size="sm" className={`px-2 text-xs ${tab === item.value ? "bg-secondary text-foreground" : "text-muted-foreground"}`} onClick={() => setTab(item.value)}><item.icon/><span>{item.label}</span></Button>)}</div>
+          <div className="flex items-center gap-1"><Button variant="ghost" size="icon" className="h-8 w-8" aria-label="Prévia computador" title="Computador" aria-pressed={!mobile} onClick={() => setMobile(false)}><Monitor/></Button><Button variant="ghost" size="icon" className={`h-8 w-8 ${mobile ? "bg-accent text-primary" : ""}`} aria-label="Prévia celular" title="Celular" aria-pressed={mobile} onClick={() => setMobile(true)}><Smartphone/></Button><span className="mx-1 h-4 w-px bg-border"/><Button variant="ghost" size="icon" className="h-8 w-8" title="Reiniciar prévia" aria-label="Reiniciar prévia" disabled={!current} onClick={() => { setPreviewKey(key => key+1); setPreviewError(null); }}><RefreshCw/></Button><Button variant="outline" size="sm" className="h-8 px-2 text-xs" aria-label="Baixar projeto" title="Baixar projeto ZIP" disabled={!current?.artifact} onClick={() => { if (!current?.artifact) return; try { downloadProject(current.artifact, activeProject); } catch (error) { setNotice(error instanceof Error ? error.message : "Projeto incompleto para exportação."); } }}><Download/><span className="hidden xl:inline">Baixar projeto</span></Button></div>
         </div>
-        <div className="flex min-w-0 flex-wrap items-center justify-end gap-2 text-sm sm:gap-3">
-          <Button
-            size="sm"
-            variant="outline"
-            className="h-10 gap-2 rounded-none border-blue-400/25 bg-blue-400/[.08] px-3 text-blue-100 hover:bg-blue-400/[.14]"
-            disabled={!current?.artifact}
-            onClick={hireStudio}
-          >
-            <Globe2 className="h-4 w-4" aria-hidden="true" />
-            Solicitar publicação
-          </Button>
-          <span className="rounded-none border border-white/10 bg-white/[.04] px-3 py-2 text-xs text-slate-300" aria-live="polite">
-            {!user ? "Entre para salvar" : walletLoading && !walletAvailable ? "Carregando saldo…" : walletAvailable ? `${balance} créditos` : "Saldo indisponível"}
-          </span>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" disabled={busy} className="h-10 gap-2 rounded-none border-white/10 bg-[#121212] px-3 text-xs text-slate-200 hover:bg-white/[.06] sm:text-sm">
-                <Coins className="h-4 w-4 text-blue-300" aria-hidden="true" />
-                <span>Créditos</span>
-                <ChevronDown className="h-3.5 w-3.5 text-slate-500" aria-hidden="true" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-64 rounded-none border-white/10 bg-[#121212] p-2 text-slate-100 shadow-2xl">
-              <DropdownMenuLabel className="px-3 py-2 text-xs font-normal text-slate-400">1 crédito por versão gerada</DropdownMenuLabel>
-              <DropdownMenuSeparator className="bg-white/10" />
-              <DropdownMenuItem className="cursor-pointer rounded-none px-3 py-3 focus:bg-white/[.07]" onSelect={() => void purchase("inicial")}>
-                <span>Inicial <span className="ml-1 text-xs text-slate-500">5 créditos</span></span>
-                <span className="ml-auto font-medium">R$ 10</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer rounded-none px-3 py-3 focus:bg-white/[.07]" onSelect={() => void purchase("criador")}>
-                <span>Criador <span className="ml-1 text-xs text-slate-500">15 créditos</span></span>
-                <span className="ml-auto font-medium">R$ 25</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer rounded-none px-3 py-3 focus:bg-white/[.07]" onSelect={() => void purchase("pro")}>
-                <span>Pro <span className="ml-1 text-xs text-slate-500">40 créditos</span></span>
-                <span className="ml-auto font-medium">R$ 59</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <Button
-            variant="outline"
-            className="h-10 rounded-none border-white/10 px-4"
-            onClick={() => (user ? supabase.auth.signOut() : setLogin(true))}
-          >
-            {user ? "Sair" : "Entrar"}
-          </Button>
-        </div>
-      </header>
-      {notice && !login && (
-        <div
-          role="status"
-          className="flex justify-between gap-4 border-b border-blue-500/30 bg-blue-500/10 p-4 text-sm"
-        >
-          {notice}
-          <button aria-label="Fechar aviso" onClick={() => setNotice("")}>
-            <X size={16} />
-          </button>
-        </div>
-      )}
-      {new URLSearchParams(location.search).get("checkout") === "success" && (
-        <p className="px-5 py-3 text-sm text-blue-300">
-          Você voltou do checkout. Os créditos aparecem após a
-          confirmação do provedor.{" "}
-          <button className="underline" onClick={() => void refresh()}>
-            Atualizar saldo
-          </button>
-        </p>
-      )}
-      <main className="grid min-h-[calc(100dvh-68px)] grid-cols-1 min-[640px]:grid-cols-[minmax(250px,0.38fr)_minmax(0,0.62fr)] lg:grid-cols-[370px_minmax(0,1fr)]">
-        <aside className="flex min-h-[620px] flex-col border-b border-white/[.08] bg-[#0a0a0a] p-4 sm:p-5 min-[640px]:h-[calc(100dvh-68px)] min-[640px]:min-h-0 min-[640px]:max-h-[calc(100dvh-68px)] min-[640px]:overflow-hidden lg:border-b-0 lg:border-r">
-          <div className="flex shrink-0 items-center justify-between gap-3">
-            <div>
-              <p className="eyebrow mb-1.5 text-blue-300">WH Studio AI <span className="text-slate-600">/</span> novo projeto</p>
-              <h1 className="font-display text-[1.65rem] tracking-tight">Vamos criar juntos?</h1>
-            </div>
-            <Button
-              size="icon"
-              variant="ghost"
-              aria-label="Novo projeto"
-              title="Começar um projeto novo"
-              className="rounded-none border border-white/10 bg-white/[.03] hover:bg-white/[.08]"
-              onClick={() => {
-                navigate("/ai");
-                setSelected("");
-                setPrompt("");
-              }}
-            >
-              <Plus />
-            </Button>
+        {pending && <p role="status" className="flex shrink-0 items-center gap-2 border-b border-border px-4 py-3 text-xs text-primary"><Loader2 className="h-4 w-4 animate-spin"/>Criando a próxima versão. As anteriores continuam disponíveis.</p>}
+        {current?.artifact ? <>
+          <div role="tabpanel" className={`min-h-0 flex-1 ${tab === "preview" ? "builder-preview-stage" : ""}`}>
+            {tab === "files" ? <BuilderFiles artifact={current.artifact} onSave={saveFiles}/> : tab === "backend" ? <BuilderBackend artifact={current.artifact} project={activeProject} onSaved={() => void refresh()}/> : <Suspense fallback={<div className="grid h-full place-items-center"><Loader2 className="animate-spin" aria-label="Carregando prévia"/></div>}><BuilderPreview key={previewKey} artifact={current.artifact} project={activeProject} mobile={mobile} onError={setPreviewError}/></Suspense>}
           </div>
-          <p className="mt-2 max-w-sm shrink-0 text-[13px] leading-relaxed text-slate-400">
-            Descreva o que você precisa. A IA cria a primeira versão e você continua pedindo ajustes por aqui.
-          </p>
-          {!id && (
-            <div className="my-3 flex shrink-0 gap-1.5 rounded-none border border-white/[.08] bg-black p-1" role="group" aria-label="Tipo de projeto">
-              {(["site", "system"] as const).map((k) => (
-                <Button
-                  key={k}
-                  variant={kind === k ? "default" : "outline"}
-                  aria-pressed={kind === k}
-                  className={`h-9 flex-1 rounded-none ${kind === k ? "shadow-[0_3px_14px_rgba(59,130,246,.22)]" : "border-transparent bg-transparent text-slate-400 hover:bg-white/[.05] hover:text-white"}`}
-                  onClick={() => setKind(k)}
-                >
-                  {k === "site" ? "Site" : "Sistema"}
-                </Button>
-              ))}
-            </div>
-          )}
-          {projects.length > 0 && (
-            <label className="my-1 shrink-0 text-xs text-slate-400">
-              Seus projetos
-              <select
-                aria-label="Escolher projeto"
-                value={id || ""}
-                onChange={(e) =>
-                  navigate(
-                    e.target.value ? `/ai/projetos/${e.target.value}` : "/ai",
-                  )
-                }
-                className="mt-2 h-11 w-full rounded-none border border-white/10 bg-[#171717] px-3 text-sm text-white outline-none transition-colors hover:border-white/20 focus-visible:ring-2 focus-visible:ring-blue-400"
-              >
-                <option value="">Novo projeto</option>
-                {projects.map((p) => (
-                  <option value={p.id} key={p.id}>
-                    {p.title}
-                  </option>
-                ))}
-              </select>
-            </label>
-          )}
-          <div className="min-h-0 flex-1 space-y-2 overflow-y-auto py-3 [scrollbar-color:rgba(148,163,184,.25)_transparent] [scrollbar-width:thin]" aria-label="Histórico e sugestões">
-            {versions.length ? (
-              <>
-                <p className="eyebrow sticky top-0 z-10 rounded-none bg-[#0a0a0a]/95 px-2 py-2 backdrop-blur">Conversa do projeto</p>
-                {[...versions].reverse().map((v) => {
-                  const viewing = current?.id === v.id;
-                  return (
-                    <article
-                      className={`rounded-none border p-3 text-sm ${viewing ? "border-blue-400/40 bg-blue-400/[.06]" : "border-white/10 bg-white/[.015]"}`}
-                      key={v.id}
-                    >
-                      <div className="mb-2 flex items-center justify-between gap-2">
-                        <span className="font-mono text-[10px] uppercase tracking-wider text-slate-500">Você</span>
-                        <time className="text-[10px] text-slate-500" dateTime={v.created_at}>{dateLabel(v.created_at)}</time>
-                      </div>
-                      <p className="break-words text-slate-200">{v.prompt}</p>
-                      <div className="mt-3 flex items-center gap-2 border-t border-white/10 pt-3">
-                        <Sparkles className="h-3.5 w-3.5 shrink-0 text-blue-300" aria-hidden="true" />
-                        <span className="font-mono text-[10px] uppercase tracking-wider text-blue-200">WH Studio AI</span>
-                        <span className={`ml-auto text-[10px] ${v.status === "error" ? "text-red-300" : v.status === "pending" ? "text-amber-200" : "text-emerald-300"}`} role="status">
-                          {v.status === "pending" ? "Criando…" : v.status === "error" ? "Não concluída" : viewing ? "Versão aberta" : "Concluída"}
-                        </span>
-                      </div>
-                      <p className={`mt-2 break-words text-xs leading-relaxed ${v.status === "error" ? "text-red-200" : "text-slate-400"}`}>
-                        {v.status === "pending" ? "A IA está trabalhando nesta versão." : v.status === "error" ? v.error : v.artifact?.summary}
-                      </p>
-                      {v.status === "complete" && !viewing && (
-                        <button
-                          className="mt-2 rounded text-xs text-blue-300 underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
-                          onClick={() => {
-                            setSelected(v.id);
-                            setPreviewError(null);
-                          }}
-                        >
-                          Abrir esta versão
-                        </button>
-                      )}
-                    </article>
-                  );
-                })}
-              </>
-            ) : (
-              <>
-                <div className="flex items-end justify-between gap-3 px-1 pb-1">
-                  <div>
-                    <p className="eyebrow">Comece por uma ideia</p>
-                    <p className="mt-1 text-[11px] text-slate-500">Você pode editar antes de enviar.</p>
-                  </div>
-                  <Sparkles className="mb-1 h-4 w-4 text-blue-300" aria-hidden="true" />
-                </div>
-                {suggestions.map((s) => (
-                  <button
-                    key={s.title}
-                    onClick={() => {
-                      setPrompt(s.prompt);
-                      setKind(s.kind);
-                    }}
-                    className="group flex w-full items-center gap-3 rounded-none border border-white/[.08] bg-white/[.02] px-3 py-2.5 text-left transition-colors hover:border-blue-400/40 hover:bg-blue-400/[.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
-                  >
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-none border border-white/[.08] bg-white/[.035] text-blue-300"><Sparkles className="h-4 w-4" aria-hidden="true" /></span>
-                    <span className="min-w-0 flex-1"><span className="block text-[13px] font-medium text-slate-200">{s.title}</span><span className="mt-0.5 block truncate text-[11px] text-slate-500">{s.detail}</span></span>
-                    <Plus className="h-4 w-4 shrink-0 text-slate-600 transition-colors group-hover:text-blue-300" aria-hidden="true" />
-                  </button>
-                ))}
-              </>
-            )}
+          {previewError && tab === "preview" && <div role="alert" className="shrink-0 border-t border-destructive/40 p-4"><p className="text-sm font-medium text-destructive">A prévia encontrou um erro</p><pre className="mt-2 max-h-24 overflow-auto whitespace-pre-wrap break-words font-mono text-[11px] text-muted-foreground">{previewError}</pre><Button size="sm" className="mt-3" disabled={pending || !walletAvailable || balance < 1} onClick={() => setFixOpen(true)}><Sparkles/>Corrigir com IA (1 crédito)</Button></div>}
+          <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-t border-border px-4 py-2 text-[11px] text-muted-foreground"><span>{current.artifact.files.length} arquivos · {dateLabel(current.created_at)}</span><Button variant="link" size="sm" className="h-7 text-xs" onClick={() => setTab("backend")}>{current.artifact.backend_requirements.length ? `${current.artifact.backend_requirements.length} pendências para produção` : "Revisar para publicação"}<ArrowUpRight/></Button><Button size="sm" className="sm:hidden" onClick={() => setPublishOpen(true)}>Publicar</Button></div>
+        </> : <div className="flex min-h-0 flex-1 items-center justify-center overflow-auto px-5 py-10 sm:px-10">
+          <div className="my-auto w-full max-w-2xl"><p className="mb-5 flex items-center gap-2 text-xs font-medium text-primary"><Sparkles size={16}/>WH STUDIO AI</p><h1 className="text-3xl font-medium leading-tight sm:text-4xl">O que você quer construir?</h1><p className="mt-4 max-w-lg text-sm leading-relaxed text-muted-foreground">Descreva sua ideia e receba um projeto React. Continue a conversa para transformar a primeira versão no que você precisa.</p>
+            <div className="my-6 flex gap-1" role="group" aria-label="Tipo de projeto">{(["site", "system"] as const).map(value => <Button key={value} variant={kind === value ? "secondary" : "ghost"} size="sm" aria-pressed={kind === value} onClick={() => setKind(value)}>{value === "site" ? <Globe2/> : <Database/>}{value === "site" ? "Site" : "Sistema"}</Button>)}</div>
+            {!id && composer(true)}
+            {id && <Button className="lg:hidden" onClick={() => setConversationOpen(true)}><MessageSquare/>Continuar conversa</Button>}
+            {!id && <div className="mt-4 flex flex-wrap gap-2">{suggestions.map(suggestion => <Button key={suggestion.title} variant="outline" size="sm" className="h-auto whitespace-normal py-2 text-xs" onClick={() => chooseSuggestion(suggestion)}><Plus/>{suggestion.title}</Button>)}</div>}
+            <p className="mt-6 text-[11px] text-muted-foreground">{user ? "Cada geração cria uma versão. Edições manuais não gastam créditos." : "Entre para salvar projetos e acompanhar suas versões."}</p>
           </div>
-          <form
-            className="relative z-20 mt-auto shrink-0 rounded-none border border-white/[.12] bg-[#121212] p-3 shadow-[0_12px_35px_rgba(0,0,0,.24)]"
-            onSubmit={(event) => {
-              event.preventDefault();
-              void generate();
-            }}
-          >
-            {user && walletAvailable && balance < 1 && (
-              <div role="status" className="mb-2 flex items-center justify-between gap-2 rounded-none border border-amber-300/20 bg-amber-300/[.06] px-2.5 py-2 text-[11px] text-amber-100">
-                <span>Sem créditos disponíveis</span>
-                <button type="button" disabled={busy} onClick={() => void purchase("inicial")} className="shrink-0 font-medium text-amber-200 underline underline-offset-2 hover:text-white disabled:opacity-50">Comprar créditos</button>
-              </div>
-            )}
-            <Textarea
-              id="ai-project-prompt"
-              aria-label="Descreva seu projeto"
-              placeholder={
-                current
-                  ? "Ex.: adicione uma página de preços com três planos…"
-                  : kind === "system"
-                    ? "Descreva o sistema, os dados que ele precisa guardar e as ações principais…"
-                    : "Descreva o site, as seções e o que as pessoas devem fazer nele…"
-              }
-              value={prompt}
-              maxLength={6000}
-              onChange={(e) => setPrompt(e.target.value)}
-              onKeyDown={(event) => {
-                if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
-                  event.preventDefault();
-                  void generate();
-                }
-              }}
-              className="min-h-[82px] max-h-[30dvh] resize-y border-0 bg-transparent px-1 py-2 text-sm leading-relaxed shadow-none placeholder:text-slate-500 focus-visible:ring-0"
-            />
-            <div className="flex items-center justify-between gap-2 border-t border-white/[.07] pt-2 text-xs text-slate-500">
-              <span className="truncate" title="Sua descrição e o código gerado serão enviados ao serviço de IA. Evite incluir dados sensíveis.">{prompt.length}/6000 <span className="px-1 text-slate-700">·</span> 1 crédito · evite dados sensíveis</span>
-              <Button
-                type="submit"
-                size="sm"
-                className="h-9 shrink-0 rounded-none px-3"
-                disabled={pending || prompt.trim().length < 10 || (Boolean(user) && !walletAvailable)}
-                aria-label={pending ? "Criando versão" : "Enviar solicitação para gerar versão"}
-              >
-                {pending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Criando</> : <><Sparkles className="mr-1.5 h-4 w-4" />Gerar</>}
-              </Button>
-            </div>
-            <div className="mt-2 flex items-center justify-between gap-2 text-[10px] text-slate-500">
-              <button type="button" onClick={hireStudio} className="truncate text-left transition-colors hover:text-blue-300">Prefere um projeto feito com a gente?</button>
-              <span className="shrink-0">Ctrl + Enter</span>
-            </div>
-          </form>
-        </aside>
-        <section className="min-w-0 bg-[#090909] p-3 sm:p-4 lg:p-5">
-          <div className="mb-3 flex flex-wrap items-center justify-between gap-3 rounded-none border border-white/[.08] bg-[#111111] p-2">
-            <div className="flex flex-wrap gap-2">
-              <Button
-                size="sm"
-                variant={!code && !backend ? "default" : "ghost"}
-                aria-pressed={!code && !backend}
-                onClick={() => {
-                  setCode(false);
-                  setBackend(false);
-                }}
-              >
-                Prévia
-              </Button>
-              <Button
-                size="sm"
-                variant={code ? "default" : "ghost"}
-                aria-pressed={code}
-                onClick={() => {
-                  setCode(true);
-                  setBackend(false);
-                }}
-              >
-                <Code2 size={15} className="mr-2" />
-                Arquivos
-              </Button>
-              <Button
-                size="sm"
-                variant={backend ? "default" : "ghost"}
-                aria-pressed={backend}
-                onClick={() => {
-                  setBackend(true);
-                  setCode(false);
-                }}
-              >
-                Backend
-              </Button>
-            </div>
-            <div className="flex gap-2">
-              <Button
-                size="icon"
-                variant={!mobile ? "secondary" : "ghost"}
-                aria-label="Prévia computador"
-                aria-pressed={!mobile}
-                onClick={() => setMobile(false)}
-              >
-                <Monitor size={17} />
-              </Button>
-              <Button
-                size="icon"
-                variant={mobile ? "secondary" : "ghost"}
-                aria-label="Prévia celular"
-                aria-pressed={mobile}
-                onClick={() => setMobile(true)}
-              >
-                <Smartphone size={17} />
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                disabled={!current?.artifact?.files}
-                onClick={() =>
-                  current?.artifact &&
-                  downloadProject(current.artifact, activeProject)
-                }
-              >
-                <Download size={15} className="mr-2" />
-                Baixar projeto
-              </Button>
-            </div>
-          </div>
-          {pending && (
-            <div className="mb-3 flex items-center gap-3 rounded-none border border-blue-400/20 bg-blue-400/[.07] px-4 py-3 text-sm text-blue-100" role="status">
-              <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-              <span>Preparando sua versão. Você pode acompanhar o progresso no histórico.</span>
-            </div>
-          )}
-          <div className="grid min-h-[420px] place-items-center overflow-hidden rounded-none border border-white/[.10] bg-[#161616] shadow-[0_24px_80px_rgba(0,0,0,.28)] sm:min-h-[650px]">
-            {current?.artifact?.files ? (
-              backend ? (
-                <BuilderBackend
-                  project={activeProject}
-                  artifact={current.artifact}
-                  onSaved={() => void refresh()}
-                />
-              ) : code ? (
-                <BuilderFiles artifact={current.artifact} onSave={saveFiles} />
-              ) : (
-                <Suspense fallback={<Loader2 className="animate-spin" />}>
-                  <BuilderPreview
-                    artifact={current.artifact}
-                    project={activeProject}
-                    mobile={mobile}
-                    onError={setPreviewError}
-                  />
-                </Suspense>
-              )
-            ) : (
-              <div className="max-w-xl p-6 text-center sm:p-10">
-                <div className="mx-auto mb-6 flex h-12 w-12 items-center justify-center rounded-full border border-blue-400/20 bg-blue-400/[.08]">
-                  <Sparkles className="text-blue-300" size={22} aria-hidden="true" />
-                </div>
-                <h2 className="font-display text-3xl leading-tight sm:text-4xl">
-                  O que você quer construir?
-                </h2>
-                <p className="mx-auto mt-4 max-w-md leading-relaxed text-slate-400">
-                  Descreva sua ideia ao lado. A WH Studio AI cria uma prévia real,
-                  você conversa para ajustar e pode solicitar a publicação.
-                </p>
-                <div className="mt-7 grid gap-2 sm:grid-cols-3">
-                  {suggestions.map((suggestion) => (
-                    <button
-                      key={suggestion.title}
-                      type="button"
-                      onClick={() => {
-                        setPrompt(suggestion.prompt);
-                        setKind(suggestion.kind);
-                        document.getElementById("ai-project-prompt")?.focus();
-                      }}
-                      className="rounded-none border border-white/[.09] bg-white/[.025] px-3 py-3 text-left transition-colors hover:border-blue-400/35 hover:bg-blue-400/[.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
-                    >
-                      <span className="block text-sm font-medium text-slate-200">{suggestion.title}</span>
-                      <span className="mt-1 block text-xs leading-relaxed text-slate-500">{suggestion.detail}</span>
-                    </button>
-                  ))}
-                </div>
-                  {!user ? (
-                    <Button className="mt-6" onClick={() => setLogin(true)}>Entrar para começar</Button>
-                  ) : !current ? (
-                    <p className="mt-6 text-xs text-slate-500">Escreva sua ideia à esquerda para gerar uma prévia real. Nenhum resultado é simulado.</p>
-                  ) : null}
-              </div>
-            )}
-          </div>
-          {previewError && current && !code && !backend && (
-            <div role="alert" className="mt-4 rounded-none border border-red-400/30 p-4 text-sm text-red-200">
-              <p className="mb-2 font-medium">A prévia encontrou um erro</p>
-              <pre className="max-h-40 overflow-auto whitespace-pre-wrap font-mono text-xs">{previewError}</pre>
-              <Button size="sm" className="mt-3" disabled={pending || (Boolean(user) && (!walletAvailable || balance < 1))} onClick={fixWithAI}>
-                Corrigir com IA (1 crédito)
-              </Button>
-            </div>
-          )}
-          {current?.artifact?.backend_requirements.length > 0 && (
-            <div className="mt-4 rounded-none border border-amber-400/20 p-4 text-sm text-amber-200">
-              <p className="mb-2 font-medium">Para colocar em produção</p>
-              <ul className="list-inside list-disc">
-                {current.artifact.backend_requirements.map((r, i) => (
-                  <li key={i}>{r}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </section>
+        </div>}
       </main>
-      {login && (
-        <Dialog open={login} onOpenChange={setLogin}>
-          <DialogContent closeLabel="Fechar janela" className="max-h-[90dvh] max-w-md overflow-y-auto border-white/10 bg-[#121212] p-7 text-slate-100 sm:rounded-none">
-            <form onSubmit={authenticate} className="space-y-1">
-              <DialogTitle className="pr-8 font-display text-2xl text-slate-100">
-                {recovery
-                  ? "Nova senha"
-                  : signup
-                    ? "Sua conta WH Studio AI"
-                    : "Entre para criar"}
-              </DialogTitle>
-              <DialogDescription className="my-4 text-sm text-slate-400">
-                Projetos e versões ficam vinculados à sua conta.
-              </DialogDescription>
-            {!recovery && (
-              <>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="mb-5 w-full"
-                  disabled={authBusy}
-                  onClick={signInWithGoogle}
-                >
-                  <svg viewBox="0 0 24 24" className="mr-2 h-4 w-4" aria-hidden="true">
-                    <path
-                      fill="currentColor"
-                      d="M21.35 11.1h-9.17v2.73h6.51c-.33 3.81-3.5 5.44-6.5 5.44C8.36 19.27 5 16.25 5 12c0-4.1 3.2-7.27 7.2-7.27 3.09 0 4.9 1.97 4.9 1.97L19 4.72S16.56 2 12.1 2C6.42 2 2.03 6.8 2.03 12c0 5.05 4.13 10 10.22 10 5.35 0 9.25-3.67 9.25-9.09 0-1.15-.15-1.81-.15-1.81Z"
-                    />
-                  </svg>
-                  Continuar com Google
-                </Button>
-                <div className="mb-5 flex items-center gap-3 text-xs text-slate-500">
-                  <span className="h-px flex-1 bg-white/10" />
-                  ou com e-mail
-                  <span className="h-px flex-1 bg-white/10" />
-                </div>
-              </>
-            )}
-            {!recovery && (
-              <label className="mb-4 block text-sm">
-                E-mail
-                <Input
-                  type="email"
-                  autoComplete="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="mt-2"
-                />
-              </label>
-            )}
-            <label className="mb-5 block text-sm">
-              Senha
-              <Input
-                type="password"
-                autoComplete={
-                  signup || recovery ? "new-password" : "current-password"
-                }
-                required
-                minLength={8}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="mt-2"
-              />
-            </label>
-            <Button className="w-full" disabled={authBusy}>
-              {authBusy
-                ? "Aguarde…"
-                : recovery
-                  ? "Salvar senha"
-                  : signup
-                    ? "Criar conta"
-                    : "Entrar"}
-            </Button>
-            {notice && (
-              <p role="status" className="mt-3 text-sm text-blue-300">
-                {notice}
-              </p>
-            )}
-            {!recovery && (
-              <>
-                <button
-                  type="button"
-                  className="mt-5 block text-sm text-blue-300"
-                  onClick={() => setSignup(!signup)}
-                >
-                  {signup ? "Já tenho uma conta" : "Criar uma conta"}
-                </button>
-                <button
-                  type="button"
-                  className="mt-3 text-xs text-slate-400"
-                  onClick={async () => {
-                    if (!email) {
-                      setNotice("Informe seu e-mail primeiro.");
-                      return;
-                    }
-                    const { error } = await supabase.auth.resetPasswordForEmail(
-                      email,
-                      { redirectTo: `${location.origin}/ai` },
-                    );
-                    setNotice(
-                      error
-                        ? error.message
-                        : "Confira seu e-mail para redefinir a senha.",
-                    );
-                  }}
-                >
-                  Esqueci minha senha
-                </button>
-              </>
-            )}
-            </form>
-          </DialogContent>
-        </Dialog>
-      )}
     </div>
-  );
+    <BuilderAccess open={login} onOpenChange={setLogin}/>
+    <Dialog open={conversationOpen} onOpenChange={setConversationOpen}><DialogContent closeLabel="Fechar conversa" className="builder-theme flex h-[90dvh] w-[calc(100%-24px)] max-w-sm flex-col gap-0 p-0"><DialogTitle className="px-4 pt-5 text-base">Conversa e projetos</DialogTitle><DialogDescription className="sr-only">Histórico e solicitações do projeto</DialogDescription><div className="min-h-0 flex-1">{sidebar()}</div></DialogContent></Dialog>
+    <Dialog open={creditsOpen} onOpenChange={setCreditsOpen}><DialogContent closeLabel="Fechar créditos" className="builder-theme max-h-[90dvh] w-[calc(100%-24px)] max-w-xl overflow-auto"><DialogTitle>Seus créditos</DialogTitle><DialogDescription>{user && walletAvailable ? `${balance} créditos disponíveis` : "Entre para consultar seu saldo."} · Cada geração utiliza 1 crédito.</DialogDescription>
+      {!paymentsAvailable && <p className="border-l-2 border-warning pl-3 text-xs leading-relaxed text-muted-foreground">A compra via Stripe está indisponível enquanto a WH Studio conclui a ativação do pagamento. Nenhuma cobrança será feita aqui.</p>}
+      <div className="divide-y divide-border border-y border-border">{Object.entries(CREDIT_PACKAGES).map(([key, pack]) => <div key={key} className="flex items-center justify-between gap-3 py-4"><div><p className="text-sm font-medium">{pack.name}</p><p className="mt-1 text-xs text-muted-foreground">{pack.credits} créditos</p></div><span className="ml-auto text-sm">{new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 }).format(pack.amount/100)}</span><Button size="sm" disabled={!paymentsAvailable || operationBusy} onClick={() => void purchase(key)}>Comprar</Button></div>)}</div>
+      <Button variant="outline" disabled={!user || walletLoading} onClick={() => void syncWallet()}><RefreshCw/>Atualizar saldo</Button>
+      {notice && <p role="status" className="text-xs text-primary">{notice}</p>}
+      <h2 className="mt-2 text-sm font-medium">Movimentações recentes</h2>{transactions.length ? <ul className="max-h-52 overflow-auto divide-y divide-border">{transactions.map(transaction => <li key={transaction.id} className="flex items-center justify-between gap-3 py-3 text-xs"><div><p>{{ opening: "Saldo inicial", generation: "Geração", refund: "Crédito devolvido", purchase: "Compra confirmada" }[transaction.kind] || transaction.kind}</p><time className="mt-1 block text-[10px] text-muted-foreground">{dateLabel(transaction.created_at)}</time></div><span className="font-mono">{transaction.delta > 0 ? "+" : ""}{transaction.delta} · saldo {transaction.balance_after}</span></li>)}</ul> : <p className="text-xs text-muted-foreground">Nenhuma movimentação disponível.</p>}
+    </DialogContent></Dialog>
+    <Dialog open={renameOpen} onOpenChange={setRenameOpen}><DialogContent closeLabel="Fechar renomeação" className="builder-theme w-[calc(100%-24px)] max-w-sm"><DialogTitle>Renomear projeto</DialogTitle><DialogDescription>Atualize o nome deste projeto.</DialogDescription><form className="grid gap-4" onSubmit={event => { event.preventDefault(); void projectOperation("rename"); }}><Input aria-label="Nome do projeto" value={title} maxLength={100} required onChange={event => setTitle(event.target.value)}/><Button disabled={operationBusy || !title.trim()}>Salvar nome</Button></form>{notice && <p role="status" className="text-xs">{notice}</p>}</DialogContent></Dialog>
+    <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}><DialogContent closeLabel="Cancelar exclusão" className="builder-theme w-[calc(100%-24px)] max-w-sm"><DialogTitle>Excluir este projeto?</DialogTitle><DialogDescription>O projeto e todas as versões serão removidos. Esta ação não pode ser desfeita.</DialogDescription><Button variant="destructive" disabled={operationBusy || pending} onClick={() => void projectOperation("delete")}><Trash2/>Excluir projeto</Button>{notice && <p role="status" className="text-xs">{notice}</p>}</DialogContent></Dialog>
+    <Dialog open={publishOpen} onOpenChange={setPublishOpen}><DialogContent closeLabel="Fechar publicação" className="builder-theme max-h-[90dvh] w-[calc(100%-24px)] max-w-lg overflow-auto"><DialogTitle>Solicitar publicação</DialogTitle><DialogDescription>A WH Studio revisará o projeto antes de publicar. Não há publicação automática.</DialogDescription><p className="text-sm font-medium">{activeProject?.title}</p><p className="text-xs leading-relaxed text-muted-foreground">{current?.artifact?.summary}</p><p className="font-mono text-[10px] break-all text-muted-foreground">Referência: {id}</p>{current?.artifact?.backend_requirements.map(requirement => <p key={requirement} className="border-l-2 border-warning pl-3 text-xs">{requirement}</p>)}<Button disabled={operationBusy} onClick={() => void projectOperation("publish")}><Globe2/>Registrar solicitação</Button><Button variant="outline" onClick={() => hireStudio()}><ArrowUpRight/>Enviar resumo no WhatsApp</Button>{notice && <p role="status" className="text-xs">{notice}</p>}</DialogContent></Dialog>
+    <Dialog open={fixOpen} onOpenChange={setFixOpen}><DialogContent closeLabel="Cancelar correção" className="builder-theme w-[calc(100%-24px)] max-w-sm"><DialogTitle>Corrigir com IA?</DialogTitle><DialogDescription>Esta correção utiliza 1 crédito. Saldo atual: {balance}. Se a geração falhar, o crédito será devolvido.</DialogDescription><Button disabled={pending || balance < 1} onClick={() => { setFixOpen(false); void generate(`Corrija o erro abaixo sem alterar o restante do projeto:\n${previewError?.slice(0, 5000)}`); }}><Sparkles/>Confirmar correção</Button></DialogContent></Dialog>
+  </div>;
 }
